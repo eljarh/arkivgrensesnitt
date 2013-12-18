@@ -2,6 +2,30 @@
 
 Denne applikasjonen er en enkel proxy som tar i mot RDF-fragmenter og arkiverer disse i ePhorte.
 
+## Funksjonelle krav
+
+Her er en kjapp gjennomgang av de funskjonelle kravene til applikasjonen
+
+### Dynamisk mapping
+
+Tjenesten skal dynamisk mapping fra RDF-en den mottar til den interne modellen til ePhorte. Det vil si at om det opprettes et nytt felt "foo" i ePhorte skal det være nok å lage RDF-properties som ender på "/foo" for å skrive til det feltet. Det skal ikke være harde bindinger fra koden til felter og objekter i ePhorte.
+
+### Flere dokumenter under en sak
+
+Dokumenter må kunne referere til en sak i ePhorte og i så fall bli arkivert under denne.
+
+### Oppdatering = Ny versjon
+
+RDF-en som mottas skal inneholde ekstern ID på dokumentet (dette er URL-en som er subjekt i RDF-fragmentet). Dersom det allerede finnes et dokument i ePhorte med denne ID-en skal filen som mottas bli en ny versjon av dokumentet.
+
+### Feilrapportering
+
+Tjenesten skal, så lenge det i det hele tatt er mulig, sørge for at dokumentet faktisk kommer inn i ePhorte. Dersom det er problemer med dokumentet skal dette helst markeres på en eller annen måte i ePhorte slik at mennesker kan ta tak i det. Dersom tjenesten ikke klarer å få inn dokumentet skal den feile med HTTP 500-status og en mest mulig fornuftig feilmelding. Det er da opp til SDShare-klienten å logge feilen.
+
+### Støtte for å referere til andre objekter
+
+Vi oppretter ikke andre objekter. Vi kan ha referanser til kontakter og lignende, men vi lager ikke nye kontakter.
+
 ## Teknologivalg
 
 Applikasjonen skal kjøre i en servlet container.  Den skal være enkel å vedlikeholde og feilsøke.  Dette tilsier at vi ønsker få avhengigheter som man må kjenne til for å kunne forstå løsningen.
