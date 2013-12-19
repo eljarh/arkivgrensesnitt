@@ -16,6 +16,8 @@ import java.net.URI;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import no.priv.garshol.duke.utils.NTriplesParser;
+import java.io.Reader;
 
 @Path("fragment")
 public class FragmentResource {
@@ -26,9 +28,13 @@ public class FragmentResource {
     @Produces(MediaType.TEXT_PLAIN)
     public Response handleFragment(@Context SecurityContext context,
                                    @QueryParam("subject") final String subject,
-                                   String body) throws Exception {
+                                   Reader reader) throws Exception {
 
-        log.debug("Incoming fragment with subject [{}] and body [{}]", subject, body);
+        log.debug("Incoming fragment with subject: {}", subject);
+
+        ObjectHandler handler = new ObjectHandler();
+        NTriplesParser.parse(reader, handler);
+
         return Response.ok("Success").build();
     }
 }
