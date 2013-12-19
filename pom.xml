@@ -9,6 +9,24 @@
     <version>1.0-SNAPSHOT</version>
     <name>ephorte-adapter</name>
 
+    <repositories>
+        <!--
+            To install jars to the project repo, use the following command:
+            mvn install:install-file -DlocalRepositoryPath=repo -DcreateChecksum=true -Dpackaging=jar -Dfile=[your-jar] -DgroupId=[...] -DartifactId=[...] -Dversion=[...]
+        -->
+        <repository>
+            <id>repo</id>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>${project.baseUri}/repo</url>
+        </repository>
+    </repositories>
+
     <build>
         <finalName>ephorte-adapter</finalName>
         <plugins>
@@ -50,12 +68,40 @@
             <scope>provided</scope>
         </dependency>
 
+        <!--
+             The following dependencies have been copied from the
+             mattilsynet.no project for integrating with ePhorte
+        -->
+        <dependency>
+            <groupId>no.gecko</groupId>
+            <artifactId>gecko.ncore.client</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>no.gecko</groupId>
+            <artifactId>om_service_v3_en</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>no.gecko</groupId>
+            <artifactId>doc_service_v3</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>no.gecko</groupId>
+            <artifactId>func_service_v2</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.0.13</version>
         </dependency>
     </dependencies>
+
     <properties>
         <jersey.version>2.5</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
