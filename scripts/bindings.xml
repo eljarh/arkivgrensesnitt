@@ -1,0 +1,1095 @@
+<?xml version="1.0"?>
+<jxb:bindings xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	      jxb:version="2.0">
+
+  <jxb:bindings schemaLocation="http://ephortetest/ephorteweb/Services/ObjectModel/V3/No/ObjectModelService.svc?xsd=xsd3">
+
+    <jxb:bindings node="//xs:complexType[@name='AdministrativEnhet']//xs:element[@name='Id']">
+      <jxb:property name="AdministrativEnhet_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AdministrativEnhetPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AdministrativEnhetPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Adresse']//xs:element[@name='Id']">
+      <jxb:property name="Adresse_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AdressePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AdressePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AdresseType']//xs:element[@name='Id']">
+      <jxb:property name="AdresseType_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='Id']">
+      <jxb:property name="Aktivitet_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetAvsenderMottaker']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetAvsenderMottaker_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetAvsenderMottakerPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetAvsenderMottakerPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetBehandlingsform']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetBehandlingsform_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetBehandlingsformPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetBehandlingsformPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetBeslutningskode']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetBeslutningskode_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetBeslutningskodePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetBeslutningskodePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetFaseType']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetFaseType_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetFaseTypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetFaseTypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetPrioritet']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetPrioritet_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetPrioritetPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetPrioritetPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetRapportKategori']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetRapportKategori_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetRapportKategoriPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetRapportKategoriPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetStatus']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetStatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetStatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetStatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetType']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetType_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetTypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetTypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetVarslingsform']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetVarslingsform_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AktivitetVarslingsformPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AktivitetVarslingsformPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakKompetanse']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakKompetanse_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakKompetansePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakKompetansePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakKunngjoeringsmaate']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakKunngjoeringsmaate_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakKunngjoeringsmaatePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakKunngjoeringsmaatePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakSoeker']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakSoeker_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakSoekerPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakSoekerPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakSoeknadstatus']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakSoeknadstatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakSoeknadstatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakSoeknadstatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakStilling']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakStilling_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakStillingPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakStillingPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakStillingstype']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakStillingstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AnsettelsesakStillingstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AnsettelsesakStillingstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Arkiv']//xs:element[@name='Id']">
+      <jxb:property name="Arkiv_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Arkivdel']//xs:element[@name='Id']">
+      <jxb:property name="Arkivdel_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ArkivdelPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ArkivdelPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Arkivperiode']//xs:element[@name='Id']">
+      <jxb:property name="Arkivperiode_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ArkivperiodePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ArkivperiodePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ArkivPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ArkivPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Arkivstatus']//xs:element[@name='Id']">
+      <jxb:property name="Arkivstatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ArkivstatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ArkivstatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Avgraderingskode']//xs:element[@name='Id']">
+      <jxb:property name="Avgraderingskode_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AvgraderingskodePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AvgraderingskodePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AvsenderMottaker']//xs:element[@name='Id']">
+      <jxb:property name="AvsenderMottaker_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AvsenderMottakerPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AvsenderMottakerPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Avskrivingsmaate']//xs:element[@name='Id']">
+      <jxb:property name="Avskrivingsmaate_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='AvskrivingsmaatePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="AvskrivingsmaatePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Behandlingsstatus']//xs:element[@name='Id']">
+      <jxb:property name="Behandlingsstatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='BehandlingsstatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="BehandlingsstatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Bortsettingskode']//xs:element[@name='Id']">
+      <jxb:property name="Bortsettingskode_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='BortsettingskodePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="BortsettingskodePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='Id']">
+      <jxb:property name="Byggesak_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakBygningstype']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakBygningstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakBygningstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakBygningstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakDispensasjonstype']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakDispensasjonstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakDispensasjonstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakDispensasjonstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakSoeknadstype']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakSoeknadstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakSoeknadstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakSoeknadstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakTiltakskode']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakTiltakskode_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ByggesakTiltakskodePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ByggesakTiltakskodePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DataObjektEndring']//xs:element[@name='Id']">
+      <jxb:property name="DataObjektEndring_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DataObjektEndringPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DataObjektEndringPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DataObjektEndringsType']//xs:element[@name='Id']">
+      <jxb:property name="DataObjektEndringsType_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DataObjektEndringsTypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DataObjektEndringsTypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DataObjektType']//xs:element[@name='Id']">
+      <jxb:property name="DataObjektType_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DataObjektTypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DataObjektTypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DelingsakKartforretning']//xs:element[@name='Id']">
+      <jxb:property name="DelingsakKartforretning_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DelingsakKartforretningPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DelingsakKartforretningPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DelingsakRekvisisjon']//xs:element[@name='Id']">
+      <jxb:property name="DelingsakRekvisisjon_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DelingsakRekvisisjonPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DelingsakRekvisisjonPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Dokumentbeskrivelse']//xs:element[@name='Id']">
+      <jxb:property name="Dokumentbeskrivelse_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumentbeskrivelsePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DokumentbeskrivelsePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Dokumentkategori']//xs:element[@name='Id']">
+      <jxb:property name="Dokumentkategori_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumentkategoriPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DokumentkategoriPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Dokumentmal']//xs:element[@name='Id']">
+      <jxb:property name="Dokumentmal_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumentmalPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DokumentmalPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumentmalType']//xs:element[@name='Id']">
+      <jxb:property name="DokumentmalType_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumentmalTypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DokumentmalTypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Dokumentstatus']//xs:element[@name='Id']">
+      <jxb:property name="Dokumentstatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumentstatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DokumentstatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Dokumenttilknytning']//xs:element[@name='Id']">
+      <jxb:property name="Dokumenttilknytning_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumenttilknytningPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DokumenttilknytningPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Dokumenttype']//xs:element[@name='Id']">
+      <jxb:property name="Dokumenttype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumenttypeForUtvalgsbehandling']//xs:element[@name='Id']">
+      <jxb:property name="DokumenttypeForUtvalgsbehandling_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumenttypeForUtvalgsbehandlingPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DokumenttypeForUtvalgsbehandlingPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='DokumenttypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="DokumenttypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Enhetstype']//xs:element[@name='Id']">
+      <jxb:property name="Enhetstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='EnhetstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="EnhetstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Faktura']//xs:element[@name='Id']">
+      <jxb:property name="Faktura_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='FakturaLinje']//xs:element[@name='Id']">
+      <jxb:property name="FakturaLinje_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='FakturaLinjePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="FakturaLinjePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='FakturaPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="FakturaPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Forsendelsesmaate']//xs:element[@name='Id']">
+      <jxb:property name="Forsendelsesmaate_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ForsendelsesmaatePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ForsendelsesmaatePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Forsendelsesstatus']//xs:element[@name='Id']">
+      <jxb:property name="Forsendelsesstatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ForsendelsesstatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ForsendelsesstatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Fylke']//xs:element[@name='Id']">
+      <jxb:property name="Fylke_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='FylkePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="FylkePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Gebyrtype']//xs:element[@name='Id']">
+      <jxb:property name="Gebyrtype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='GebyrtypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="GebyrtypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Identifikasjonstype']//xs:element[@name='Id']">
+      <jxb:property name="Identifikasjonstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='IdentifikasjonstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="IdentifikasjonstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Informasjonstype']//xs:element[@name='Id']">
+      <jxb:property name="Informasjonstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='InformasjonstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="InformasjonstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='JevnfoerSak']//xs:element[@name='Id']">
+      <jxb:property name="JevnfoerSak_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='JevnfoerSakPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="JevnfoerSakPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='JournalEnhet']//xs:element[@name='Id']">
+      <jxb:property name="JournalEnhet_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='JournalEnhetPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="JournalEnhetPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Journalpost']//xs:element[@name='Id']">
+      <jxb:property name="Journalpost_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='JournalpostPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="JournalpostPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Journalstatus']//xs:element[@name='Id']">
+      <jxb:property name="Journalstatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='JournalstatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="JournalstatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Kassasjonskode']//xs:element[@name='Id']">
+      <jxb:property name="Kassasjonskode_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='KassasjonskodePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="KassasjonskodePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Katalog']//xs:element[@name='Id']">
+      <jxb:property name="Katalog_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='KatalogLenke']//xs:element[@name='Id']">
+      <jxb:property name="KatalogLenke_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='KatalogLenkePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="KatalogLenkePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='KatalogPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="KatalogPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Lagringsenhet']//xs:element[@name='Id']">
+      <jxb:property name="Lagringsenhet_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LagringsenhetPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LagringsenhetPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Lagringsformat']//xs:element[@name='Id']">
+      <jxb:property name="Lagringsformat_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LagringsformatPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LagringsformatPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Lenke']//xs:element[@name='Id']">
+      <jxb:property name="Lenke_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LenkePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LenkePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Lenketype']//xs:element[@name='Id']">
+      <jxb:property name="Lenketype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LenketypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LenketypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoggFelt']//xs:element[@name='Id']">
+      <jxb:property name="LoggFelt_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoggFeltObjekt']//xs:element[@name='Id']">
+      <jxb:property name="LoggFeltObjekt_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoggFeltObjektPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LoggFeltObjektPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoggFeltPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LoggFeltPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoggHendelse']//xs:element[@name='Id']">
+      <jxb:property name="LoggHendelse_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoggHendelsePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LoggHendelsePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoggInformasjon']//xs:element[@name='Id']">
+      <jxb:property name="LoggInformasjon_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoggInformasjonPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LoggInformasjonPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoverOgForskrifter']//xs:element[@name='Id']">
+      <jxb:property name="LoverOgForskrifter_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='LoverOgForskrifterPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="LoverOgForskrifterPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Mappetype']//xs:element[@name='Id']">
+      <jxb:property name="Mappetype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='MappetypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="MappetypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Merknad']//xs:element[@name='Id']">
+      <jxb:property name="Merknad_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='MerknadPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="MerknadPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Moetedokument']//xs:element[@name='Id']">
+      <jxb:property name="Moetedokument_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='MoetedokumentPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="MoetedokumentPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='MoeteprotokollHistorikk']//xs:element[@name='Id']">
+      <jxb:property name="MoeteprotokollHistorikk_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='MoeteprotokollHistorikkPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="MoeteprotokollHistorikkPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Nummerserie']//xs:element[@name='Id']">
+      <jxb:property name="Nummerserie_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='NummerseriePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="NummerseriePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Ordningsprinsipp']//xs:element[@name='Id']">
+      <jxb:property name="Ordningsprinsipp_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='OrdningsprinsippPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="OrdningsprinsippPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Ordningsprinsipptype']//xs:element[@name='Id']">
+      <jxb:property name="Ordningsprinsipptype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='OrdningsprinsipptypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="OrdningsprinsipptypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Person']//xs:element[@name='Id']">
+      <jxb:property name="Person_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Personnavn']//xs:element[@name='Id']">
+      <jxb:property name="Personnavn_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PersonnavnPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PersonnavnPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PersonPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PersonPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PersonRolle']//xs:element[@name='Id']">
+      <jxb:property name="PersonRolle_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PersonRollePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PersonRollePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Plansak']//xs:element[@name='Id']">
+      <jxb:property name="Plansak_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakPlanbestemmelse']//xs:element[@name='Id']">
+      <jxb:property name="PlansakPlanbestemmelse_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakPlanbestemmelsePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PlansakPlanbestemmelsePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakPlanstatus']//xs:element[@name='Id']">
+      <jxb:property name="PlansakPlanstatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakPlanstatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PlansakPlanstatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakPlantype']//xs:element[@name='Id']">
+      <jxb:property name="PlansakPlantype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakPlantypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PlansakPlantypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PlansakPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakReguleringsformaal']//xs:element[@name='Id']">
+      <jxb:property name="PlansakReguleringsformaal_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakReguleringsformaalPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PlansakReguleringsformaalPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakReguleringsformaalType']//xs:element[@name='Id']">
+      <jxb:property name="PlansakReguleringsformaalType_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PlansakReguleringsformaalTypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PlansakReguleringsformaalTypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PolitiskSaksgang']//xs:element[@name='Id']">
+      <jxb:property name="PolitiskSaksgang_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PolitiskSaksgangPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PolitiskSaksgangPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Postnummer']//xs:element[@name='Id']">
+      <jxb:property name="Postnummer_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PredefinertSoek']//xs:element[@name='Id']">
+      <jxb:property name="PredefinertSoek_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PredefinertSoekPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PredefinertSoekPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Presedens']//xs:element[@name='Id']">
+      <jxb:property name="Presedens_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='PresedensPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="PresedensPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Profiler']//xs:element[@name='Id']">
+      <jxb:property name="Profiler_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ProfilerPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ProfilerPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Prosjekt']//xs:element[@name='Id']">
+      <jxb:property name="Prosjekt_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='ProsjektPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="ProsjektPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Rolle']//xs:element[@name='Id']">
+      <jxb:property name="Rolle_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='RollePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="RollePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Sak']//xs:element[@name='Id']">
+      <jxb:property name="Sak_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='SakPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="SakPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Sakspart']//xs:element[@name='Id']">
+      <jxb:property name="Sakspart_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='SakspartPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="SakspartPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='SakspartRolle']//xs:element[@name='Id']">
+      <jxb:property name="SakspartRolle_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='SakspartRollePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="SakspartRollePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Saksstatus']//xs:element[@name='Id']">
+      <jxb:property name="Saksstatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='SaksstatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="SaksstatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Sakstype']//xs:element[@name='Id']">
+      <jxb:property name="Sakstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='SakstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="SakstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Skjema']//xs:element[@name='Id']">
+      <jxb:property name="Skjema_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='SkjemaPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="SkjemaPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='StatusForMoetedokument']//xs:element[@name='Id']">
+      <jxb:property name="StatusForMoetedokument_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='StatusForMoetedokumentPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="StatusForMoetedokumentPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Tilgangsgruppe']//xs:element[@name='Id']">
+      <jxb:property name="Tilgangsgruppe_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='TilgangsgruppePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="TilgangsgruppePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Tilgangskode']//xs:element[@name='Id']">
+      <jxb:property name="Tilgangskode_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='TilgangskodePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="TilgangskodePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Tilleggsinformasjon']//xs:element[@name='Id']">
+      <jxb:property name="Tilleggsinformasjon_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='TilleggsinformasjonPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="TilleggsinformasjonPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Tilleggskode']//xs:element[@name='Id']">
+      <jxb:property name="Tilleggskode_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='TilleggskodePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="TilleggskodePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Utvalg']//xs:element[@name='Id']">
+      <jxb:property name="Utvalg_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='UtvalgPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="UtvalgPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Utvalgsbehandling']//xs:element[@name='Id']">
+      <jxb:property name="Utvalgsbehandling_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='UtvalgsbehandlingPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="UtvalgsbehandlingPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='UtvalgsmedlemFunksjon']//xs:element[@name='Id']">
+      <jxb:property name="UtvalgsmedlemFunksjon_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='UtvalgsmedlemFunksjonPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="UtvalgsmedlemFunksjonPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Utvalgsmoete']//xs:element[@name='Id']">
+      <jxb:property name="Utvalgsmoete_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='UtvalgsmoetePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="UtvalgsmoetePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Utvalgssakstype']//xs:element[@name='Id']">
+      <jxb:property name="Utvalgssakstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='UtvalgssakstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="UtvalgssakstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Utvalgstype']//xs:element[@name='Id']">
+      <jxb:property name="Utvalgstype_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='UtvalgstypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="UtvalgstypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Variantformat']//xs:element[@name='Id']">
+      <jxb:property name="Variantformat_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='Vedtak']//xs:element[@name='Id']">
+      <jxb:property name="Vedtak_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='VedtakPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="VedtakPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='VedtakStatus']//xs:element[@name='Id']">
+      <jxb:property name="VedtakStatus_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='VedtakStatusPropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="VedtakStatusPropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='VedtakType']//xs:element[@name='Id']">
+      <jxb:property name="VedtakType_Id"/>
+    </jxb:bindings>
+
+    <jxb:bindings node="//xs:complexType[@name='VedtakTypePropertyFlags']//xs:element[@name='Id']">
+      <jxb:property name="VedtakTypePropertyFlags_Id"/>
+    </jxb:bindings>
+
+    <!-- lines 1062 & 5459 -->
+    <jxb:bindings node="//xs:complexType[@name='Sak']//xs:element[@name='Lest']">
+      <jxb:factoryMethod name="Sak_Lest"/>
+    </jxb:bindings>
+
+    <!-- lines 6273 & 3840 -->
+    <jxb:bindings node="//xs:complexType[@name='Utvalgsmedlem']//xs:element[@name='Funksjon']">
+      <jxb:factoryMethod name="Utvalgsmedlem_Funksjon"/>
+    </jxb:bindings>
+
+    <!-- lines 3833 & 6274 -->
+    <jxb:bindings node="//xs:complexType[@name='Utvalgsmedlem']//xs:element[@name='FunksjonId']">
+      <jxb:factoryMethod name="Utvalgsmedlem_FunksjonId"/>
+    </jxb:bindings>
+
+    <!-- lines 312 & 497 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='FaseType']">
+      <jxb:factoryMethod name="Aktivitet_FaseType"/>
+    </jxb:bindings>
+
+    <!-- lines 271 & 546 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='Prioritet']">
+      <jxb:factoryMethod name="Aktivitet_Prioritet"/>
+    </jxb:bindings>
+
+    <!-- lines 246 & 457 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='Beslutningskode']">
+      <jxb:factoryMethod name="Aktivitet_Beslutningskode"/>
+    </jxb:bindings>
+    
+    <!-- lines 289 & 472 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='Status']">
+      <jxb:factoryMethod name="Aktivitet_Status"/>
+    </jxb:bindings>
+    
+    <!-- lines 448 & 247 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='BeslutningskodeId']">
+      <jxb:factoryMethod name="Aktivitet_BeslutningskodeId"/>
+    </jxb:bindings>
+
+    <!-- lines 683 & 311 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='VarslingsformId']">
+      <jxb:factoryMethod name="Aktivitet_VarslingsformId"/>
+    </jxb:bindings>
+
+    <!-- lines 310 & 689 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='Varslingsform']">
+      <jxb:factoryMethod name="Aktivitet_Varslingsform"/>
+    </jxb:bindings>
+
+    <!-- lines 426 & 242 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='BehandlingsformId']">
+      <jxb:factoryMethod name="Aktivitet_BehandlingsformId"/>
+    </jxb:bindings>
+
+    <!-- lines 465 & 290 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='StatusId']">
+      <jxb:factoryMethod name="Aktivitet_StatusId"/>
+    </jxb:bindings>
+    
+    <!-- lines 241 & 431 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='Behandlingsform']">
+      <jxb:factoryMethod name="Aktivitet_Behandlingsform"/>
+    </jxb:bindings>
+    
+    <!-- lines 540 & 272 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='PrioritetId']">
+      <jxb:factoryMethod name="Aktivitet_PrioritetId"/>
+    </jxb:bindings>
+    
+    <!-- lines 492 & 313 -->
+    <jxb:bindings node="//xs:complexType[@name='Aktivitet']//xs:element[@name='FaseTypeId']">
+      <jxb:factoryMethod name="Aktivitet_FaseTypeId"/>
+    </jxb:bindings>
+
+    <!-- lines 4932 & 4909 -->
+    <jxb:bindings node="//xs:complexType[@name='Plansak']//xs:element[@name='PlanbestemmelseId']">
+      <jxb:factoryMethod name="Plansak_PlanbestemmelseId"/>
+    </jxb:bindings>
+    
+    <!-- lines 4954 & 4912 -->
+    <jxb:bindings node="//xs:complexType[@name='Plansak']//xs:element[@name='PlanstatusId']">
+      <jxb:factoryMethod name="Plansak_PlanstatusId"/>
+    </jxb:bindings>
+
+    <!-- lines 4911 & 4959 -->
+    <jxb:bindings node="//xs:complexType[@name='Plansak']//xs:element[@name='Planstatus']">
+      <jxb:factoryMethod name="Plansak_Planstatus"/>
+    </jxb:bindings>
+    
+    <!-- lines 4976 & 4918 -->
+    <jxb:bindings node="//xs:complexType[@name='Plansak']//xs:element[@name='PlantypeId']">
+      <jxb:factoryMethod name="Plansak_PlantypeId"/>
+    </jxb:bindings>
+    
+    <!-- lines 4908 & 4937 -->
+    <jxb:bindings node="//xs:complexType[@name='Plansak']//xs:element[@name='Planbestemmelse']">
+      <jxb:factoryMethod name="Plansak_Planbestemmelse"/>
+    </jxb:bindings>
+    
+    <!-- lines 4913 & 4981 -->
+    <jxb:bindings node="//xs:complexType[@name='Plansak']//xs:element[@name='Plantype']">
+      <jxb:factoryMethod name="Plansak_Plantype"/>
+    </jxb:bindings>
+    
+    <!-- lines 1797 & 1732 -->
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='DispensasjonstypeId']">
+      <jxb:factoryMethod name="Byggesak_DispensasjonstypeId"/>
+    </jxb:bindings>
+    
+    <!-- lines 1750 & 1862 -->
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='Soeknadstype']">
+      <jxb:factoryMethod name="Byggesak_Soeknadstype"/>
+    </jxb:bindings>
+    
+    <!-- lines 1731 & 1802 -->
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='Dispensasjonstype']">
+      <jxb:factoryMethod name="Byggesak_Dispensasjonstype"/>
+    </jxb:bindings>
+    
+    <!-- lines 1857 & 1751 -->
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='SoeknadstypeId']">
+      <jxb:factoryMethod name="Byggesak_SoeknadstypeId"/>
+    </jxb:bindings>
+
+    <!-- lines 1752 & 1885 -->
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='Tiltakskode']">
+      <jxb:factoryMethod name="Byggesak_Tiltakskode"/>
+    </jxb:bindings>
+
+    <!-- lines 1772 & 1730 -->
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='BygningstypeId']">
+      <jxb:factoryMethod name="Byggesak_BygningstypeId"/>
+    </jxb:bindings>
+    
+    <!-- lines 1729 & 1778 -->
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='Bygningstype']">
+      <jxb:factoryMethod name="Byggesak_Bygningstype"/>
+    </jxb:bindings>
+    
+    <!-- lines 1879 & 1753 -->
+    <jxb:bindings node="//xs:complexType[@name='Byggesak']//xs:element[@name='TiltakskodeId']">
+      <jxb:factoryMethod name="Byggesak_TiltakskodeId"/>
+    </jxb:bindings>
+    
+    <!-- lines 830 & 4133 -->
+    <jxb:bindings node="//xs:complexType[@name='Journalpost']//xs:element[@name='Lest']">
+      <jxb:factoryMethod name="Journalpost_Lest"/>
+    </jxb:bindings>
+
+  </jxb:bindings>
+
+  <jxb:bindings schemaLocation="http://ephortetest/ephorteweb/Services/ObjectModel/V3/No/ObjectModelService.svc?xsd=xsd0">
+    
+    <!-- lines 9 & 34 -->
+    <jxb:bindings node="//xs:element[@name='FilteredQuery']//xs:element[@name='arguments']">
+      <jxb:factoryMethod name="FilteredQuery_Arguments"/>
+    </jxb:bindings>
+    
+    <!-- lines 216 & 227-->
+    <jxb:bindings node="//xs:element[@name='Initialize']//xs:element[@name='arguments']">
+      <jxb:factoryMethod name="Initialize_Arguments"/>
+    </jxb:bindings>
+
+    <!-- lines 107 & 120 -->
+    <jxb:bindings node="//xs:element[@name='Fetch']//xs:element[@name='arguments']">
+      <jxb:factoryMethod name="Fetch_Arguments"/>
+    </jxb:bindings>
+
+    <!-- lines 80 & 95 -->
+    <jxb:bindings node="//xs:element[@name='PredefinedQuery']//xs:element[@name='arguments']">
+      <jxb:factoryMethod name="PredefinedQuery_Arguments"/>
+    </jxb:bindings>
+    
+
+  </jxb:bindings>
+
+</jxb:bindings>
+
+
