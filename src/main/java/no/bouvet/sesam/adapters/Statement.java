@@ -7,13 +7,11 @@ public class Statement {
     public final String subject;
     public final String property;
     public final String object;
-    public final boolean literal;
 
-    public Statement(String s, String p, String o, boolean l) {
+    public Statement(String s, String p, String o) {
         subject = s;
         property = p;
         object = o;
-        literal = l;
     }
 
     @Override
@@ -28,7 +26,6 @@ public class Statement {
             .append(subject, rhs.subject)
             .append(property, rhs.property)
             .append(object, rhs.object)
-            .append(literal, rhs.literal)
             .isEquals();
     }
 
@@ -38,7 +35,6 @@ public class Statement {
             append(subject).
             append(property).
             append(object).
-            append(literal).
             toHashCode();
 
     }
