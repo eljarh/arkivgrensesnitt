@@ -11,13 +11,13 @@ public class EphorteHandler implements StatementHandler {
 
     private List<Statement> literals = new ArrayList<Statement>();
     private List<Statement> resources = new ArrayList<Statement>();
-
+    
     private DataObjectT obj;
 
     public void statement(String subject, String property, String object,
                           boolean literal) {
         if (rdfType.equals(property)) {
-            String objType = RDFMapper.lookupObjectType(object);
+            String objType = RDFMapper.getObjectType(object);
             obj = (DataObjectT) ObjectUtils.instantiate(objType);
         } else if (literal) {
             literals.add(new Statement(subject, property, object));
@@ -27,6 +27,24 @@ public class EphorteHandler implements StatementHandler {
     }
 
     public DataObjectT[] getDataObjects() {
+        addLiterals(obj, literals);
+        addResources(obj, resources);
+
         return new DataObjectT[] { obj };
+    }
+
+    protected void addLiterals(DataObjectT obj, List<Statement> statements) {
+        for (Statement s : statements) {
+            String name = RDFMapper.getFieldName(s.property);
+            ObjectUtils.setBeanProperty(obj, name, s.object, null);
+        }
+    }
+
+    protected void addResources(DataObjectT obj, List<Statement> statements) {
+        for (Statement s : statements) {
+            String name = RDFMapper.getFieldName(s.property);
+            String value = RDFMapper.getResourceId(s.object);
+            ObjectUtils.setBeanProperty(obj, name, value, null);
+        }
     }
 }
