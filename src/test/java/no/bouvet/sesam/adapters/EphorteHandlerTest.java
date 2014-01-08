@@ -7,12 +7,8 @@ import no.priv.garshol.duke.utils.NTriplesParser;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 
 public class EphorteHandlerTest {
-
-    
     @Test
     public void testThatEphorteHandlerCanCreateCaseT(){
-        String subject = "http://data.mattilsynet.org/cases/776663918";
-        
         EphorteHandler handler = new EphorteHandler();
         NTriplesParser parser = new NTriplesParser(handler);
         parser.parseLine("<http://data.mattilsynet.org/cases/776663918> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.mattilsynet.org/ontology/ePhorte/CaseT> .");
