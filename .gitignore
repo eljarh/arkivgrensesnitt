@@ -1,2 +1,4 @@
 /target
 /src/test/resources/config.xml
+/scripts/classes
+/scripts/source
