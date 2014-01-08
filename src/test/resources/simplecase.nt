@@ -1,0 +1,6 @@
+_:Document <http://data.mattilsynet.org/ontology/title> "Test Olsen" .
+_:Document <http://data.mattilsynet.org/ontology/caseworker> <http://data.mattilsynet.org/employees/557417101> .
+_:Document <http://data.mattilsynet.org/ontology/caseworker> <http://data.mattilsynet.org/employees/587124604> .
+_:Document <http://data.mattilsynet.org/ontology/responsibleDepartment> <http://data.mattilsynet.org/department/555913746> .
+_:Document <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.mattilsynet.org/ontology/Case> .
+_:Document <http://data.mattilsynet.org/ontology/file> <http://www.mattilsynet.org/files/document-file-c92b0e88-4c69-478e-b222-10c74d8f43b3.PDF> .

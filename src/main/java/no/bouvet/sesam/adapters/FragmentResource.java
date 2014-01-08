@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import no.priv.garshol.duke.utils.NTriplesParser;
 import java.io.Reader;
+import no.gecko.ncore.client.core.NCore;
 
 @Path("fragment")
 public class FragmentResource {

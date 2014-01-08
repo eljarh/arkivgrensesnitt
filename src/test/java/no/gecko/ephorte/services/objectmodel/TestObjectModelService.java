@@ -3,13 +3,14 @@ package no.gecko.ephorte.services.objectmodel;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
+import junit.framework.Assert;
 
 import no.gecko.ncore.client.core.NCore;
 import java.io.InputStream;
@@ -23,6 +24,7 @@ public class TestObjectModelService {
         NCore.init(configData);
     }
 
+    @Ignore
     @Test
     public void testInsert() throws Exception {
         // create a case
