@@ -1,0 +1,24 @@
+<config>
+ 	<username>X</username>
+	<password>Y</password>
+	<database>Z</database>
+
+	<services>
+		<service id="objectModelService">
+			<address>http://localhost/ePhorteWeb/Services/ObjectModel/V3/En/ObjectModelService.svc</address>
+			<binding>http</binding>
+		</service>
+
+		<service id="documentService">
+			<address>http://localhost/ePhorteWeb/Services/Documents/V3/DocumentService.svc</address>
+			<binding>http</binding>
+		</service>
+
+		<service id="functionsService">
+			<address>http://localhost/ePhorteWeb/Services/Functions/V1/FunctionsService.svc</address>
+			<binding>http</binding>
+		</service>
+	</services>
+
+	<clientPoolSize>1</clientPoolSize>
+</config>
