@@ -33,10 +33,13 @@ public class FragmentResource {
 
         log.debug("Incoming fragment with subject: {}", subject);
 
-        EphorteHandler handler = new EphorteHandler();
+        EphorteHandler handler = new EphorteHandler(subject);
         NTriplesParser.parse(reader, handler);
-        NCore.Objects.insert(handler.getDataObjects());
-        
+        if (handler.shouldUpdate())
+            NCore.Objects.update(handler.getDataObjects());
+        else
+            NCore.Objects.insert(handler.getDataObjects());
+
         return Response.ok("Success").build();
     }
 }

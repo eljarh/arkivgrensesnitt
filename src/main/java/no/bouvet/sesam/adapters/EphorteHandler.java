@@ -9,16 +9,37 @@ import java.util.ArrayList;
 public class EphorteHandler implements StatementHandler {
     private static String rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
+    private boolean shouldCreate = true;
+    private String mySubject = "";
     private List<Statement> literals = new ArrayList<Statement>();
     private List<Statement> resources = new ArrayList<Statement>();
     
     private DataObjectT obj;
 
+    public EphorteHandler(String s) {
+        if (mySubject != null)
+            mySubject = s;
+    }
+
+    public boolean shouldUpdate() {
+        return !shouldCreate;
+    }
+
     public void statement(String subject, String property, String object,
                           boolean literal) {
         if (rdfType.equals(property)) {
-            String objType = RDFMapper.getObjectType(object);
-            obj = (DataObjectT) ObjectUtils.instantiate(objType);
+            String typeName = RDFMapper.getObjectType(object);
+            try {
+                obj = EphorteFacade.getByExternalId(typeName, mySubject);
+                shouldCreate = (obj == null);
+            } catch (Exception e) {
+                /* FIXME: Shit, we have duplicates.  This must be fixed. */
+            }
+
+            if (shouldCreate) {
+                obj = (DataObjectT) ObjectUtils.instantiate(typeName);
+                EphorteFacade.setExternalId(obj, mySubject);
+            }
         } else if (literal) {
             literals.add(new Statement(subject, property, object));
         } else {
