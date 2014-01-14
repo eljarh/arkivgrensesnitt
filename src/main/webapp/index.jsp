@@ -45,7 +45,7 @@
       <label for="subject">Subject (PSI)</label> <br/>
       <input type="text" id="subject" name="subject" size="100" /> <br/>
       <label for="body">Fragment</label> <br/>
-      <textarea rows="25" cols="80" name="body" id="body">Insert fragment</textarea> <br/><br/>
+      <textarea rows="25" cols="80" name="body" id="body" style="width:100%">Insert fragment</textarea> <br/><br/>
       <input type="submit" value="Submit"/>
       <div id="result">
         Go ahead, post whatever you like.
