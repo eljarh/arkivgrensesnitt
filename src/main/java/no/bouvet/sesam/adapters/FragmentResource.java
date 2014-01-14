@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import no.priv.garshol.duke.utils.NTriplesParser;
 import java.io.Reader;
 import no.gecko.ncore.client.core.NCore;
+import java.io.StringReader;
+import org.apache.commons.io.IOUtils;
 
 @Path("fragment")
 public class FragmentResource {
@@ -31,14 +33,22 @@ public class FragmentResource {
                                    @QueryParam("resource") final String resource,
                                    Reader reader) throws Exception {
 
-        log.debug("Incoming fragment with resource: {}", resource);
+        if (log.isDebugEnabled()) {
+            String input = new String(IOUtils.toByteArray(reader, "UTF-8"));
+            reader = new StringReader(input);
+            log.debug("Incoming fragment <{}> with body:\n{}", resource, input);
+        }
 
         EphorteHandler handler = new EphorteHandler(resource);
         NTriplesParser.parse(reader, handler);
-        if (handler.shouldUpdate())
+
+        if (handler.shouldUpdate()) {
             NCore.Objects.update(handler.getDataObjects());
-        else
+            log.info("Updated resource: {}", resource);
+        } else {
             NCore.Objects.insert(handler.getDataObjects());
+            log.info("Created resource: {}", resource);
+        }
 
         return Response.ok("Success").build();
     }
