@@ -8,6 +8,9 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 import no.gecko.ncore.client.core.NCore;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import java.io.Reader;
+import java.io.InputStreamReader;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 
 public class EphorteHandlerTest {
     @Before
@@ -18,11 +21,19 @@ public class EphorteHandlerTest {
 
     @Test
     public void testThatEphorteHandlerCanCreateCaseT() throws Exception {
+        Reader reader = new InputStreamReader(IntegrationTest.getResource("simplecase.nt"));
         EphorteHandler handler = new EphorteHandler("http://data.mattilsynet.org/cases/776663918");
-        NTriplesParser parser = new NTriplesParser(handler);
-        parser.parseLine("<http://data.mattilsynet.org/cases/776663918> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.mattilsynet.org/ontology/ePhorte/CaseT> .");
-        parser.parseLine("<http://data.mattilsynet.org/cases/776663918> <http://data.mattilsynet.org/ontology/ePhorte/title> \"Seniorr\u00E5dgiver - plan og styring  - st. ref. 11/2010\" .");
-        parser.parseLine("<http://data.mattilsynet.org/cases/776663918> <http://data.mattilsynet.org/ontology/ePhorte/series-id> \"SAK\" .");
+        NTriplesParser.parse(reader, handler);
+
         CaseT myCase = (CaseT) handler.getDataObjects()[0];
+    }
+
+    @Test
+    public void testThatEphorteHandlerCanLookupCaseT() throws Exception {
+        Reader reader = new InputStreamReader(IntegrationTest.getResource("simplejournalpost.nt"));
+        EphorteHandler handler = new EphorteHandler("http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb");
+        NTriplesParser.parse(reader, handler);
+
+        RegistryEntryT myCase = (RegistryEntryT) handler.getDataObjects()[0];
     }
 }
