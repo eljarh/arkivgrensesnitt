@@ -14,7 +14,7 @@
       }
 
       function getUrl(form) {
-        return form.action + "?subject=" + encodeURIComponent(form.subject.value);
+        return form.action + "?resource=" + encodeURIComponent(form.resource.value);
       }
 
       function doSubmit(form) {
@@ -42,8 +42,8 @@
       }
     </script>
     <form method="post" action="webapi/fragment" accept-charset="UTF-8" onsubmit="return doSubmit(this);"> <br/> <br/>
-      <label for="subject">Subject (PSI)</label> <br/>
-      <input type="text" id="subject" name="subject" size="100" /> <br/>
+      <label for="resource">Resource (PSI)</label> <br/>
+      <input type="text" id="resource" name="resource" size="100" /> <br/>
       <label for="body">Fragment</label> <br/>
       <textarea rows="25" cols="80" name="body" id="body" style="width:100%">Insert fragment</textarea> <br/><br/>
       <input type="submit" value="Submit"/>

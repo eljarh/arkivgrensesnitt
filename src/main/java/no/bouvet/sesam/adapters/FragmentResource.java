@@ -28,12 +28,12 @@ public class FragmentResource {
     @Consumes("application/ntriples")
     @Produces(MediaType.TEXT_PLAIN)
     public Response handleFragment(@Context SecurityContext context,
-                                   @QueryParam("subject") final String subject,
+                                   @QueryParam("resource") final String resource,
                                    Reader reader) throws Exception {
 
-        log.debug("Incoming fragment with subject: {}", subject);
+        log.debug("Incoming fragment with resource: {}", resource);
 
-        EphorteHandler handler = new EphorteHandler(subject);
+        EphorteHandler handler = new EphorteHandler(resource);
         NTriplesParser.parse(reader, handler);
         if (handler.shouldUpdate())
             NCore.Objects.update(handler.getDataObjects());
