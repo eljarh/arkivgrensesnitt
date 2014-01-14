@@ -9,8 +9,13 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContextEvent;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Provider
 public class ServletContextClass implements ServletContextListener {
+    static Logger log = LoggerFactory.getLogger(ServletContextClass.class.getName());
+
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("config.xml");
@@ -19,9 +24,9 @@ public class ServletContextClass implements ServletContextListener {
 
             String configData = IOUtils.toString(is);
             NCore.init(configData);
-            System.out.println("##### Configured NCore");
+            log.info("##### Configured NCore");
         } catch (IOException e) {
-            System.out.println("##### Could not read configuration!");
+            log.error("##### Could not read configuration!", e);
             throw new RuntimeException(e);
         }
     }
