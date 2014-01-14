@@ -5,19 +5,23 @@ import java.util.List;
 import no.priv.garshol.duke.utils.ObjectUtils;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import java.util.ArrayList;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EphorteHandler implements StatementHandler {
     private static String rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+    static Logger log = LoggerFactory.getLogger(EphorteHandler.class.getName());
 
     private boolean created = false;
-    private String mySubject = "";
+    private String myResource = "";
     private String myType = "";
 
     private List<Statement> statements = new ArrayList<Statement>();
     
     public EphorteHandler(String s) {
-        if (mySubject != null)
-            mySubject = s;
+        if (myResource != null)
+            myResource = s;
     }
 
     public boolean shouldUpdate() {
@@ -34,11 +38,21 @@ public class EphorteHandler implements StatementHandler {
     }
 
     public DataObjectT[] getDataObjects() throws Exception {
-        DataObjectT obj = EphorteFacade.get(myType, mySubject);
+        if (StringUtils.isBlank(myType)) {
+            throw new RuntimeException("Fragment has no type");
+        }
+
+        if (StringUtils.isBlank(myResource)) {
+           throw new RuntimeException("Fragment has no resource");
+        }
+
+        log.debug("Looking up object with type {} and resourceId {}", myType, myResource);
+        DataObjectT obj = EphorteFacade.get(myType, myResource);
 
         if (obj == null) {
+            log.debug("Creating object with type {} and resourceId {}", myType, myResource);
+            obj = EphorteFacade.create(myType, myResource);
             created = true;
-            obj = EphorteFacade.create(myType, mySubject);
         }
 
         EphorteFacade.populate(obj, statements);
