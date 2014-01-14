@@ -3,6 +3,7 @@ package no.bouvet.sesam.adapters;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import no.priv.garshol.duke.utils.ObjectUtils;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 
 public class RDFMapperTest {
     @Test
@@ -20,10 +21,14 @@ public class RDFMapperTest {
     }
 
     @Test
-    public void testGetResourceId() {
-        String value = "http://data.mattilsynet.org/employees/557417101";
-        String result = RDFMapper.getResourceId(value);
-        assertEquals("557417101", result);
+    public void testGetFieldType() {
+        CaseT c = new CaseT();
+        String t = RDFMapper.getFieldType(c, "series");
+        assertEquals("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SeriesT", t);
     }
 
+    @Test
+    public void testIsEphorteType() {
+        assertTrue(RDFMapper.isEphorteType("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SeriesT"));
+    }
 }

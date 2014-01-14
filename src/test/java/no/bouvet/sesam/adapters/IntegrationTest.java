@@ -44,7 +44,7 @@ public class IntegrationTest {
         List<DataObjectT> result = NCore.Objects.filteredQuery("Case", "CustomAttribute1=776663918", new String[] {}, null, null);
     }
 
-    private InputStream getResource(String name) {
-        return this.getClass().getClassLoader().getResourceAsStream(name);
+    public static InputStream getResource(String name) {
+        return IntegrationTest.class.getClassLoader().getResourceAsStream(name);
     }
 }
