@@ -10,16 +10,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.net.URI;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import no.priv.garshol.duke.utils.NTriplesParser;
+
 import java.io.Reader;
-import no.gecko.ncore.client.core.NCore;
 import java.io.StringReader;
+
+import no.priv.garshol.duke.utils.NTriplesParser;
 import org.apache.commons.io.IOUtils;
 
 @Path("fragment")
@@ -41,14 +38,7 @@ public class FragmentResource {
 
         EphorteHandler handler = new EphorteHandler(resource);
         NTriplesParser.parse(reader, handler);
-
-        if (handler.shouldUpdate()) {
-            NCore.Objects.update(handler.getDataObjects());
-            log.info("Updated resource: {}", resource);
-        } else {
-            NCore.Objects.insert(handler.getDataObjects());
-            log.info("Created resource: {}", resource);
-        }
+        EphorteFacade.save(handler);
 
         return Response.ok("Success").build();
     }

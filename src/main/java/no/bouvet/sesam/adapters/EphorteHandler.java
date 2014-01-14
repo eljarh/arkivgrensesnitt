@@ -37,6 +37,10 @@ public class EphorteHandler implements StatementHandler {
         statements.add(new Statement(subject, property, object, literal));
     }
 
+    public String getResourceId() {
+        return myResource;
+    }
+
     public DataObjectT[] getDataObjects() throws Exception {
         if (StringUtils.isBlank(myType)) {
             throw new RuntimeException("Fragment has no type");
@@ -55,7 +59,7 @@ public class EphorteHandler implements StatementHandler {
             created = true;
         }
 
-        EphorteFacade.populate(obj, statements);
+         EphorteFacade.populate(obj, statements);
 
         return new DataObjectT[] { obj };
     }

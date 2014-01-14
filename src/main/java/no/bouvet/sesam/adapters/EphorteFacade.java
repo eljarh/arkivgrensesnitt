@@ -16,6 +16,16 @@ import no.priv.garshol.duke.utils.ObjectUtils;
 public class EphorteFacade {
     static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
 
+    public static void save(EphorteHandler handler) throws Exception {
+        if (handler.shouldUpdate()) {
+            NCore.Objects.update(handler.getDataObjects());
+            log.info("Updated resource: {}", handler.getResourceId());
+        } else {
+            NCore.Objects.insert(handler.getDataObjects());
+            log.info("Created resource: {}", handler.getResourceId());
+        }
+    }
+
     public static DataObjectT create(String typeName, String externalId) throws Exception {
         DataObjectT o = (DataObjectT) ObjectUtils.instantiate(typeName);
         setExternalId(o, externalId);
