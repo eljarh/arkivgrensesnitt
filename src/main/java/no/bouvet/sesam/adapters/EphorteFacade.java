@@ -13,10 +13,22 @@ import no.gecko.ncore.client.core.NCore;
 
 import no.priv.garshol.duke.utils.ObjectUtils;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
+
 public class EphorteFacade {
     static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
+    static String externalIdName;
 
-    public static void save(EphorteHandler handler) throws Exception {
+    static {
+        try {
+            PropertiesConfiguration config = new PropertiesConfiguration("ephorte.properties");
+            externalIdName = (String) config.getProperty("ephorte.externalId.name");
+        } catch (Exception e) {
+            log.error("Couldn't load ephorte.properties", e);
+        }
+    }
+
+    static void save(EphorteHandler handler) throws Exception {
         if (handler.shouldUpdate()) {
             NCore.Objects.update(handler.getDataObjects());
             log.info("Updated resource: {}", handler.getResourceId());
@@ -33,7 +45,7 @@ public class EphorteFacade {
     }
 
     public static void setExternalId(DataObjectT obj, String externalId) {
-        setFieldValue(obj, "custom-attribute-2", externalId);
+        setFieldValue(obj, externalIdName, externalId);
     }
 
     public static void populate(DataObjectT obj, List<Statement> statements) throws Exception {
@@ -57,13 +69,11 @@ public class EphorteFacade {
                     throw new RuntimeException("Refering to non-existing object: " + s.toString());
                 }
 
-                log.debug("Setting value of {} to {}", name, o);
                 setFieldValue(obj, name, o);
                 return;
             }
         }
 
-        log.debug("Setting value of {} to {}", name, s.object);
         setFieldValue(obj, name, s.object);
     }
     public static DataObjectT get(String typeName, String externalId) throws Exception {
@@ -82,10 +92,12 @@ public class EphorteFacade {
     }
 
     public static void setFieldValue(DataObjectT obj, String name, String value) {
+        log.debug("Setting value of {} to {}", name, value);
         ObjectUtils.setBeanProperty(obj, name, value, null);
     }
 
     public static void setFieldValue(DataObjectT obj, String name, DataObjectT value) {
+        log.debug("Setting value of {} to {}", name, value);
         Map<String, Object> m = new HashMap<String, Object>();
         m.put(name, value);
 
