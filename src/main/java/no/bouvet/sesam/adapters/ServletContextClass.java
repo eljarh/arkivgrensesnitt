@@ -12,12 +12,18 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 @Provider
 public class ServletContextClass implements ServletContextListener {
     static Logger log = LoggerFactory.getLogger(ServletContextClass.class.getName());
 
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
+        /* Pipe legacy j.u.l to SLF4J */
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("config.xml");
         try {
             if (is == null) throw new IOException("Could not get resource: config.xml");

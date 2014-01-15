@@ -40,6 +40,16 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <forkMode>always</forkMode>
+                    <systemPropertyVariables>
+                        <java.util.logging.config.file>${project.build.outputDirectory}/logging.properties</java.util.logging.config.file>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -139,6 +149,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.0.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.5</version>
         </dependency>
 
         <dependency>
