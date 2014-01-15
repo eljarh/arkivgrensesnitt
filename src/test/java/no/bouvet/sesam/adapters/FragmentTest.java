@@ -23,13 +23,13 @@ public class FragmentTest {
     public void testThatFragmentCanCreateCaseT() throws Exception {
         String source = IntegrationTest.getResourceAsString("simplecase.nt");
         Fragment fragment = new Fragment("http://data.mattilsynet.org/cases/776663918", source);
-        CaseT myCase = (CaseT) fragment.getDataObjects()[0];
+        CaseT myCase = (CaseT) fragment.getDataObjects(EphorteFacade.getInstance())[0];
     }
 
     @Test
     public void testThatFragmentCanLookupCaseT() throws Exception {
         String source = IntegrationTest.getResourceAsString("simplejournalpost.nt");
         Fragment fragment = new Fragment("http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb", source);
-        RegistryEntryT myCase = (RegistryEntryT) fragment.getDataObjects()[0];
+        RegistryEntryT myCase = (RegistryEntryT) fragment.getDataObjects(EphorteFacade.getInstance())[0];
     }
 }

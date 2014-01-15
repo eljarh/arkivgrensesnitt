@@ -51,7 +51,7 @@ public class Fragment implements StatementHandler {
         return source;
     }
 
-    public DataObjectT[] getDataObjects() throws Exception {
+    public DataObjectT[] getDataObjects(EphorteFacade facade) throws Exception {
         Reader reader = new StringReader(source);
         NTriplesParser.parse(reader, this);
 
@@ -64,15 +64,15 @@ public class Fragment implements StatementHandler {
         }
 
         log.debug("Looking up object with type {} and resourceId {}", type, resourceId);
-        DataObjectT obj = EphorteFacade.get(type, resourceId);
+        DataObjectT obj = facade.get(type, resourceId);
 
         if (obj == null) {
             log.debug("Creating object with type {} and resourceId {}", type, resourceId);
-            obj = EphorteFacade.create(type, resourceId);
+            obj = facade.create(type, resourceId);
             created = true;
         }
 
-         EphorteFacade.populate(obj, statements);
+         facade.populate(obj, statements);
 
         return new DataObjectT[] { obj };
     }

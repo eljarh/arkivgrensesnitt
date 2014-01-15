@@ -31,7 +31,7 @@ public class IntegrationTest {
     public void testThatEphorteHandlerCanCreateCaseT() throws Exception {
         String source = getResourceAsString("simplecase.nt");
         Fragment fragment = new Fragment("http://data.mattilsynet.org/cases/776663918", source);
-        NCore.Objects.insert(fragment.getDataObjects());
+        NCore.Objects.insert(fragment.getDataObjects(EphorteFacade.getInstance()));
     }
 
     @Test

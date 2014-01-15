@@ -16,8 +16,13 @@ import no.priv.garshol.duke.utils.ObjectUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 public class EphorteFacade {
-    static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
-    static String externalIdName;
+    private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
+    private static String externalIdName;
+    private static EphorteFacade singleton = new EphorteFacade();
+
+    public EphorteFacade () { }
+
+    public static EphorteFacade getInstance() { return singleton; };
 
     static {
         try {
@@ -29,16 +34,18 @@ public class EphorteFacade {
     }
 
     static void save(Fragment fragment) throws Exception {
+        DataObjectT[] objs = fragment.getDataObjects(singleton);
+
         if (fragment.shouldUpdate()) {
-            NCore.Objects.update(fragment.getDataObjects());
+            NCore.Objects.update(objs);
             log.info("Updated resource: {}", fragment.getResourceId());
         } else {
-            NCore.Objects.insert(fragment.getDataObjects());
+            NCore.Objects.insert(objs);
             log.info("Created resource: {}", fragment.getResourceId());
         }
     }
 
-    public static DataObjectT create(String typeName, String externalId) throws Exception {
+    public DataObjectT create(String typeName, String externalId) throws Exception {
         DataObjectT o = (DataObjectT) ObjectUtils.instantiate(typeName);
         setExternalId(o, externalId);
         return o;
@@ -48,13 +55,13 @@ public class EphorteFacade {
         setFieldValue(obj, externalIdName, externalId);
     }
 
-    public static void populate(DataObjectT obj, List<Statement> statements) throws Exception {
+    public void populate(DataObjectT obj, List<Statement> statements) throws Exception {
         for (Statement s : statements) {
             populate(obj, s);
         }
     }
 
-    public static void populate(DataObjectT obj, Statement s) throws Exception {
+    public void populate(DataObjectT obj, Statement s) throws Exception {
         String name = RDFMapper.getFieldName(s.property);
         String fieldType = RDFMapper.getFieldType (obj, name);
         if (fieldType == null) {
@@ -76,7 +83,7 @@ public class EphorteFacade {
 
         setFieldValue(obj, name, s.object);
     }
-    public static DataObjectT get(String typeName, String externalId) throws Exception {
+    public DataObjectT get(String typeName, String externalId) throws Exception {
         String searchName = getSearchName(typeName);
         String query = getSearchString(typeName, externalId);
         List<DataObjectT> results = NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
