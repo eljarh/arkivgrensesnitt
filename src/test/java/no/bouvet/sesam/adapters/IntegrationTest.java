@@ -17,6 +17,8 @@ import java.util.List;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ncore.client.core.ObjectModel;
 
+import org.apache.commons.io.IOUtils;
+
 public class IntegrationTest {
     @Before
     public void setUp() throws Exception {
@@ -27,10 +29,9 @@ public class IntegrationTest {
     @Ignore
     @Test
     public void testThatEphorteHandlerCanCreateCaseT() throws Exception {
-        Reader reader = new InputStreamReader(getResource("simplecase.nt"));
-        EphorteHandler handler = new EphorteHandler("http://data.mattilsynet.org/cases/776663918");
-        NTriplesParser.parse(reader, handler);
-        NCore.Objects.insert(handler.getDataObjects());
+        String source = getResourceAsString("simplecase.nt");
+        Fragment fragment = new Fragment("http://data.mattilsynet.org/cases/776663918", source);
+        NCore.Objects.insert(fragment.getDataObjects());
     }
 
     @Test
@@ -42,6 +43,11 @@ public class IntegrationTest {
     @Test
     public void testThatWeCanDeleteCase() throws Exception {
         List<DataObjectT> result = NCore.Objects.filteredQuery("Case", "CustomAttribute1=776663918", new String[] {}, null, null);
+    }
+
+    public static String getResourceAsString(String name) throws Exception {
+        InputStream is = getResource(name);
+        return new String(IOUtils.toByteArray(is));
     }
 
     public static InputStream getResource(String name) {

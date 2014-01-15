@@ -13,12 +13,6 @@ import javax.ws.rs.core.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Reader;
-import java.io.StringReader;
-
-import no.priv.garshol.duke.utils.NTriplesParser;
-import org.apache.commons.io.IOUtils;
-
 @Path("fragment")
 public class FragmentResource {
     static Logger log = LoggerFactory.getLogger(FragmentResource.class.getName());
@@ -28,17 +22,11 @@ public class FragmentResource {
     @Produces(MediaType.TEXT_PLAIN)
     public Response handleFragment(@Context SecurityContext context,
                                    @QueryParam("resource") final String resource,
-                                   Reader reader) throws Exception {
+                                   String source) throws Exception {
+        log.debug("Incoming fragment <{}> with body:\n{}", resource, source);
 
-        if (log.isDebugEnabled()) {
-            String input = new String(IOUtils.toByteArray(reader, "UTF-8"));
-            reader = new StringReader(input);
-            log.debug("Incoming fragment <{}> with body:\n{}", resource, input);
-        }
-
-        EphorteHandler handler = new EphorteHandler(resource);
-        NTriplesParser.parse(reader, handler);
-        EphorteFacade.save(handler);
+        Fragment fragment = new Fragment(resource, source);
+        EphorteFacade.save(fragment);
 
         return Response.ok("Success").build();
     }

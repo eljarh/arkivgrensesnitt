@@ -28,13 +28,13 @@ public class EphorteFacade {
         }
     }
 
-    static void save(EphorteHandler handler) throws Exception {
-        if (handler.shouldUpdate()) {
-            NCore.Objects.update(handler.getDataObjects());
-            log.info("Updated resource: {}", handler.getResourceId());
+    static void save(Fragment fragment) throws Exception {
+        if (fragment.shouldUpdate()) {
+            NCore.Objects.update(fragment.getDataObjects());
+            log.info("Updated resource: {}", fragment.getResourceId());
         } else {
-            NCore.Objects.insert(handler.getDataObjects());
-            log.info("Created resource: {}", handler.getResourceId());
+            NCore.Objects.insert(fragment.getDataObjects());
+            log.info("Created resource: {}", fragment.getResourceId());
         }
     }
 
