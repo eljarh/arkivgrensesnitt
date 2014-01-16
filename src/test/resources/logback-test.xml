@@ -10,7 +10,7 @@
     <logger name="com.sun.xml.ws.wspolicy.EffectiveAlternativeSelector" level="off" />
     <logger name="javax.enterprise.resource.xml.webservices.security.policy" level="off" />
 
-    <root level="debug">
+    <root level="ALL">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
