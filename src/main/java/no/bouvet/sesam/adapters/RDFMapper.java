@@ -2,8 +2,6 @@ package no.bouvet.sesam.adapters;
 
 import java.lang.reflect.Method;
 
-import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
-
 public class RDFMapper {
     public static String getObjectType(String property) {
         if (property == null) return "";
@@ -12,7 +10,7 @@ public class RDFMapper {
         return "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects." + name;
     }
 
-    public static String getFieldType(DataObjectT obj, String fieldName) {
+    public static String getFieldType(Object obj, String fieldName) {
         String methodName = makePropertyName(fieldName);
         Method m = getMethod(obj, methodName);
         if (m == null) return null;
