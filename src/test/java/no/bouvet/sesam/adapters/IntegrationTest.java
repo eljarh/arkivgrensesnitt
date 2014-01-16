@@ -52,11 +52,6 @@ public class IntegrationTest {
         assertEquals(1, result.size());
     }
 
-    @Test
-    public void testThatWeCanDeleteCase() throws Exception {
-        List<DataObjectT> result = NCore.Objects.filteredQuery("Case", "CustomAttribute1=776663918", new String[] {}, null, null);
-    }
-
     public static String getResourceAsString(String name) throws Exception {
         InputStream is = getResource(name);
         return new String(IOUtils.toByteArray(is));
