@@ -15,7 +15,7 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 public class FragmentTest {
     @Test
     public void testThatFragmentCanParseSimpleCase() throws Exception {
-        String source = IntegrationTest.getResourceAsString("simplecase.nt");
+        String source = Utils.getResourceAsString("simplecase.nt");
         String resourceId = RDFMapper.getFirstSubject(source);
         String type = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT";
 
@@ -29,7 +29,7 @@ public class FragmentTest {
 
     @Test
     public void testThatFragmentCanParseSimpleJournalPost() throws Exception {
-        String source = IntegrationTest.getResourceAsString("simplejournalpost.nt");
+        String source = Utils.getResourceAsString("simplejournalpost.nt");
         String resourceId = RDFMapper.getFirstSubject(source);
         String type = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT";
 

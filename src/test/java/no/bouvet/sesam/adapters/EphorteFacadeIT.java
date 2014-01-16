@@ -19,28 +19,26 @@ import no.gecko.ncore.client.core.ObjectModel;
 
 import org.apache.commons.io.IOUtils;
 
-public class IntegrationTest {
+public class EphorteFacadeIT {
     EphorteFacade facade = EphorteFacade.getInstance();
 
     @Before
     public void setUp() throws Exception {
-        String configData = IOUtils.toString(getResource("config.xml"));
+        String configData = IOUtils.toString(Utils.getResource("config.xml"));
         NCore.init(configData);
     }
 
-    @Ignore
     @Test
     public void testSaveSimpleCase() throws Exception {
-        String source = getResourceAsString("simplecase.nt");
+        String source = Utils.getResourceAsString("simplecase.nt");
         String fragmentId = RDFMapper.getFirstSubject(source);
         Fragment fragment = new Fragment(fragmentId, source);
         facade.save(fragment);
     }
 
-    @Ignore
     @Test
     public void testSaveSimpleJournalPost() throws Exception {
-        String source = getResourceAsString("simplejournalpost.nt");
+        String source = Utils.getResourceAsString("simplejournalpost.nt");
         String resourceId = RDFMapper.getFirstSubject(source);
         Fragment fragment = new Fragment(resourceId, source);
         facade.save(fragment);
@@ -50,14 +48,5 @@ public class IntegrationTest {
     public void testThatWeCanRetrieveCaseByExternalId() throws Exception {
         List<DataObjectT> result = NCore.Objects.filteredQuery("Case", "CustomAttribute2=http://data.mattilsynet.org/cases/776663918", new String[] {}, null, null);
         assertEquals(1, result.size());
-    }
-
-    public static String getResourceAsString(String name) throws Exception {
-        InputStream is = getResource(name);
-        return new String(IOUtils.toByteArray(is));
-    }
-
-    public static InputStream getResource(String name) {
-        return IntegrationTest.class.getClassLoader().getResourceAsStream(name);
     }
 }
