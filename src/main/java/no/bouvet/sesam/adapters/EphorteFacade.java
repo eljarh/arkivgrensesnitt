@@ -57,7 +57,9 @@ public class EphorteFacade {
         }
 
         populate(obj, fragment.getStatements());
-        setRdfKeywords(obj, fragment.getSource());
+        /// There's a limit of 255 chars for the custom attributes.
+        /// In other words, this breaks.
+        // setRdfKeywords(obj, fragment.getSource());
 
         DataObjectT[] objs = new DataObjectT[] { obj };
         if (objectExists) {
