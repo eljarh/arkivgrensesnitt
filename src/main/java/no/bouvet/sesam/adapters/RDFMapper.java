@@ -29,6 +29,11 @@ public class RDFMapper {
         return typeName.startsWith("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.");
     }
 
+    public static String getFirstSubject(String rdf) {
+        int end = rdf.indexOf(">");
+        return rdf.substring(1, end);
+    }
+
     private static String getLastPart(String property) {
         String[] parts = property.split("/");
         return parts[parts.length - 1];

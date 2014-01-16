@@ -30,9 +30,19 @@ public class IntegrationTest {
 
     @Ignore
     @Test
-    public void testThatEphorteHandlerCanCreateCaseT() throws Exception {
+    public void testSaveSimpleCase() throws Exception {
         String source = getResourceAsString("simplecase.nt");
-        Fragment fragment = new Fragment("http://data.mattilsynet.org/cases/776663918", source);
+        String fragmentId = RDFMapper.getFirstSubject(source);
+        Fragment fragment = new Fragment(fragmentId, source);
+        facade.save(fragment);
+    }
+
+    @Ignore
+    @Test
+    public void testSaveSimpleJournalPost() throws Exception {
+        String source = getResourceAsString("simplejournalpost.nt");
+        String resourceId = RDFMapper.getFirstSubject(source);
+        Fragment fragment = new Fragment(resourceId, source);
         facade.save(fragment);
     }
 

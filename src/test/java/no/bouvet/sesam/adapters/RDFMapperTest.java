@@ -28,6 +28,12 @@ public class RDFMapperTest {
     }
 
     @Test
+    public void testGetFirstSubject() {
+        String subject = RDFMapper.getFirstSubject("<id> blubber");
+        assertEquals("id", subject);
+    }
+
+    @Test
     public void testIsEphorteType() {
         assertTrue(RDFMapper.isEphorteType("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SeriesT"));
     }

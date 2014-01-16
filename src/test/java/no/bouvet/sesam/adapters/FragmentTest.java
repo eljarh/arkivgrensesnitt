@@ -15,10 +15,10 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 public class FragmentTest {
     @Test
     public void testThatFragmentCanParseSimpleCase() throws Exception {
-        String resourceId = "http://data.mattilsynet.org/cases/776663918";
+        String source = IntegrationTest.getResourceAsString("simplecase.nt");
+        String resourceId = RDFMapper.getFirstSubject(source);
         String type = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT";
 
-        String source = IntegrationTest.getResourceAsString("simplecase.nt");
         Fragment fragment = new Fragment(resourceId, source);
 
         assertEquals(resourceId, fragment.getResourceId());
@@ -29,10 +29,10 @@ public class FragmentTest {
 
     @Test
     public void testThatFragmentCanParseSimpleJournalPost() throws Exception {
-        String resourceId = "http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb";
+        String source = IntegrationTest.getResourceAsString("simplejournalpost.nt");
+        String resourceId = RDFMapper.getFirstSubject(source);
         String type = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT";
 
-        String source = IntegrationTest.getResourceAsString("simplejournalpost.nt");
         Fragment fragment = new Fragment(resourceId, source);
 
         assertEquals(resourceId, fragment.getResourceId());
