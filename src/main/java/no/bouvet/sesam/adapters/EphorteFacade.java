@@ -56,12 +56,12 @@ public class EphorteFacade {
             obj = create(type, resourceId);
         }
 
-        populate(obj, fragment.getStatements());
+        DataObjectT[] objs = populate(obj, fragment.getStatements());
+
         /// There's a limit of 255 chars for the custom attributes.
         /// In other words, this breaks.
         // setRdfKeywords(obj, fragment.getSource());
 
-        DataObjectT[] objs = new DataObjectT[] { obj };
         if (objectExists) {
             NCore.Objects.update(objs);
             log.info("Updated resource: {}", fragment.getResourceId());
@@ -85,18 +85,23 @@ public class EphorteFacade {
         setFieldValue(obj, rdfKeywordsName, source);
     }
 
-    public void populate(DataObjectT obj, List<Statement> statements) throws Exception {
+    public DataObjectT[] populate(DataObjectT obj, List<Statement> statements) throws Exception {
+        List<DataObjectT> objs = new ArrayList<DataObjectT>();
         for (Statement s : statements) {
-            populate(obj, s);
+            DataObjectT referencedObject = populate(obj, s);
+            if (referencedObject != null)
+                objs.add(referencedObject);
         }
+        objs.add(obj);
+        return objs.toArray(new DataObjectT[objs.size()]);
     }
 
-    public void populate(DataObjectT obj, Statement s) throws Exception {
+    public DataObjectT populate(DataObjectT obj, Statement s) throws Exception {
         String name = RDFMapper.getFieldName(s.property);
         String fieldType = RDFMapper.getFieldType (obj, name);
         if (fieldType == null) {
             log.debug("Object has no setter for {}", name);
-            return;
+            return null;
         }
 
         if (!s.literal) {
@@ -107,12 +112,14 @@ public class EphorteFacade {
                 }
 
                 setFieldValue(obj, name, o);
-                return;
+                return o;
             }
         }
 
         setFieldValue(obj, name, s.object);
+        return null;
     }
+
     public DataObjectT get(String typeName, String externalId) throws Exception {
         String searchName = getSearchName(typeName);
         String query = getSearchString(typeName, externalId);
