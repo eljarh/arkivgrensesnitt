@@ -13,23 +13,31 @@ import java.io.InputStreamReader;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 
 public class FragmentTest {
-    @Before
-    public void setUp() throws Exception {
-        String configData = IOUtils.toString(IntegrationTest.getResource("config.xml"));
-        NCore.init(configData);
-    }
-
     @Test
-    public void testThatFragmentCanCreateCaseT() throws Exception {
+    public void testThatFragmentCanParseSimpleCase() throws Exception {
+        String resourceId = "http://data.mattilsynet.org/cases/776663918";
+        String type = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT";
+
         String source = IntegrationTest.getResourceAsString("simplecase.nt");
-        Fragment fragment = new Fragment("http://data.mattilsynet.org/cases/776663918", source);
-        CaseT myCase = (CaseT) fragment.getDataObjects(EphorteFacade.getInstance())[0];
+        Fragment fragment = new Fragment(resourceId, source);
+
+        assertEquals(resourceId, fragment.getResourceId());
+        assertEquals(type, fragment.getType());
+        assertEquals(source, fragment.getSource());
+        assertEquals(3, fragment.getStatements().size());
     }
 
     @Test
-    public void testThatFragmentCanLookupCaseT() throws Exception {
+    public void testThatFragmentCanParseSimpleJournalPost() throws Exception {
+        String resourceId = "http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb";
+        String type = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT";
+
         String source = IntegrationTest.getResourceAsString("simplejournalpost.nt");
-        Fragment fragment = new Fragment("http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb", source);
-        RegistryEntryT myCase = (RegistryEntryT) fragment.getDataObjects(EphorteFacade.getInstance())[0];
+        Fragment fragment = new Fragment(resourceId, source);
+
+        assertEquals(resourceId, fragment.getResourceId());
+        assertEquals(type, fragment.getType());
+        assertEquals(source, fragment.getSource());
+        assertEquals(6, fragment.getStatements().size());
     }
 }

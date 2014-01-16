@@ -26,7 +26,7 @@ public class FragmentResource {
         log.debug("Incoming fragment <{}> with body:\n{}", resource, source);
 
         Fragment fragment = new Fragment(resource, source);
-        EphorteFacade.save(fragment);
+        EphorteFacade.getInstance().save(fragment);
 
         return Response.ok("Success").build();
     }

@@ -20,6 +20,8 @@ import no.gecko.ncore.client.core.ObjectModel;
 import org.apache.commons.io.IOUtils;
 
 public class IntegrationTest {
+    EphorteFacade facade = EphorteFacade.getInstance();
+
     @Before
     public void setUp() throws Exception {
         String configData = IOUtils.toString(getResource("config.xml"));
@@ -31,7 +33,7 @@ public class IntegrationTest {
     public void testThatEphorteHandlerCanCreateCaseT() throws Exception {
         String source = getResourceAsString("simplecase.nt");
         Fragment fragment = new Fragment("http://data.mattilsynet.org/cases/776663918", source);
-        NCore.Objects.insert(fragment.getDataObjects(EphorteFacade.getInstance()));
+        facade.save(fragment);
     }
 
     @Test

@@ -13,6 +13,7 @@ import no.gecko.ncore.client.core.NCore;
 
 import no.priv.garshol.duke.utils.ObjectUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 public class EphorteFacade {
@@ -33,10 +34,30 @@ public class EphorteFacade {
         }
     }
 
-    static void save(Fragment fragment) throws Exception {
-        DataObjectT[] objs = fragment.getDataObjects(singleton);
+    public void save(Fragment fragment) throws Exception {
+        String type = fragment.getType();
+        if (StringUtils.isBlank(type)) {
+            throw new RuntimeException("Fragment has no type");
+        }
 
-        if (fragment.shouldUpdate()) {
+        String resourceId = fragment.getResourceId();
+        if (StringUtils.isBlank(resourceId)) {
+           throw new RuntimeException("Fragment has no resourceId");
+        }
+
+        log.debug("Looking up object with type {} and resourceId {}", type, resourceId);
+        DataObjectT obj = get(type, resourceId);
+
+        boolean objectExists = obj != null;
+        if (!objectExists) {
+            log.debug("Creating object with type {} and resourceId {}", type, resourceId);
+            obj = create(type, resourceId);
+        }
+
+        populate(obj, fragment.getStatements());
+
+        DataObjectT[] objs = new DataObjectT[] { obj };
+        if (objectExists) {
             NCore.Objects.update(objs);
             log.info("Updated resource: {}", fragment.getResourceId());
         } else {

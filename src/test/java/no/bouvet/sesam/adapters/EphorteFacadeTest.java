@@ -5,6 +5,14 @@ import static org.junit.Assert.*;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 
 public class EphorteFacadeTest {
+    EphorteFacade facade = EphorteFacade.getInstance();
+
+    @Test
+    public void testThatFacadeCanCreateCaseT() throws Exception {
+        CaseT myCase = (CaseT) facade.create("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT", "whatever");
+        assertNotNull(myCase);
+    }
+
     @Test
     public void testThatSearchStringIsCorrect(){
         String s = EphorteFacade.getSearchString("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT", "test");
