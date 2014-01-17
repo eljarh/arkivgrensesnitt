@@ -1,13 +1,29 @@
 package no.bouvet.sesam.adapters;
 
 import java.lang.reflect.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
 
-public class RDFMapper {
-    public static String getObjectType(String property) {
-        if (property == null) return "";
+public class ObjectUtils {
+    static Logger log = LoggerFactory.getLogger(ObjectUtils.class.getName());
 
-        String name = getLastPart(property);
-        return "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects." + name;
+    public static void setFieldValue(Object obj, String name, String value) {
+        log.debug("Setting value of {} to {}", name, value);
+        no.priv.garshol.duke.utils.ObjectUtils.setBeanProperty(obj, name, value, null);
+    }
+
+    public static void setFieldValue(Object obj, String name, Object value) {
+        log.debug("Setting value of {} to {}", name, value);
+        Map<String, Object> m = new HashMap<String, Object>();
+        m.put(name, value);
+
+        no.priv.garshol.duke.utils.ObjectUtils.setBeanProperty(obj, name, name, m);
+    }
+
+    public static Object instantiate(String typeName) {
+        return no.priv.garshol.duke.utils.ObjectUtils.instantiate(typeName);
     }
 
     public static String getFieldType(Object obj, String fieldName) {
@@ -19,24 +35,11 @@ public class RDFMapper {
         return type.getName();
     }
 
-    public static String getFieldName(String property) {
-        if (property == null) return "";
-
-        return getLastPart(property);
-    }
-
-    public static boolean isEphorteType(String typeName) {
-        return typeName.startsWith("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.");
-    }
-
-    public static String getFirstSubject(String rdf) {
-        int end = rdf.indexOf(">");
-        return rdf.substring(1, end);
-    }
-
-    private static String getLastPart(String property) {
-        String[] parts = property.split("/");
-        return parts[parts.length - 1];
+    public static Object invokeGetter(Object obj, String getterName) throws Exception {
+        Method m = getMethod(obj, getterName);
+        if (m == null) return null;
+        
+        return m.invoke(obj);
     }
 
     /*
@@ -45,7 +48,7 @@ public class RDFMapper {
       it verbatim for now.
 
       FIXME: Expose this method in Duke so we can use it.
-     */
+    */
     private static String makePropertyName(String name) {
         char[] buf = new char[name.length() + 3];
         int pos = 0;

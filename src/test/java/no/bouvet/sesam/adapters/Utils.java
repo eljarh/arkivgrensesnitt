@@ -12,4 +12,9 @@ public class Utils {
     public static InputStream getResource(String name) {
         return Utils.class.getClassLoader().getResourceAsStream(name);
     }
+
+    public static String getFirstSubject(String rdf) {
+        int end = rdf.indexOf(">");
+        return rdf.substring(1, end);
+    }
 }

@@ -11,10 +11,9 @@ import java.util.Map;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ncore.client.core.NCore;
 
-import no.priv.garshol.duke.utils.ObjectUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public class EphorteFacade {
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
@@ -41,19 +40,20 @@ public class EphorteFacade {
         if (StringUtils.isBlank(type)) {
             throw new RuntimeException("Fragment has no type");
         }
+        String ePhorteType = getObjectType(type);
 
         String resourceId = fragment.getResourceId();
         if (StringUtils.isBlank(resourceId)) {
            throw new RuntimeException("Fragment has no resourceId");
         }
 
-        log.debug("Looking up object with type {} and resourceId {}", type, resourceId);
-        DataObjectT obj = get(type, resourceId);
+        log.debug("Looking up object with type {} and resourceId {}", ePhorteType, resourceId);
+        DataObjectT obj = get(ePhorteType, resourceId);
 
         boolean objectExists = obj != null;
         if (!objectExists) {
-            log.debug("Creating object with type {} and resourceId {}", type, resourceId);
-            obj = create(type, resourceId);
+            log.debug("Creating object with type {} and resourceId {}", ePhorteType, resourceId);
+            obj = create(ePhorteType, resourceId);
         }
 
         DataObjectT[] objs = populate(obj, fragment.getStatements());
@@ -78,11 +78,11 @@ public class EphorteFacade {
     }
 
     public static void setExternalId(DataObjectT obj, String externalId) {
-        setFieldValue(obj, externalIdName, externalId);
+        ObjectUtils.setFieldValue(obj, externalIdName, externalId);
     }
 
     public static void setRdfKeywords(DataObjectT obj, String source) {
-        setFieldValue(obj, rdfKeywordsName, source);
+        ObjectUtils.setFieldValue(obj, rdfKeywordsName, source);
     }
 
     public DataObjectT[] populate(DataObjectT obj, List<Statement> statements) throws Exception {
@@ -97,26 +97,26 @@ public class EphorteFacade {
     }
 
     public DataObjectT populate(DataObjectT obj, Statement s) throws Exception {
-        String name = RDFMapper.getFieldName(s.property);
-        String fieldType = RDFMapper.getFieldType (obj, name);
+        String name = getFieldName(s.property);
+        String fieldType = ObjectUtils.getFieldType (obj, name);
         if (fieldType == null) {
             log.debug("Object has no setter for {}", name);
             return null;
         }
 
         if (!s.literal) {
-            if (RDFMapper.isEphorteType(fieldType)) {
+            if (isEphorteType(fieldType)) {
                 DataObjectT o = get(fieldType, s.object);
                 if (o == null) {
                     throw new RuntimeException("Refering to non-existing object: " + s.toString());
                 }
 
-                setFieldValue(obj, name, o);
+                ObjectUtils.setFieldValue(obj, name, o);
                 return o;
             }
         }
 
-        setFieldValue(obj, name, s.object);
+        ObjectUtils.setFieldValue(obj, name, s.object);
         return null;
     }
 
@@ -135,19 +135,6 @@ public class EphorteFacade {
         throw new RuntimeException("Found multiple " + typeName + "s with external id = " + externalId);
     }
 
-    public static void setFieldValue(DataObjectT obj, String name, String value) {
-        log.debug("Setting value of {} to {}", name, value);
-        ObjectUtils.setBeanProperty(obj, name, value, null);
-    }
-
-    public static void setFieldValue(DataObjectT obj, String name, DataObjectT value) {
-        log.debug("Setting value of {} to {}", name, value);
-        Map<String, Object> m = new HashMap<String, Object>();
-        m.put(name, value);
-
-        ObjectUtils.setBeanProperty(obj, name, name, m);
-    }
-
     public static String getSearchName(String typeName) {
         int lastPeriod = typeName.lastIndexOf(".");
         return typeName.substring(lastPeriod + 1, typeName.length() - 1);
@@ -159,5 +146,27 @@ public class EphorteFacade {
 
     public static String getAttributeName(String typeName) {
         return "CustomAttribute2";
+    }
+
+    public static boolean isEphorteType(String typeName) {
+        return typeName.startsWith("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.");
+    }
+
+    public static String getObjectType(String property) {
+        if (property == null) return "";
+
+        String name = getLastPart(property);
+        return "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects." + name;
+    }
+
+    private static String getLastPart(String property) {
+        String[] parts = property.split("/");
+        return parts[parts.length - 1];
+    }
+
+    public static String getFieldName(String property) {
+        if (property == null) return "";
+
+        return getLastPart(property);
     }
 }

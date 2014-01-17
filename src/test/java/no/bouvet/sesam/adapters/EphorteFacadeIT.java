@@ -12,7 +12,6 @@ import java.io.Reader;
 import java.io.InputStreamReader;
 import no.priv.garshol.duke.utils.NTriplesParser;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
-import no.priv.garshol.duke.utils.ObjectUtils;
 import java.util.List;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ncore.client.core.ObjectModel;
@@ -31,7 +30,7 @@ public class EphorteFacadeIT {
     @Test
     public void testSaveSimpleCase() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
-        String fragmentId = RDFMapper.getFirstSubject(source);
+        String fragmentId = Utils.getFirstSubject(source);
         Fragment fragment = new Fragment(fragmentId, source);
         facade.save(fragment);
     }
@@ -39,7 +38,7 @@ public class EphorteFacadeIT {
     @Test
     public void testSaveSimpleJournalPost() throws Exception {
         String source = Utils.getResourceAsString("simplejournalpost.nt");
-        String resourceId = RDFMapper.getFirstSubject(source);
+        String resourceId = Utils.getFirstSubject(source);
         Fragment fragment = new Fragment(resourceId, source);
         facade.save(fragment);
     }

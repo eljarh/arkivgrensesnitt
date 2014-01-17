@@ -33,7 +33,7 @@ public class Fragment implements StatementHandler {
     public void statement(String subject, String property, String object,
                           boolean literal) {
         if (rdfType.equals(property)) {
-            type = RDFMapper.getObjectType(object);
+            type = object;
         }
 
         statements.add(new Statement(subject, property, object, literal));

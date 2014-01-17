@@ -16,8 +16,8 @@ public class FragmentTest {
     @Test
     public void testThatFragmentCanParseSimpleCase() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
-        String resourceId = RDFMapper.getFirstSubject(source);
-        String type = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT";
+        String resourceId = Utils.getFirstSubject(source);
+        String type = "http://data.mattilsynet.org/ontology/ePhorte/CaseT";
 
         Fragment fragment = new Fragment(resourceId, source);
 
@@ -30,8 +30,8 @@ public class FragmentTest {
     @Test
     public void testThatFragmentCanParseSimpleJournalPost() throws Exception {
         String source = Utils.getResourceAsString("simplejournalpost.nt");
-        String resourceId = RDFMapper.getFirstSubject(source);
-        String type = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT";
+        String resourceId = Utils.getFirstSubject(source);
+        String type = "http://data.mattilsynet.no/sesam/ephorte/RegistryEntryT";
 
         Fragment fragment = new Fragment(resourceId, source);
 
