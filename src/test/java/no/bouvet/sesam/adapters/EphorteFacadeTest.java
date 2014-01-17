@@ -85,6 +85,46 @@ public class EphorteFacadeTest {
     }
 
     @Test
+    public void testThatGetHandlesObjectsWithNullCreatedDate() throws Exception {
+        ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
+
+        CaseT first = new CaseT();
+        result.add(first);
+
+        CaseT second = new CaseT();
+        result.add(second);
+
+        CaseT third = new CaseT();
+        result.add(third);
+
+        when(mockFacade.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(mockFacade.get(fqCaseT, "id")).thenCallRealMethod();
+
+        CaseT actual = (CaseT) mockFacade.get(fqCaseT, "id");
+        assertSame(third, actual);
+    }
+
+    @Test
+    public void testThatGetHandlesObjectsWithoutCreatedDate() throws Exception {
+        ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
+
+        DataObjectT first = new DataObjectT();
+        result.add(first);
+
+        DataObjectT second = new DataObjectT();
+        result.add(second);
+
+        DataObjectT third = new DataObjectT();
+        result.add(third);
+
+        when(mockFacade.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(mockFacade.get(fqCaseT, "id")).thenCallRealMethod();
+
+        DataObjectT actual = (DataObjectT) mockFacade.get(fqCaseT, "id");
+        assertSame(third, actual);
+    }
+
+    @Test
     public void testGetObjectType() {
         String property = "http://data.mattilsynet.org/ontology/CaseT";
         String result = EphorteFacade.getObjectType(property);

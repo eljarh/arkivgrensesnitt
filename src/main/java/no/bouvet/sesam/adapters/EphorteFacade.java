@@ -130,7 +130,8 @@ public class EphorteFacade {
         for (DataObjectT candidate : results) {
             XMLGregorianCalendar candidateCreated =
                 (XMLGregorianCalendar) ObjectUtils.invokeGetter(candidate, "getCreatedDate");
-            if (newest == null || candidateCreated.compare(newestCreated) > 0) {
+
+            if (newestCreated == null || candidateCreated.compare(newestCreated) > 0) {
                 newest = candidate;
                 newestCreated = candidateCreated;
             }
