@@ -18,7 +18,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class EphorteFacade {
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
     private static String externalIdName;
-    private static String rdfKeywordsName;
     private static EphorteFacade singleton = new EphorteFacade();
 
     public EphorteFacade () { }
@@ -29,7 +28,6 @@ public class EphorteFacade {
         try {
             PropertiesConfiguration config = new PropertiesConfiguration("ephorte.properties");
             externalIdName = (String) config.getProperty("ephorte.externalId.name");
-            rdfKeywordsName = (String) config.getProperty("ephorte.rdf-keywords.name");
         } catch (Exception e) {
             log.error("Couldn't load ephorte.properties", e);
         }
@@ -58,10 +56,6 @@ public class EphorteFacade {
 
         DataObjectT[] objs = populate(obj, fragment.getStatements());
 
-        /// There's a limit of 255 chars for the custom attributes.
-        /// In other words, this breaks.
-        // setRdfKeywords(obj, fragment.getSource());
-
         if (objectExists) {
             NCore.Objects.update(objs);
             log.info("Updated resource: {}", fragment.getResourceId());
@@ -79,10 +73,6 @@ public class EphorteFacade {
 
     public static void setExternalId(DataObjectT obj, String externalId) {
         ObjectUtils.setFieldValue(obj, externalIdName, externalId);
-    }
-
-    public static void setRdfKeywords(DataObjectT obj, String source) {
-        ObjectUtils.setFieldValue(obj, rdfKeywordsName, source);
     }
 
     public DataObjectT[] populate(DataObjectT obj, List<Statement> statements) throws Exception {
