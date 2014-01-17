@@ -8,13 +8,16 @@ import java.util.ArrayList;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
+import org.junit.Before;
 
 public class EphorteFacadeTest {
-    EphorteFacade facade = EphorteFacade.getInstance();
+    EphorteFacade realFacade = EphorteFacade.getInstance();
+    EphorteFacade mockFacade;
 
     static String caseProperty = "http://data.mattilsynet.org/ontology/CaseT";
     static String fqCaseT = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT";
     static DatatypeFactory dt;
+
 
     static {
         try {
@@ -22,9 +25,14 @@ public class EphorteFacadeTest {
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
+    @Before
+    public void setUp() {
+        mockFacade = mock(EphorteFacade.class);
+    }
+
     @Test
     public void testThatFacadeCanCreateCaseT() throws Exception {
-        CaseT myCase = (CaseT) facade.create(fqCaseT, "whatever");
+        CaseT myCase = (CaseT) realFacade.create(fqCaseT, "whatever");
         assertNotNull(myCase);
     }
 
@@ -42,20 +50,18 @@ public class EphorteFacadeTest {
 
     @Test
     public void testThatGetReturnsNullOnNotFound() throws Exception {
-        EphorteFacade mock = mock(EphorteFacade.class);
+        ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
 
-        when(mock.actualGet("Case", "CustomAttribute2=id")).thenReturn(new ArrayList<DataObjectT>());
-        when(mock.get(fqCaseT, "id")).thenCallRealMethod();
+        when(mockFacade.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(mockFacade.get(fqCaseT, "id")).thenCallRealMethod();
 
-        CaseT actual = (CaseT) mock.get(fqCaseT, "id");
+        CaseT actual = (CaseT) mockFacade.get(fqCaseT, "id");
 
         assertNull(actual);
     }
 
     @Test
-    public void testThatGetReturnsTheHighestIdOnManyResults() throws Exception {
-        EphorteFacade mock = mock(EphorteFacade.class);
-
+    public void testThatGetReturnsTheNewestCreatedOnManyResults() throws Exception {
         ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
 
         CaseT first = new CaseT();
@@ -70,10 +76,10 @@ public class EphorteFacadeTest {
         third.setCreatedDate(dt.newXMLGregorianCalendar("1943-03-01T00:00:00Z"));
         result.add(third);
 
-        when(mock.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
-        when(mock.get(fqCaseT, "id")).thenCallRealMethod();
+        when(mockFacade.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(mockFacade.get(fqCaseT, "id")).thenCallRealMethod();
 
-        CaseT actual = (CaseT) mock.get(fqCaseT, "id");
+        CaseT actual = (CaseT) mockFacade.get(fqCaseT, "id");
 
         assertSame(second, actual);
     }
