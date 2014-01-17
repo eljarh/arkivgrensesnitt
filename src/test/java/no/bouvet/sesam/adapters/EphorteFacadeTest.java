@@ -9,6 +9,10 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import org.junit.Before;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
+import org.mockito.Mockito;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 
 public class EphorteFacadeTest {
     EphorteFacade realFacade = EphorteFacade.getInstance();
@@ -29,6 +33,9 @@ public class EphorteFacadeTest {
     public void setUp() {
         mockFacade = mock(EphorteFacade.class);
     }
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Test
     public void testThatFacadeCanCreateCaseT() throws Exception {
@@ -122,6 +129,34 @@ public class EphorteFacadeTest {
 
         DataObjectT actual = (DataObjectT) mockFacade.get(fqCaseT, "id");
         assertSame(third, actual);
+    }
+
+    @Test
+    public void testPopulateWithReferencedEphorteType() throws Exception {
+        Statement s = new Statement("subject", "http://data.mattilsynet.no/sesam/ephorte/case", "mocked", false);
+        RegistryEntryT entry = new RegistryEntryT();
+        CaseT expected = new CaseT();
+
+        when(mockFacade.get(anyString(), eq("mocked"))).thenReturn(expected);
+        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
+
+        mockFacade.populate(entry, s);
+
+        assertSame(expected, entry.getCase());
+    }
+
+    @Test
+    public void testPopulateWithNonExistingReferencedEphorteTypeThrows() throws Exception {
+        Statement s = new Statement("subject", "http://data.mattilsynet.no/sesam/ephorte/case", "mocked", false);
+        RegistryEntryT entry = new RegistryEntryT();
+        CaseT expected = new CaseT();
+
+        when(mockFacade.get(anyString(), eq("mocked"))).thenReturn(null);
+        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
+
+        exception.expect(ReferenceNotFound.class);
+        exception.expectMessage("Fragment refers to non-existing object: mocked");
+        mockFacade.populate (entry, s);
     }
 
     @Test
