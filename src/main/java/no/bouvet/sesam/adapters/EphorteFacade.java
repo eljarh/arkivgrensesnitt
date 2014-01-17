@@ -123,16 +123,24 @@ public class EphorteFacade {
     public DataObjectT get(String typeName, String externalId) throws Exception {
         String searchName = getSearchName(typeName);
         String query = getSearchString(typeName, externalId);
-        List<DataObjectT> results = NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
+        List<DataObjectT> results = actualGet(searchName, query);
 
-        int found = results.size();
+        DataObjectT newest = null;
+        XMLGregorianCalendar newestCreated = null;
+        for (DataObjectT candidate : results) {
+            XMLGregorianCalendar candidateCreated =
+                (XMLGregorianCalendar) ObjectUtils.invokeGetter(candidate, "getCreatedDate");
+            if (newest == null || candidateCreated.compare(newestCreated) > 0) {
+                newest = candidate;
+                newestCreated = candidateCreated;
+            }
+        }
 
-        if (found == 0)
-            return null;
-        if (found == 1)
-            return results.get(0);
+        return newest;
+    }
 
-        throw new RuntimeException("Found multiple " + typeName + "s with external id = " + externalId);
+    protected List<DataObjectT> actualGet(String searchName, String query) throws Exception {
+        return NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
     }
 
     public static String getSearchName(String typeName) {

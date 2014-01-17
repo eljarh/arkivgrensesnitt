@@ -3,6 +3,7 @@ package no.bouvet.sesam.adapters;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
+import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -14,7 +15,7 @@ public class EphorteFacadeTest {
     static String caseProperty = "http://data.mattilsynet.org/ontology/CaseT";
     static String fqCaseT = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT";
     static DatatypeFactory dt;
-    
+
     static {
         try {
             dt = DatatypeFactory.newInstance();
@@ -37,6 +38,44 @@ public class EphorteFacadeTest {
     public void testThatSearchTypeIsCorrect() {
         String s = EphorteFacade.getSearchName(fqCaseT);
         assertEquals("Case", s);
+    }
+
+    @Test
+    public void testThatGetReturnsNullOnNotFound() throws Exception {
+        EphorteFacade mock = mock(EphorteFacade.class);
+
+        when(mock.actualGet("Case", "CustomAttribute2=id")).thenReturn(new ArrayList<DataObjectT>());
+        when(mock.get(fqCaseT, "id")).thenCallRealMethod();
+
+        CaseT actual = (CaseT) mock.get(fqCaseT, "id");
+
+        assertNull(actual);
+    }
+
+    @Test
+    public void testThatGetReturnsTheHighestIdOnManyResults() throws Exception {
+        EphorteFacade mock = mock(EphorteFacade.class);
+
+        ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
+
+        CaseT first = new CaseT();
+        first.setCreatedDate(dt.newXMLGregorianCalendar("1903-03-01T00:00:00Z"));
+        result.add(first);
+
+        CaseT second = new CaseT();
+        second.setCreatedDate(dt.newXMLGregorianCalendar("1993-03-01T00:00:00Z"));
+        result.add(second);
+
+        CaseT third = new CaseT();
+        third.setCreatedDate(dt.newXMLGregorianCalendar("1943-03-01T00:00:00Z"));
+        result.add(third);
+
+        when(mock.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(mock.get(fqCaseT, "id")).thenCallRealMethod();
+
+        CaseT actual = (CaseT) mock.get(fqCaseT, "id");
+
+        assertSame(second, actual);
     }
 
     @Test
