@@ -1,0 +1,5 @@
+<http://sesam.io/test/document-object/1> <http://data.mattilsynet.no/sesam/ephorte/version-number> 1 .
+<http://sesam.io/test/document-object/1> <http://data.mattilsynet.no/sesam/ephorte/variant-format-id> "P" .
+<http://sesam.io/test/document-object/1> <http://data.mattilsynet.no/sesam/ephorte/file-path> <http://www.education.gov.yk.ca/pdf/pdf-test.pdf> .
+<http://sesam.io/test/document-object/1> <http://data.mattilsynet.no/sesam/ephorte/file-format-id> "PDF" .
+<http://sesam.io/test/document-object/1> <http://data.mattilsynet.no/sesam/ephorte/document-description> <http://sesam.io/test/document-description/1> . 
