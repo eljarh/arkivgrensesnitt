@@ -11,7 +11,14 @@ public class ObjectUtils {
 
     public static void setFieldValue(Object obj, String name, String value) {
         log.debug("Setting value of {} to {}", name, value);
-        no.priv.garshol.duke.utils.ObjectUtils.setBeanProperty(obj, name, value, null);
+        String type = getFieldType(obj, name);
+
+        // Workaround for bug in no.priv.garshol.duke.utils.ObjectUtils.setBeanProperty
+        if (type.equals("java.lang.Integer")) {
+            setFieldValue(obj, name, Integer.parseInt(value));
+        } else {
+            no.priv.garshol.duke.utils.ObjectUtils.setBeanProperty(obj, name, value, null);
+        }
     }
 
     public static void setFieldValue(Object obj, String name, Object value) {
