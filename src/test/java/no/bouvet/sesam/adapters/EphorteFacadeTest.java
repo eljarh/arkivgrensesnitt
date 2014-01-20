@@ -15,6 +15,8 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import java.util.List;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessGroupT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessCodeT;
 
 public class EphorteFacadeTest {
     EphorteFacade realFacade = EphorteFacade.getInstance();
@@ -181,9 +183,10 @@ public class EphorteFacadeTest {
         when(mockFacade.get(anyString(), eq("id"))).thenReturn(expected);
         when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
 
-        mockFacade.populate(entry, s);
+        DataObjectT result = mockFacade.populate(entry, s);
 
         assertSame(expected, entry.getCase());
+        assertSame(expected, result);
     }
 
     @Test
@@ -213,6 +216,60 @@ public class EphorteFacadeTest {
 
         assertEquals(123, (int) obj.getId());
         assertEquals("whatever", obj.getTitle());
+    }
+
+    @Test
+    public void testPopulateWithManyReferencesReturnsAllInvolvedDataObjects() throws Exception {
+        Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "code", false);
+        Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-group", "group", false);
+        List<Statement> statements = new ArrayList<Statement>();
+        statements.add(s1);
+        statements.add(s2);
+
+        AccessCodeT code = new AccessCodeT();
+        AccessGroupT group = new AccessGroupT();
+        CaseT obj = new CaseT();
+        when(mockFacade.get(anyString(), eq("code"))).thenReturn(code);
+        when(mockFacade.get(anyString(), eq("group"))).thenReturn(group);
+        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
+        when(mockFacade.populate(any(DataObjectT.class), anyList())).thenCallRealMethod();
+
+        DataObjectT[] objs = mockFacade.populate(obj, statements);
+
+        assertEquals(3, objs.length);
+    }
+
+    @Test
+    public void testThatSaveCreatesIfSubjectNotExists() throws Exception {
+        String source = Utils.getResourceAsString("simplecase.nt");
+        String fragmentId = Utils.getFirstSubject(source);
+        Fragment fragment = new Fragment(fragmentId, source);
+
+        EphorteFacade facade = spy(realFacade);
+        doReturn(null).when(facade).get(anyString(), eq(fragmentId));
+        doNothing().when(facade).insert(any(DataObjectT[].class));
+
+        facade.save(fragment);
+
+        verify(facade).insert(any(DataObjectT[].class));
+    }
+
+
+    @Test
+    public void testThatSaveUpdatesIfSubjectExists() throws Exception {
+        String source = Utils.getResourceAsString("simplecase.nt");
+        String fragmentId = Utils.getFirstSubject(source);
+        Fragment fragment = new Fragment(fragmentId, source);
+
+        CaseT existing = new CaseT();
+
+        EphorteFacade facade = spy(realFacade);
+        doReturn(existing).when(facade).get(anyString(), eq(fragmentId));
+        doNothing().when(facade).update(any(DataObjectT[].class));
+
+        facade.save(fragment);
+
+        verify(facade).update(any(DataObjectT[].class));
     }
 
     @Test

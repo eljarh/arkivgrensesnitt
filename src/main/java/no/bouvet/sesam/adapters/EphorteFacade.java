@@ -57,12 +57,20 @@ public class EphorteFacade {
         DataObjectT[] objs = populate(obj, fragment.getStatements());
 
         if (objectExists) {
-            NCore.Objects.update(objs);
+            update(objs);
             log.info("Updated resource: {}", fragment.getResourceId());
         } else {
-            NCore.Objects.insert(objs);
+            insert(objs);
             log.info("Created resource: {}", fragment.getResourceId());
         }
+    }
+
+    protected void insert(DataObjectT[] objs) throws Exception {
+        NCore.Objects.insert(objs);
+    }
+
+    protected void update(DataObjectT[] objs) throws Exception {
+        NCore.Objects.update(objs);
     }
 
     public DataObjectT create(String typeName, String externalId) throws Exception {
