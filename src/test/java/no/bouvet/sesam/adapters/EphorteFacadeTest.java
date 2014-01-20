@@ -13,6 +13,8 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 import org.mockito.Mockito;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import java.util.List;
 
 public class EphorteFacadeTest {
     EphorteFacade realFacade = EphorteFacade.getInstance();
@@ -132,12 +134,51 @@ public class EphorteFacadeTest {
     }
 
     @Test
+    public void testPopulateNonExistingFieldIsNoop() throws Exception {
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/not-existing-field", "_", true);
+        CaseT actual = new CaseT();
+        CaseT expected = new CaseT();
+
+        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
+
+        mockFacade.populate(actual, s);
+
+        assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
+    }
+
+    @Test
+    public void testPopulateWithLiteral() throws Exception {
+        String expectedValue = "whatever";
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/custom-attribute-1", expectedValue, true);
+        CaseT obj = new CaseT();
+
+        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
+
+        mockFacade.populate(obj, s);
+
+        assertEquals(expectedValue, obj.getCustomAttribute1());
+    }
+
+    @Test
+    public void testPopulateWithReferencedNonEphorteType() throws Exception {
+        String expectedValue = "whatever";
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/custom-attribute-1", expectedValue, false);
+        CaseT obj = new CaseT();
+
+        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
+
+        mockFacade.populate(obj, s);
+
+        assertEquals(expectedValue, obj.getCustomAttribute1());
+    }
+
+    @Test
     public void testPopulateWithReferencedEphorteType() throws Exception {
-        Statement s = new Statement("subject", "http://data.mattilsynet.no/sesam/ephorte/case", "mocked", false);
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "id", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
 
-        when(mockFacade.get(anyString(), eq("mocked"))).thenReturn(expected);
+        when(mockFacade.get(anyString(), eq("id"))).thenReturn(expected);
         when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
 
         mockFacade.populate(entry, s);
@@ -147,16 +188,31 @@ public class EphorteFacadeTest {
 
     @Test
     public void testPopulateWithNonExistingReferencedEphorteTypeThrows() throws Exception {
-        Statement s = new Statement("subject", "http://data.mattilsynet.no/sesam/ephorte/case", "mocked", false);
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "id", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
 
-        when(mockFacade.get(anyString(), eq("mocked"))).thenReturn(null);
+        when(mockFacade.get(anyString(), eq("id"))).thenReturn(null);
         when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
 
         exception.expect(ReferenceNotFound.class);
-        exception.expectMessage("Fragment refers to non-existing object: mocked");
+        exception.expectMessage("Fragment refers to non-existing object: id");
         mockFacade.populate (entry, s);
+    }
+
+    @Test
+    public void testPopulateWithManyLiterals() throws Exception {
+        Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/id", "123", false);
+        Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/title", "whatever", false);
+        List<Statement> statements = new ArrayList<Statement>();
+        statements.add(s1);
+        statements.add(s2);
+
+        CaseT obj = new CaseT();
+        realFacade.populate(obj, statements);
+
+        assertEquals(123, (int) obj.getId());
+        assertEquals("whatever", obj.getTitle());
     }
 
     @Test
