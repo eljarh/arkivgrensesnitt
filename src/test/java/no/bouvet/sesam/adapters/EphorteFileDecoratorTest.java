@@ -20,11 +20,11 @@ public class EphorteFileDecoratorTest {
     }
 
     @Test
-    public void testThatGetReadsFile() throws Exception {
+    public void testThatGetReadsBytes() throws Exception {
         EphorteFileDecorator decorator = new EphorteFileDecorator();
         HttpResponse response = get("http://www.jtricks.com/download-unknown");
-        File file = decorator.getFile(response);
-        String content = FileUtils.readFileToString(file, "UTF-8");
+        byte[] bytes = decorator.getContent(response);
+        String content = new String(bytes);
         assertEquals("You are reading text file that was supposed to be downloaded\r\n" +
                      "to your hard disk. If your browser offered to save you the file,\r\n" +
                      "then it handled the Content-Disposition header correctly.", content);

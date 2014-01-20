@@ -29,7 +29,7 @@ public class EphorteFileDecorator {
         log.info("Processing file: {}", url);
 
         String fileName;
-        File file;
+        byte[] data;
 
         CloseableHttpClient client = HttpClients.createDefault();
         try {
@@ -37,7 +37,7 @@ public class EphorteFileDecorator {
             HttpResponse response = client.execute(get);
 
             fileName = getFileName(response);
-            file = getFile(response);
+            data = getContent(response);
         } finally {
             client.close();
         }
@@ -59,21 +59,15 @@ public class EphorteFileDecorator {
         return null;
     }
 
-    public File getFile(HttpResponse response) throws Exception {
-        File result = File.createTempFile("temp-file-name", ".tmp");
+    public byte[] getContent(HttpResponse response) throws Exception {
+        HttpEntity entity = response.getEntity();
+        InputStream stream = entity.getContent();
 
-        FileOutputStream out = new FileOutputStream(result);
         try {
-            HttpEntity entity = response.getEntity();
-            InputStream stream = entity.getContent();
-
-            IOUtils.copy(stream, out);
-            stream.close();
+            return IOUtils.toByteArray(stream);
         } finally {
-            out.close();
+            stream.close();
         }
-
-        return result;
     }
 
         /*
@@ -105,5 +99,4 @@ public class EphorteFileDecorator {
         log.info("DocumentServiceUploadFileImpl.execute before return");
         return this.documentServiceUploadFileResult;
         */
-
 }
