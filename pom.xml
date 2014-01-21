@@ -120,7 +120,7 @@
         <dependency>
             <groupId>no.gecko</groupId>
             <artifactId>gecko.ncore.client</artifactId>
-            <version>0.1.0</version>
+            <version>0.1.0-PATCHED-1</version>
         </dependency>
         <dependency>
             <groupId>no.gecko</groupId>

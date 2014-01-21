@@ -45,7 +45,15 @@ public class EphorteFacadeIT {
 
     @Test
     public void testThatWeCanRetrieveCaseByExternalId() throws Exception {
-        List<DataObjectT> result = NCore.Objects.filteredQuery("Case", "CustomAttribute2=http://data.mattilsynet.org/cases/776663918", new String[] {}, null, null);
-        assertEquals(1, result.size());
+        DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT", "http://data.mattilsynet.org/cases/776663918");
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testThatWeCanUploadFile() throws Exception {
+        EphorteFileDecorator decorator = new EphorteFileDecorator(facade);
+        String result = decorator.process("http://www.jtricks.com/download-unknown");
+        assertTrue(result.startsWith("UPLOAD_{ObjectModelService}_"));
+        assertTrue(result.endsWith("\\content.txt"));
     }
 }

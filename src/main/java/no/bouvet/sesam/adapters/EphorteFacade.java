@@ -180,7 +180,7 @@ public class EphorteFacade {
     }
 
     public String uploadFile(String fileName, byte[] data) throws Exception {
-        log.info("Uploading file {}, fileName");
+        log.info("Uploading file {}", fileName);
         return NCore.Documents.uploadFile(fileName, storageId, data);
     }
 }
