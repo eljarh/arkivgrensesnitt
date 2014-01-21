@@ -42,7 +42,7 @@ public class EphorteFileDecorator {
             HttpGet get = new HttpGet(url);
             HttpResponse response = client.execute(get);
 
-            fileName = getFileName(response);
+            fileName = getFileName(url, response);
             data = getContent(response);
         } finally {
             client.close();
@@ -51,7 +51,7 @@ public class EphorteFileDecorator {
         return facade.uploadFile(fileName, data);
     }
 
-    public String getFileName(HttpResponse response) throws Exception {
+    public String getFileName(String url, HttpResponse response) throws Exception {
         HeaderElementIterator it = new BasicHeaderElementIterator(response.headerIterator("Content-Disposition"));
         while (it.hasNext()) {
             HeaderElement e = (HeaderElement) it.next();
@@ -62,7 +62,8 @@ public class EphorteFileDecorator {
             }
         }
 
-        return null;
+        String[] parts = url.split("/");
+        return parts[parts.length - 1];
     }
 
     public byte[] getContent(HttpResponse response) throws Exception {

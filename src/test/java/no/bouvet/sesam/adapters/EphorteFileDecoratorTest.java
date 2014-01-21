@@ -33,10 +33,20 @@ public class EphorteFileDecoratorTest {
 
     @Test
     public void testThatGetReadsFilenameFromContentDisposition() throws Exception {
+        String url = "http://www.jtricks.com/download-unknown";
         EphorteFileDecorator decorator = new EphorteFileDecorator();
-        HttpResponse response = get("http://www.jtricks.com/download-unknown");
-        String filename = decorator.getFileName(response);
+        HttpResponse response = get(url);
+        String filename = decorator.getFileName(url, response);
         assertEquals("content.txt", filename);
+    }
+
+    @Test
+    public void testThatGetFallbacksToFilenameFromUrl() throws Exception {
+        String url = "http://www.irs.gov/pub/irs-pdf/fw4.pdf";
+        EphorteFileDecorator decorator = new EphorteFileDecorator();
+        HttpResponse response = get(url);
+        String filename = decorator.getFileName(url, response);
+        assertEquals("fw4.pdf", filename);
     }
 
     @Test
