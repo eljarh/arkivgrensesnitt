@@ -9,6 +9,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
+import static org.mockito.Mockito.*;
 
 public class EphorteFileDecoratorTest {
     private HttpResponse Response;
@@ -36,5 +37,15 @@ public class EphorteFileDecoratorTest {
         HttpResponse response = get("http://www.jtricks.com/download-unknown");
         String filename = decorator.getFileName(response);
         assertEquals("content.txt", filename);
+    }
+
+    @Test
+    public void testThatProcessFetchesUrlAndUploadsWithFacade() throws Exception {
+        EphorteFacade facade = mock(EphorteFacade.class);
+        EphorteFileDecorator decorator = new EphorteFileDecorator(facade);
+
+        decorator.process("http://www.jtricks.com/download-unknown");
+
+        verify(facade).uploadFile(eq("content.txt"), any(byte[].class));
     }
 }

@@ -18,6 +18,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class EphorteFacade {
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
     private static String externalIdName;
+    private static String storageId;
     private static EphorteFacade singleton = new EphorteFacade();
 
     public EphorteFacade () { }
@@ -28,6 +29,7 @@ public class EphorteFacade {
         try {
             PropertiesConfiguration config = new PropertiesConfiguration("ephorte.properties");
             externalIdName = (String) config.getProperty("ephorte.externalId.name");
+            storageId = (String) config.getProperty("ephorte.storageId");
         } catch (Exception e) {
             log.error("Couldn't load ephorte.properties", e);
         }
@@ -175,5 +177,10 @@ public class EphorteFacade {
         if (property == null) return "";
 
         return getLastPart(property);
+    }
+
+    public String uploadFile(String fileName, byte[] data) throws Exception {
+        log.info("Uploading file {}, fileName");
+        return NCore.Documents.uploadFile(fileName, storageId, data);
     }
 }

@@ -21,8 +21,14 @@ import org.apache.http.HttpResponse;
 
 public class EphorteFileDecorator {
     static Logger log = LoggerFactory.getLogger(Fragment.class.getName());
+    private EphorteFacade facade;
 
     public EphorteFileDecorator() {
+        this.facade = EphorteFacade.getInstance();
+    }
+
+    public EphorteFileDecorator(EphorteFacade facade) {
+        this.facade = facade;
     }
 
     public String process(String url) throws Exception {
@@ -42,7 +48,7 @@ public class EphorteFileDecorator {
             client.close();
         }
 
-        return null; // uploadFile(fileName, file);
+        return facade.uploadFile(fileName, data);
     }
 
     public String getFileName(HttpResponse response) throws Exception {
@@ -69,34 +75,4 @@ public class EphorteFileDecorator {
             stream.close();
         }
     }
-
-        /*
-        next uploadFileNameResult;
-
-        try {
-            log.debug("Opplasting: Input filnavn = " + input.getFileName());
-            log.debug("Opplasting: this.storageId = " + this.storageId);
-            log.debug("Opplasting: filen eksisterer = " + input.getFile().exists());
-            //log.debug("Document Service - Using username " + ClientConfig.getUsername() + " password " + ClientConfig.getPassword() + " database " + ClientConfig.getDatabase());
-
-            uploadFileNameResult = NCore.Documents.uploadFileResult(input.getFileName(),
-                                                                    this.storageId, FileUtils.readFileToByteArray(input.getFile()));
-            String fileName = uploadFileNameResult.getFileName();
-            String identifier = uploadFileNameResult.getIdentifier();
-            this.documentServiceUploadFileResult.setFileName(fileName);
-            this.documentServiceUploadFileResult.setFileIdentifier(identifier);
-            log.debug("Opplastet filnavn2: " + fileName + " Identifier: " + identifier);
-        }catch (ClientTransportException cte){
-            throw new EphorteNetworkException(cte);
-        } catch (UnknownHostException uhe){
-            throw new EphorteNetworkException(uhe);
-        } catch (Exception e) {
-            log.error(e);
-            log.error("Upload av file " + input.getFileName() + "failed " + e);
-            this.documentServiceUploadFileResult.setResultOK(false);
-        }
-
-        log.info("DocumentServiceUploadFileImpl.execute before return");
-        return this.documentServiceUploadFileResult;
-        */
 }
