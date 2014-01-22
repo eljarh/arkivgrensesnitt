@@ -17,15 +17,15 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import java.util.List;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessGroupT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessCodeT;
+import org.mockito.Mock;
 
 public class EphorteFacadeTest {
-    EphorteFacade realFacade = EphorteFacade.getInstance();
-    EphorteFacade mockFacade;
+    EphorteFacade facade;
+    @Mock NCoreClient client;
 
     static String caseProperty = "http://data.mattilsynet.org/ontology/CaseT";
     static String fqCaseT = "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT";
     static DatatypeFactory dt;
-
 
     static {
         try {
@@ -35,7 +35,8 @@ public class EphorteFacadeTest {
 
     @Before
     public void setUp() {
-        mockFacade = mock(EphorteFacade.class);
+        client =  mock(NCoreClient.class);
+        facade = spy(new EphorteFacade (client));
     }
 
     @Rule
@@ -43,7 +44,7 @@ public class EphorteFacadeTest {
 
     @Test
     public void testThatFacadeCanCreateCaseT() throws Exception {
-        CaseT myCase = (CaseT) realFacade.create(fqCaseT, "whatever");
+        CaseT myCase = (CaseT) facade.create(fqCaseT, "whatever");
         assertNotNull(myCase);
     }
 
@@ -63,10 +64,9 @@ public class EphorteFacadeTest {
     public void testThatGetReturnsNullOnNotFound() throws Exception {
         ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
 
-        when(mockFacade.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
-        when(mockFacade.get(fqCaseT, "id")).thenCallRealMethod();
+        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
 
-        CaseT actual = (CaseT) mockFacade.get(fqCaseT, "id");
+        CaseT actual = (CaseT) facade.get(fqCaseT, "id");
 
         assertNull(actual);
     }
@@ -87,10 +87,9 @@ public class EphorteFacadeTest {
         third.setCreatedDate(dt.newXMLGregorianCalendar("1943-03-01T00:00:00Z"));
         result.add(third);
 
-        when(mockFacade.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
-        when(mockFacade.get(fqCaseT, "id")).thenCallRealMethod();
+        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
 
-        CaseT actual = (CaseT) mockFacade.get(fqCaseT, "id");
+        CaseT actual = (CaseT) facade.get(fqCaseT, "id");
 
         assertSame(second, actual);
     }
@@ -108,10 +107,9 @@ public class EphorteFacadeTest {
         CaseT third = new CaseT();
         result.add(third);
 
-        when(mockFacade.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
-        when(mockFacade.get(fqCaseT, "id")).thenCallRealMethod();
+        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
 
-        CaseT actual = (CaseT) mockFacade.get(fqCaseT, "id");
+        CaseT actual = (CaseT) facade.get(fqCaseT, "id");
         assertSame(third, actual);
     }
 
@@ -128,10 +126,9 @@ public class EphorteFacadeTest {
         DataObjectT third = new DataObjectT();
         result.add(third);
 
-        when(mockFacade.actualGet("Case", "CustomAttribute2=id")).thenReturn(result);
-        when(mockFacade.get(fqCaseT, "id")).thenCallRealMethod();
+        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
 
-        DataObjectT actual = (DataObjectT) mockFacade.get(fqCaseT, "id");
+        DataObjectT actual = (DataObjectT) facade.get(fqCaseT, "id");
         assertSame(third, actual);
     }
 
@@ -141,9 +138,7 @@ public class EphorteFacadeTest {
         CaseT actual = new CaseT();
         CaseT expected = new CaseT();
 
-        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
-
-        mockFacade.populate(actual, s);
+        facade.populate(actual, s);
 
         assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
     }
@@ -154,9 +149,7 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/custom-attribute-1", expectedValue, true);
         CaseT obj = new CaseT();
 
-        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
-
-        mockFacade.populate(obj, s);
+        facade.populate(obj, s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
     }
@@ -167,9 +160,7 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/custom-attribute-1", expectedValue, false);
         CaseT obj = new CaseT();
 
-        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
-
-        mockFacade.populate(obj, s);
+        facade.populate(obj, s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
     }
@@ -180,10 +171,9 @@ public class EphorteFacadeTest {
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
 
-        when(mockFacade.get(anyString(), eq("id"))).thenReturn(expected);
-        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
+        doReturn(expected).when(facade).get(anyString(), eq("id"));
 
-        DataObjectT result = mockFacade.populate(entry, s);
+        DataObjectT result = facade.populate(entry, s);
 
         assertSame(expected, entry.getCase());
         assertSame(expected, result);
@@ -195,12 +185,11 @@ public class EphorteFacadeTest {
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
 
-        when(mockFacade.get(anyString(), eq("id"))).thenReturn(null);
-        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
+        doReturn(null).when(facade).get(anyString(), eq("id"));
 
         exception.expect(ReferenceNotFound.class);
         exception.expectMessage("Fragment refers to non-existing object: id");
-        mockFacade.populate (entry, s);
+        facade.populate (entry, s);
     }
 
     @Test
@@ -212,7 +201,7 @@ public class EphorteFacadeTest {
         statements.add(s2);
 
         CaseT obj = new CaseT();
-        realFacade.populate(obj, statements);
+        facade.populate(obj, statements);
 
         assertEquals(123, (int) obj.getId());
         assertEquals("whatever", obj.getTitle());
@@ -229,12 +218,10 @@ public class EphorteFacadeTest {
         AccessCodeT code = new AccessCodeT();
         AccessGroupT group = new AccessGroupT();
         CaseT obj = new CaseT();
-        when(mockFacade.get(anyString(), eq("code"))).thenReturn(code);
-        when(mockFacade.get(anyString(), eq("group"))).thenReturn(group);
-        when(mockFacade.populate(any(DataObjectT.class), any(Statement.class))).thenCallRealMethod();
-        when(mockFacade.populate(any(DataObjectT.class), anyList())).thenCallRealMethod();
+        doReturn(code).when(facade).get(anyString(), eq("code"));
+        doReturn(group).when(facade).get(anyString(), eq("group"));
 
-        DataObjectT[] objs = mockFacade.populate(obj, statements);
+        DataObjectT[] objs = facade.populate(obj, statements);
 
         assertEquals(3, objs.length);
     }
@@ -245,13 +232,11 @@ public class EphorteFacadeTest {
         String fragmentId = Utils.getFirstSubject(source);
         Fragment fragment = new Fragment(fragmentId, source);
 
-        EphorteFacade facade = spy(realFacade);
         doReturn(null).when(facade).get(anyString(), eq(fragmentId));
-        doNothing().when(facade).insert(any(DataObjectT[].class));
 
         facade.save(fragment);
 
-        verify(facade).insert(any(DataObjectT[].class));
+        verify(client).insert(any(DataObjectT[].class));
     }
 
 
@@ -263,13 +248,11 @@ public class EphorteFacadeTest {
 
         CaseT existing = new CaseT();
 
-        EphorteFacade facade = spy(realFacade);
         doReturn(existing).when(facade).get(anyString(), eq(fragmentId));
-        doNothing().when(facade).update(any(DataObjectT[].class));
 
         facade.save(fragment);
 
-        verify(facade).update(any(DataObjectT[].class));
+        verify(client).update(any(DataObjectT[].class));
     }
 
     @Test

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
-import no.gecko.ncore.client.core.NCore;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -17,11 +16,19 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 public class EphorteFacade {
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
-    private static String externalIdName;
-    private static String storageId;
     private static EphorteFacade singleton = new EphorteFacade();
 
-    public EphorteFacade () { }
+    private NCoreClient client;
+    private static String storageId;
+    private static String externalIdName;
+
+    public EphorteFacade() {
+        client = new NCoreClient();
+    }
+
+    public EphorteFacade(NCoreClient client) {
+        this.client = client;
+    }
 
     public static EphorteFacade getInstance() { return singleton; };
 
@@ -59,20 +66,12 @@ public class EphorteFacade {
         DataObjectT[] objs = populate(obj, fragment.getStatements());
 
         if (objectExists) {
-            update(objs);
+            client.update(objs);
             log.info("Updated resource: {}", fragment.getResourceId());
         } else {
-            insert(objs);
+            client.insert(objs);
             log.info("Created resource: {}", fragment.getResourceId());
         }
-    }
-
-    protected void insert(DataObjectT[] objs) throws Exception {
-        NCore.Objects.insert(objs);
-    }
-
-    protected void update(DataObjectT[] objs) throws Exception {
-        NCore.Objects.update(objs);
     }
 
     public DataObjectT create(String typeName, String externalId) throws Exception {
@@ -81,7 +80,7 @@ public class EphorteFacade {
         return o;
     }
 
-    public static void setExternalId(DataObjectT obj, String externalId) {
+    public void setExternalId(DataObjectT obj, String externalId) {
         ObjectUtils.setFieldValue(obj, externalIdName, externalId);
     }
 
@@ -98,6 +97,7 @@ public class EphorteFacade {
 
     public DataObjectT populate(DataObjectT obj, Statement s) throws Exception {
         String name = getFieldName(s.property);
+
         String fieldType = ObjectUtils.getFieldType (obj, name);
         if (fieldType == null) {
             log.debug("Object has no setter for {}", name);
@@ -123,7 +123,7 @@ public class EphorteFacade {
     public DataObjectT get(String typeName, String externalId) throws Exception {
         String searchName = getSearchName(typeName);
         String query = getSearchString(typeName, externalId);
-        List<DataObjectT> results = actualGet(searchName, query);
+        List<DataObjectT> results = client.get(searchName, query);
 
         DataObjectT newest = null;
         XMLGregorianCalendar newestCreated = null;
@@ -138,10 +138,6 @@ public class EphorteFacade {
         }
 
         return newest;
-    }
-
-    protected List<DataObjectT> actualGet(String searchName, String query) throws Exception {
-        return NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
     }
 
     public static String getSearchName(String typeName) {
@@ -180,7 +176,6 @@ public class EphorteFacade {
     }
 
     public String uploadFile(String fileName, byte[] data) throws Exception {
-        log.info("Uploading file {}", fileName);
-        return NCore.Documents.uploadFile(fileName, storageId, data);
+        return client.upload(fileName, storageId, data);
     }
 }
