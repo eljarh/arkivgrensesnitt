@@ -1,18 +1,26 @@
 package no.bouvet.sesam.adapters;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
-import no.priv.garshol.duke.utils.NTriplesParser;
-import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
-import no.gecko.ncore.client.core.NCore;
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import java.io.Reader;
 import java.io.InputStreamReader;
+import java.io.Reader;
+
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
+import no.gecko.ncore.client.core.NCore;
+import no.priv.garshol.duke.utils.NTriplesParser;
+
+import org.apache.commons.io.IOUtils;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import static org.junit.Assert.*;
 
 public class FragmentTest {
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
     @Test
     public void testThatFragmentCanParseSimpleCase() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
@@ -39,5 +47,12 @@ public class FragmentTest {
         assertEquals(type, fragment.getType());
         assertEquals(source, fragment.getSource());
         assertEquals(6, fragment.getStatements().size());
+    }
+
+    @Test
+    public void testThatInvalidFragmentThrowsInvalidFragmentException() throws Exception {
+        exception.expect(InvalidFragment.class);
+        exception.expectMessage("Couldn't parse fragment");
+        Fragment fragment = new Fragment("_", "this is not a valid fragment");
     }
 }

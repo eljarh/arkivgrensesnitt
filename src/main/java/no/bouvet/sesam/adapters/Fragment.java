@@ -23,11 +23,16 @@ public class Fragment implements StatementHandler {
     private String source = "";
     private List<Statement> statements = null;
     
-    public Fragment(String resourceId, String source) {
+    public Fragment(String resourceId, String source) throws InvalidFragment {
         if (resourceId != null)
             this.resourceId = resourceId;
         this.source = source;
-        parse();
+
+        try {
+            parse();
+        } catch (RuntimeException e) {
+            throw new InvalidFragment(e, "Couldn't parse fragment");
+        }
     }
 
     public void statement(String subject, String property, String object,
