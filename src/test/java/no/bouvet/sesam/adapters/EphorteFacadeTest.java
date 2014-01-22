@@ -1,23 +1,30 @@
 package no.bouvet.sesam.adapters;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
-import static org.mockito.Mockito.*;
 import java.util.ArrayList;
-import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.datatype.DatatypeFactory;
-import org.junit.Before;
-import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
-import org.mockito.Mockito;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
-import org.apache.commons.lang.builder.EqualsBuilder;
 import java.util.List;
-import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessGroupT;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessCodeT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessGroupT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
 import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class EphorteFacadeTest {
     EphorteFacade facade;
@@ -177,6 +184,19 @@ public class EphorteFacadeTest {
 
         assertSame(expected, entry.getCase());
         assertSame(expected, result);
+    }
+
+    @Test
+    public void testPopulateWithDecoratedProperty() throws Exception {
+        String property = "http://data.mattilsynet.no/sesam/ephorte/file-path";
+        String url = "http://www.jtricks.com/download-unknown";
+        Statement s = new Statement("_", property, url, true);
+
+        Decorator d = mock(Decorator.class);
+        facade.setDecorator(property, d);
+        facade.populate(new DocumentObjectT(), s);
+
+        verify(d).process(url);
     }
 
     @Test

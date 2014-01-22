@@ -19,7 +19,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.FileOutputStream;
 import org.apache.http.HttpResponse;
 
-public class EphorteFileDecorator {
+public class EphorteFileDecorator implements Decorator {
     static Logger log = LoggerFactory.getLogger(Fragment.class.getName());
     private EphorteFacade facade;
 

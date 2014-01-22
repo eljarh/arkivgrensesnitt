@@ -13,34 +13,63 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Iterator;
 
 public class EphorteFacade {
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
     private static EphorteFacade singleton = new EphorteFacade();
 
     private NCoreClient client;
-    private static String storageId;
-    private static String externalIdName;
+    private String storageId;
+    private String externalIdName;
+    private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
 
     public EphorteFacade() {
         client = new NCoreClient();
+        loadConfiguration();
     }
 
     public EphorteFacade(NCoreClient client) {
         this.client = client;
+        loadConfiguration();
+    }
+
+    protected void loadConfiguration() {
+        PropertiesConfiguration config = loadConfig("ephorte.properties");
+        PropertiesConfiguration decorators = loadConfig("decorators.properties");
+
+        init(config, decorators);
+    }
+
+    protected PropertiesConfiguration loadConfig(String name) {
+        try {
+            return new PropertiesConfiguration(name);
+        } catch (Exception e) {
+            log.error("Couldn't load {}", name, e);
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    protected void init(PropertiesConfiguration config, PropertiesConfiguration decorators) {
+        externalIdName = (String) config.getProperty("ephorte.externalId.name");
+        storageId = (String) config.getProperty("ephorte.storageId");
+
+        Iterator<String> keys = decorators.getKeys();
+        while(keys.hasNext()) {
+            String klass = keys.next();
+            String property = (String) decorators.getProperty(klass);
+            Decorator d = (Decorator) ObjectUtils.instantiate(klass);
+            setDecorator(property, d);
+        }
+    }
+
+    public void setDecorator(String key, Decorator obj) {
+        decorators.remove(key);
+        decorators.put(key, obj);
     }
 
     public static EphorteFacade getInstance() { return singleton; };
-
-    static {
-        try {
-            PropertiesConfiguration config = new PropertiesConfiguration("ephorte.properties");
-            externalIdName = (String) config.getProperty("ephorte.externalId.name");
-            storageId = (String) config.getProperty("ephorte.storageId");
-        } catch (Exception e) {
-            log.error("Couldn't load ephorte.properties", e);
-        }
-    }
 
     public void save(Fragment fragment) throws Exception {
         String type = fragment.getType();
@@ -104,11 +133,17 @@ public class EphorteFacade {
             return null;
         }
 
+        String value = s.object;
+        if (decorators.containsKey(s.property)) {
+            Decorator d = decorators.get(s.property);
+            value = d.process(value);
+        }
+
         if (!s.literal) {
             if (isEphorteType(fieldType)) {
-                DataObjectT o = get(fieldType, s.object);
+                DataObjectT o = get(fieldType, value);
                 if (o == null) {
-                    throw new ReferenceNotFound("Fragment refers to non-existing object: " + s.object);
+                    throw new ReferenceNotFound("Fragment refers to non-existing object: " + value);
                 }
 
                 ObjectUtils.setFieldValue(obj, name, o);
@@ -116,7 +151,7 @@ public class EphorteFacade {
             }
         }
 
-        ObjectUtils.setFieldValue(obj, name, s.object);
+        ObjectUtils.setFieldValue(obj, name, value);
         return null;
     }
 
