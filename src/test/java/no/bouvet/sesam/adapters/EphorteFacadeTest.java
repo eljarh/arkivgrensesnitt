@@ -200,7 +200,7 @@ public class EphorteFacadeTest {
     }
 
     @Test
-    public void testPopulateWithNonExistingReferencedEphorteTypeThrows() throws Exception {
+    public void testPopulateWithNonExistingReferencedEphorteTypeThrowsReferenceNotFound() throws Exception {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "id", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
