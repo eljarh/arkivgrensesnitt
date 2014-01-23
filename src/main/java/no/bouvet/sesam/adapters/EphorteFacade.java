@@ -22,6 +22,8 @@ public class EphorteFacade {
     private NCoreClient client;
     private String storageId;
     private String externalIdName;
+    private String rdfKeywordsName;
+
     private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
 
     public EphorteFacade() {
@@ -53,6 +55,7 @@ public class EphorteFacade {
 
     protected void init(PropertiesConfiguration config, PropertiesConfiguration decorators) {
         externalIdName = (String) config.getProperty("ephorte.externalId.name");
+        rdfKeywordsName = (String) config.getProperty("ephorte.rdfKeywords.name");
         storageId = (String) config.getProperty("ephorte.storageId");
 
         Iterator<String> keys = decorators.getKeys();
@@ -71,7 +74,7 @@ public class EphorteFacade {
 
     public static EphorteFacade getInstance() { return singleton; };
 
-    public void save(Fragment fragment) throws Exception {
+    public DataObjectT[] save(Fragment fragment) throws Exception {
         String type = fragment.getType();
         if (StringUtils.isBlank(type)) {
             throw new RuntimeException("Fragment has no type");
@@ -91,8 +94,10 @@ public class EphorteFacade {
             log.debug("Creating object with type {} and resourceId {}", ePhorteType, resourceId);
             obj = create(ePhorteType, resourceId);
         }
+        setRdfKeywords(obj, fragment.getSource());
 
         DataObjectT[] objs = populate(obj, fragment.getStatements());
+
 
         if (objectExists) {
             client.update(objs);
@@ -101,6 +106,8 @@ public class EphorteFacade {
             client.insert(objs);
             log.info("Created resource: {}", fragment.getResourceId());
         }
+
+        return objs;
     }
 
     public DataObjectT create(String typeName, String externalId) throws Exception {
@@ -111,6 +118,12 @@ public class EphorteFacade {
 
     public void setExternalId(DataObjectT obj, String externalId) {
         ObjectUtils.setFieldValue(obj, externalIdName, externalId);
+    }
+
+
+    public void setRdfKeywords(DataObjectT obj, String source) throws Exception {
+        String link = uploadFile("rdfKeywords", source.getBytes("UTF-8"));
+        ObjectUtils.setFieldValue(obj, rdfKeywordsName, link);
     }
 
     public DataObjectT[] populate(DataObjectT obj, List<Statement> statements) throws Exception {

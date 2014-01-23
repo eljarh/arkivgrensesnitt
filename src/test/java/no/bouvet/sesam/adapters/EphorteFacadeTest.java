@@ -259,6 +259,19 @@ public class EphorteFacadeTest {
         verify(client).insert(any(DataObjectT[].class));
     }
 
+    @Test
+    public void testThatSaveUploadsRdfSource() throws Exception {
+        String source = Utils.getResourceAsString("simplecase.nt");
+        String fragmentId = Utils.getFirstSubject(source);
+        Fragment fragment = new Fragment(fragmentId, source);
+
+        doReturn("actual").when(client).upload(anyString(), anyString(), any(byte[].class));
+
+        DataObjectT[] result = facade.save(fragment);
+
+        CaseT c = (CaseT) result[0];
+        assertEquals("actual", c.getCustomAttribute3());
+    }
 
     @Test
     public void testThatSaveUpdatesIfSubjectExists() throws Exception {
