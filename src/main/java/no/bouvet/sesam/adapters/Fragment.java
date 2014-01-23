@@ -30,7 +30,7 @@ public class Fragment implements StatementHandler {
         try {
             parse();
         } catch (RuntimeException e) {
-            throw new InvalidFragment(e, "Couldn't parse fragment");
+            throw new InvalidFragment("Couldn't parse fragment", e);
         }
 
         if (StringUtils.isBlank(this.resourceId)) {

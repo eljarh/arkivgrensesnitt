@@ -13,12 +13,26 @@ public class NCoreClient {
     
     public void insert(DataObjectT[] objs) throws Exception {
         log.info("Inserting objects {}", objs);
-        NCore.Objects.insert(objs);
+
+        try {
+            NCore.Objects.insert(objs);
+        } catch (Exception e) {
+            String msg = "Couldn't insert fragment, ePhorte threw exception";
+            log.error(msg, e);
+            throw new InvalidFragment(msg, e);
+        }
     }
 
     public void update(DataObjectT[] objs) throws Exception {
         log.info("Updating objects {}", objs);
-        NCore.Objects.update(objs);
+
+        try {
+            NCore.Objects.update(objs);
+        } catch (Exception e) {
+            String msg = "Couldn't update fragment, ePhorte threw exception";
+            log.error(msg, e);
+            throw new InvalidFragment(msg, e);
+        }
     }
 
     public List<DataObjectT> get(String searchName, String query) throws Exception {
@@ -28,6 +42,13 @@ public class NCoreClient {
 
     public String upload(String fileName, String storageId, byte[] data) throws Exception {
         log.info("Uploading file {} with storageId {}", fileName, storageId);
-        return NCore.Documents.uploadFile(fileName, storageId, data);
+
+        try {
+            return NCore.Documents.uploadFile(fileName, storageId, data);
+        } catch (Exception e) {
+            String msg = "Couldn't upload file, ePhorte threw exception";
+            log.error(msg, e);
+            throw new InvalidFragment(msg, e);
+        }
     }
 }
