@@ -135,7 +135,7 @@ public class EphorteFacadeTest {
 
         when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
 
-        DataObjectT actual = (DataObjectT) facade.get(fqCaseT, "id");
+        DataObjectT actual = facade.get(fqCaseT, "id");
         assertSame(third, actual);
     }
 
