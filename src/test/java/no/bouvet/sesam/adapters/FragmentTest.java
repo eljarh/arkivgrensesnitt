@@ -50,9 +50,23 @@ public class FragmentTest {
     }
 
     @Test
-    public void testThatInvalidFragmentThrowsInvalidFragmentException() throws Exception {
+    public void testThatUnparseableFragmentThrowsInvalidFragmentException() throws Exception {
         exception.expect(InvalidFragment.class);
         exception.expectMessage("Couldn't parse fragment");
         Fragment fragment = new Fragment("_", "this is not a valid fragment");
+    }
+
+    @Test
+    public void testThatFragmentWithoutResourceIdThrowsInvalidFragmentException() throws Exception {
+        exception.expect(InvalidFragment.class);
+        exception.expectMessage("Fragment has no identity");
+        Fragment fragment = new Fragment(null, "<id> <prop> \"this is valid\" .");
+    }
+
+    @Test
+    public void testThatFragmentWithoutTypeThrowsThrowsInvalidFragmentException() throws Exception {
+        exception.expect(InvalidFragment.class);
+        exception.expectMessage("Fragment has no type");
+        Fragment fragment = new Fragment("<id>", "<id> <prop> \"this is valid\" .");
     }
 }

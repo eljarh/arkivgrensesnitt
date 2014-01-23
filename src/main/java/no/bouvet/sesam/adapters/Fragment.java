@@ -18,20 +18,27 @@ public class Fragment implements StatementHandler {
     private static String rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
     static Logger log = LoggerFactory.getLogger(Fragment.class.getName());
 
-    private String type = "";
-    private String resourceId = "";
-    private String source = "";
+    private String type;
+    private String resourceId;
+    private String source;
     private List<Statement> statements = null;
     
     public Fragment(String resourceId, String source) throws InvalidFragment {
-        if (resourceId != null)
-            this.resourceId = resourceId;
+        this.resourceId = resourceId;
         this.source = source;
 
         try {
             parse();
         } catch (RuntimeException e) {
             throw new InvalidFragment(e, "Couldn't parse fragment");
+        }
+
+        if (StringUtils.isBlank(this.resourceId)) {
+            throw new InvalidFragment("Fragment has no identity");
+        }
+
+        if (StringUtils.isBlank(this.type)) {
+            throw new InvalidFragment("Fragment has no type");
         }
     }
 
