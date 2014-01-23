@@ -143,7 +143,8 @@ public class EphorteFacade {
             if (isEphorteType(fieldType)) {
                 DataObjectT o = get(fieldType, value);
                 if (o == null) {
-                    throw new ReferenceNotFound("Fragment refers to non-existing object: " + value);
+                    String msg = String.format("Fragment tries to set property <%s> to non-existing object <%s>", s.property, s.object);
+                    throw new ReferenceNotFound(msg);
                 }
 
                 ObjectUtils.setFieldValue(obj, name, o);

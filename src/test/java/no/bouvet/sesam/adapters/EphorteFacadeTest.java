@@ -208,7 +208,7 @@ public class EphorteFacadeTest {
         doReturn(null).when(facade).get(anyString(), eq("id"));
 
         exception.expect(ReferenceNotFound.class);
-        exception.expectMessage("Fragment refers to non-existing object: id");
+        exception.expectMessage("Fragment tries to set property <http://data.mattilsynet.no/sesam/ephorte/case> to non-existing object <id>");
         facade.populate (entry, s);
     }
 
