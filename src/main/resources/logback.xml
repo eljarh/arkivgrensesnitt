@@ -12,7 +12,7 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{ISO8601} [%thread] %-5level %logger - %msg%n</pattern>
+            <pattern>%date{ISO8601} %contextName %thread %level %logger - %msg%n</pattern>
         </encoder>
     </appender>
 
