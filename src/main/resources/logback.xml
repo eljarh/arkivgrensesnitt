@@ -12,7 +12,7 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%-27(%d{HH:mm:ss.SSS} [%.-12thread]) %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{ISO8601} [%thread] %-5level %logger - %msg%n</pattern>
         </encoder>
     </appender>
 
