@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 public class InvalidFragmentMapper implements ExceptionMapper<InvalidFragment> {
     public Response toResponse(InvalidFragment exception) {
 
-        return Response.status(Response.Status.BAD_REQUEST).
+        return Response.status(new CustomStatus(422, "Unprocessable Entity")).
             entity(exception.getMessage()).
             build();
     }
