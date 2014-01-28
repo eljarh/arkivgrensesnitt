@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import no.gecko.ncore.client.core.NCore;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
+import java.util.ArrayList;
 
 public class NCoreClient {
     private static Logger log = LoggerFactory.getLogger(NCoreClient.class.getName());
@@ -37,7 +38,12 @@ public class NCoreClient {
 
     public List<DataObjectT> get(String searchName, String query) throws Exception {
         log.debug("Getting objects using searchName {} and query {}", searchName, query);
-        return NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
+        try {
+            return NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
+        } catch (com.sun.xml.ws.fault.ServerSOAPFaultException e) {
+            log.error("Couldn't get object, ePhorte threw exception", e);
+            return new ArrayList<DataObjectT>();
+        }
     }
 
     public String upload(String fileName, String storageId, byte[] data) throws Exception {

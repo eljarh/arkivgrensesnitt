@@ -50,6 +50,12 @@ public class EphorteFacadeIT {
     }
 
     @Test
+    public void testThatWeCanRetrieveCaseByEphorteId() throws Exception {
+        DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT", "http://data.mattilsynet.no/sesam/ephorte/sak/10000146");
+        assertNotNull(result);
+    }
+
+    @Test
     public void testThatWeCanUploadFile() throws Exception {
         EphorteFileDecorator decorator = new EphorteFileDecorator(facade);
         String result = decorator.process("http://www.jtricks.com/download-unknown");
