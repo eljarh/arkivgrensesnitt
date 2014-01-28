@@ -57,7 +57,7 @@ public class EphorteFacadeTest {
 
     @Test
     public void testThatSearchStringIsCorrect() {
-        String s = EphorteFacade.getSearchString(fqCaseT, "test");
+        String s = EphorteFacade.getExternalIdSearchString(fqCaseT, "test");
         assertEquals("CustomAttribute2=test", s);
     }
 
@@ -71,11 +71,26 @@ public class EphorteFacadeTest {
     public void testThatGetReturnsNullOnNotFound() throws Exception {
         ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get(anyString(), anyString())).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "id");
 
         assertNull(actual);
+    }
+
+    @Test
+    public void testThatGetTriesEphorteIdAfterExternalId() throws Exception {
+        ArrayList<DataObjectT> empty = new ArrayList<DataObjectT>();
+        ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
+        CaseT expected = new CaseT();
+        result.add(expected);
+
+        when(client.get("Case", "CustomAttribute2=http://psi.sesam.io/ePhorte/12345")).thenReturn(empty);
+        when(client.get("Case", "Id=12345")).thenReturn(result);
+
+        CaseT actual = (CaseT) facade.get(fqCaseT, "http://psi.sesam.io/ePhorte/12345");
+
+        assertSame(expected, actual);
     }
 
     @Test

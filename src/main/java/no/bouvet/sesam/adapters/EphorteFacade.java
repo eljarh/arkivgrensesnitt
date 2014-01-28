@@ -171,8 +171,13 @@ public class EphorteFacade {
 
     public DataObjectT get(String typeName, String externalId) throws Exception {
         String searchName = getSearchName(typeName);
-        String query = getSearchString(typeName, externalId);
+        String query = getExternalIdSearchString(typeName, externalId);
         List<DataObjectT> results = client.get(searchName, query);
+
+        if (results.size() == 0) {
+            query = getEphorteIdSearchString(typeName, externalId);
+            results = client.get(searchName, query);
+        }
 
         DataObjectT newest = null;
         XMLGregorianCalendar newestCreated = null;
@@ -194,12 +199,12 @@ public class EphorteFacade {
         return typeName.substring(lastPeriod + 1, typeName.length() - 1);
     }
 
-    public static String getSearchString(String typeName, String externalId) {
-        return getAttributeName(typeName) + "=" + externalId;
+    public static String getExternalIdSearchString(String typeName, String externalId) {
+        return "CustomAttribute2=" + externalId;
     }
 
-    public static String getAttributeName(String typeName) {
-        return "CustomAttribute2";
+    public static String getEphorteIdSearchString(String typeName, String psi) {
+        return "Id=" + getFieldName(psi);
     }
 
     public static boolean isEphorteType(String typeName) {
