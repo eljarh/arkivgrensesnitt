@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.ByteArrayOutputStream;
+import no.priv.garshol.duke.utils.NTriplesWriter;
 
 public class Fragment implements StatementHandler {
     private static String rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
@@ -20,26 +22,22 @@ public class Fragment implements StatementHandler {
 
     private String type;
     private String resourceId;
-    private String source;
+    private String source = null;
     private List<Statement> statements = null;
+
+    public Fragment(String resourceId) {
+        this.resourceId = resourceId;
+        statements = new ArrayList<Statement>();
+    }
     
     public Fragment(String resourceId, String source) throws InvalidFragment {
         this.resourceId = resourceId;
         this.source = source;
 
-        try {
-            parse();
-        } catch (RuntimeException e) {
-            throw new InvalidFragment("Couldn't parse fragment", e);
-        }
+        statements = new ArrayList<Statement>();
 
-        if (StringUtils.isBlank(this.resourceId)) {
-            throw new InvalidFragment("Fragment has no identity");
-        }
-
-        if (StringUtils.isBlank(this.type)) {
-            throw new InvalidFragment("Fragment has no type");
-        }
+        parse();
+        verify();
     }
 
     public void statement(String subject, String property, String object,
@@ -60,6 +58,21 @@ public class Fragment implements StatementHandler {
     }
 
     public String getSource() {
+        if (source == null) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            NTriplesWriter writer = new NTriplesWriter(out);
+            for (Statement s : statements) {
+                writer.statement(s.subject, s.property, s.object, s.literal);
+            }
+            try {
+                writer.done ();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            source = out.toString();
+        }
+
         return source;
     }
 
@@ -67,14 +80,22 @@ public class Fragment implements StatementHandler {
         return statements;
     }
 
-    private void parse() {
-        statements = new ArrayList<Statement>();
-
+    private void parse() throws InvalidFragment {
         Reader reader = new StringReader(source);
         try {
             NTriplesParser.parse(reader, this);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new InvalidFragment("Couldn't parse fragment", e);
+        }
+    }
+
+    private void verify() throws InvalidFragment {
+        if (StringUtils.isBlank(this.resourceId)) {
+            throw new InvalidFragment("Fragment has no identity");
+        }
+
+        if (StringUtils.isBlank(this.type)) {
+            throw new InvalidFragment("Fragment has no type");
         }
     }
 }
