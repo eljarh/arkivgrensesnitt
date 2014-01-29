@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.util.Set;
 
 public class BatchFragmentTest {
     @Test
@@ -20,7 +21,7 @@ public class BatchFragmentTest {
         List<Fragment> fragments = batch.getFragments();
         assertEquals(1, fragments.size());
         Fragment fragment = fragments.get(0);
-        
+
         assertEquals(resourceId, fragment.getResourceId());
         assertEquals(type, fragment.getType());
         assertEquals(source, fragment.getSource());
@@ -43,13 +44,30 @@ public class BatchFragmentTest {
         List<Fragment> fragments = batch.getFragments();
 
         assertEquals(2, fragments.size());
-        
-        Fragment fragment1 = fragments.get(1);
-        Fragment fragment2 = fragments.get(0);
+
+        Fragment fragment1 = fragments.get(0);
+        Fragment fragment2 = fragments.get(1);
 
         assertEquals(resourceId1, fragment1.getResourceId());
         assertEquals(source1, fragment1.getSource());
         assertEquals(resourceId2, fragment2.getResourceId());
         assertEquals(source2, fragment2.getSource());
+    }
+
+    @Test
+    public void testThatGetFragmentsIsSortedByDependencyOrder() throws Exception {
+        String source = Utils.getResourceAsString("simplebatch.nt");
+        Set<String> resources = Utils.getAllSubjects(source);
+
+        BatchFragment batch = new BatchFragment(resources, source);
+
+        List<Fragment> fragments = batch.getFragments();
+        String[] expected = new String[] { "CaseT", "RegistryEntryT", "DocumentObjectT", "DocumentDescriptionT", "RegistryEntryDocumentT" };
+
+        for (int i = 0; i < expected.length; i++) {
+            String type = fragments.get(i).getType();
+            String name = Utils.getLastPart(type);
+            assertEquals(expected[i], name);
+        }
     }
 }

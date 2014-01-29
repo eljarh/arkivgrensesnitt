@@ -214,19 +214,14 @@ public class EphorteFacade {
     public static String getObjectType(String property) {
         if (property == null) return "";
 
-        String name = getLastPart(property);
+        String name = Utils.getLastPart(property);
         return "no.gecko.ephorte.services.objectmodel.v3.en.dataobjects." + name;
-    }
-
-    private static String getLastPart(String property) {
-        String[] parts = property.split("/");
-        return parts[parts.length - 1];
     }
 
     public static String getFieldName(String property) {
         if (property == null) return "";
 
-        return getLastPart(property);
+        return Utils.getLastPart(property);
     }
 
     public String uploadFile(String fileName, byte[] data) throws Exception {
