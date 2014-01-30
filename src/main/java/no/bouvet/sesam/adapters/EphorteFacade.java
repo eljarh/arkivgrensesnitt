@@ -130,7 +130,7 @@ public class EphorteFacade {
             log.info("Updated resource: {}", fragment.getResourceId());
         } else {
             client.insert(objs);
-            log.info("Created resource: {}", fragment.getResourceId());
+            log.info("Created resource: {} (ePhorteId={})", fragment.getResourceId(), ObjectUtils.invokeGetter(obj, "getId"));
         }
 
         return objs;
