@@ -58,8 +58,8 @@ public class EphorteFacadeTest {
 
     @Test
     public void testThatSearchStringIsCorrect() {
-        String s = EphorteFacade.getExternalIdSearchString(fqCaseT, "test");
-        assertEquals("CustomAttribute2=test", s);
+        String s = facade.getExternalIdSearchString(fqCaseT, "test");
+        assertEquals("CustomAttribute4=test", s);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class EphorteFacadeTest {
         CaseT expected = new CaseT();
         result.add(expected);
 
-        when(client.get("Case", "CustomAttribute2=http://psi.sesam.io/ePhorte/12345")).thenReturn(empty);
+        when(client.get("Case", "CustomAttribute4=http://psi.sesam.io/ePhorte/12345")).thenReturn(empty);
         when(client.get("Case", "Id=12345")).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "http://psi.sesam.io/ePhorte/12345");
@@ -110,7 +110,7 @@ public class EphorteFacadeTest {
         third.setCreatedDate(dt.newXMLGregorianCalendar("1943-03-01T00:00:00Z"));
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get("Case", "CustomAttribute4=id")).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "id");
 
@@ -130,7 +130,7 @@ public class EphorteFacadeTest {
         CaseT third = new CaseT();
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get("Case", "CustomAttribute4=id")).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "id");
         assertSame(third, actual);
@@ -149,7 +149,7 @@ public class EphorteFacadeTest {
         DataObjectT third = new DataObjectT();
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get("Case", "CustomAttribute4=id")).thenReturn(result);
 
         DataObjectT actual = facade.get(fqCaseT, "id");
         assertSame(third, actual);
@@ -286,7 +286,7 @@ public class EphorteFacadeTest {
         DataObjectT[] result = facade.save(fragment);
 
         CaseT c = (CaseT) result[0];
-        assertEquals("actual", c.getCustomAttribute3());
+        assertEquals("actual", c.getCustomAttribute5());
     }
 
     @Test
