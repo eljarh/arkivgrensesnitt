@@ -35,7 +35,7 @@ public class BatchFragment implements StatementHandler {
         try {
             NTriplesParser.parse(reader, this);
         } catch (IOException e) {
-            throw new InvalidFragment("Couldn't parse fragment", e);
+            throw new InvalidFragment("Couldn't parse fragment: " + e, e);
         }
     }
 
