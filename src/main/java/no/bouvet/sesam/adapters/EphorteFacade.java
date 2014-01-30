@@ -156,7 +156,7 @@ public class EphorteFacade {
             if (isEphorteType(fieldType)) {
                 DataObjectT o = get(fieldType, value);
                 if (o == null) {
-                    String msg = String.format("Fragment tries to set property <%s> to non-existing object <%s>", s.property, s.object);
+                    String msg = String.format("Fragment tries to set property <%s> to non-existent object <%s>", s.property, s.object);
                     throw new ReferenceNotFound(msg);
                 }
 
@@ -176,7 +176,8 @@ public class EphorteFacade {
 
         if (results.size() == 0) {
             query = getEphorteIdSearchString(typeName, externalId);
-            results = client.get(searchName, query);
+            if (query != null) // externalId may be rejected
+                results = client.get(searchName, query);
         }
 
         DataObjectT newest = null;
@@ -204,7 +205,14 @@ public class EphorteFacade {
     }
 
     public static String getEphorteIdSearchString(String typeName, String psi) {
-        return "Id=" + getFieldName(psi);
+        // ePhorte phreaks out if Id is not a number. we therefore
+        // verify that before proceeding.
+        String id = getFieldName(psi);
+        if (!isInt(id))
+            return null; // search will crash
+
+        // now go ahead and make the query
+        return "Id=" + id;
     }
 
     public static boolean isEphorteType(String typeName) {
@@ -226,5 +234,14 @@ public class EphorteFacade {
 
     public String uploadFile(String fileName, byte[] data) throws Exception {
         return client.upload(fileName, storageId, data);
+    }
+
+    private static boolean isInt(String s) {
+        for (int ix = 0; ix < s.length(); ix++) {
+            char ch = s.charAt(ix);
+            if (ch < '0' || ch > '9')
+                return false;
+        }
+        return true;
     }
 }
