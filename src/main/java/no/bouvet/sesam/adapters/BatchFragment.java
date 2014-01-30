@@ -53,27 +53,17 @@ public class BatchFragment implements StatementHandler {
 
     private void addDependency(String subject, String object) {
         Set<String> deps = dependencies.remove(subject);
+
         if (deps == null) {
             deps = new HashSet<String>();
         }
-
         deps.add(object);
+
         dependencies.put(subject, deps);
     }
 
     public List<Fragment> getFragments() {
-        List<String> subjects = new ArrayList<String>(fragments.keySet());
-        Collections.sort(subjects, new Comparator<String>() {
-
-                public int compare(String s1, String s2) {
-                    int i1 = countDependencies(s1);
-                    int i2 = countDependencies(s2);
-
-                    // The number of dependencies should never be able
-                    // to cause an integer overflow.
-                    return i1 - i2;
-                }
-            });
+        List<String> subjects = getSubjectsOrderedByDependencies();
 
         ArrayList<Fragment> result = new ArrayList<Fragment>();
         while (subjects.size() > 0) {
@@ -85,23 +75,12 @@ public class BatchFragment implements StatementHandler {
         return result;
     }
 
-    private int countDependencies(String subject) {
-        Set<String> deps = dependencies.get(subject);
-        if (deps == null) return 0;
-        return deps.size();
-    }
-
     private String selectNextSubject(List<String> candidates) {
         String best = candidates.get(0);
-        int score = 1000;
+        int score = Integer.MAX_VALUE;
 
         for (String candidate : candidates) {
-            int myScore = 0;
-
-            Set<String> deps = dependencies.get(candidate);
-            if (deps != null) {
-                myScore = deps.size();
-            }
+            int myScore = countDependencies(candidate, candidates);
 
             if (myScore < score && !dependsOnOtherCandidate(candidate, candidates)) {
                 best = candidate;
@@ -112,12 +91,39 @@ public class BatchFragment implements StatementHandler {
         return best;
     }
 
+    private List<String> getSubjectsOrderedByDependencies() {
+        final List<String> result = new ArrayList<String>(fragments.keySet());
+        Collections.sort(result, new Comparator<String>() {
+
+                public int compare(String s1, String s2) {
+                    int i1 = countDependencies(s1, result);
+                    int i2 = countDependencies(s2, result);
+
+                    // The number of dependencies should never be able
+                    // to cause an integer overflow.
+                    return i1 - i2;
+                }
+            });
+        return result;
+    }
+
     private boolean dependsOnOtherCandidate(String candidate, List<String> candidates) {
         Set<String> deps = dependencies.get(candidate);
         if (deps == null) return false;
 
         Set<String> intersection = new HashSet<String>(candidates);
+
         intersection.retainAll(deps);
         return intersection.size() > 0;
+    }
+
+    private int countDependencies(String candidate, Collection<String> candidates) {
+        Set<String> deps = dependencies.get(candidate);
+        if (deps == null) return 0;
+
+        Set<String> intersection = new HashSet<String>(candidates);
+        intersection.retainAll(deps);
+
+        return intersection.size();
     }
 }
