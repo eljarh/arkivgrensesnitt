@@ -15,7 +15,12 @@
       }
 
       function getUrl(form) {
-        return form.action + "?resource=" + encodeURIComponent(form.resource.value);
+        var resourceIds = form.resource.value.split(" ");
+        var action = form.action + "?resource=" + encodeURIComponent(resourceIds[0]);
+        for (var i = 1; i < resourceIds.length; i++) {
+            action = actian + "&resource=" + encodeURIComponent(resourceIds[i]);
+        }
+        return action;
       }
 
       function doSubmit(form) {
