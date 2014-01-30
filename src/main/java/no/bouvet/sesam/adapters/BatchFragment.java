@@ -37,6 +37,14 @@ public class BatchFragment implements StatementHandler {
         } catch (IOException e) {
             throw new InvalidFragment("Couldn't parse fragment", e);
         }
+
+        validate();
+    }
+
+    public void validate() throws InvalidFragment {
+        for (Fragment f : fragments.values()) {
+            f.validate();
+        }
     }
 
     @Override
