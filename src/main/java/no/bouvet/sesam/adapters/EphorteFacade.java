@@ -88,13 +88,13 @@ public class EphorteFacade {
     public DataObjectT[] save(Fragment fragment) throws Exception {
         String type = fragment.getType();
         if (StringUtils.isBlank(type)) {
-            throw new RuntimeException("Fragment has no type");
+            throw new InvalidFragment("Fragment has no type");
         }
         String ePhorteType = getObjectType(type);
 
         String resourceId = fragment.getResourceId();
         if (StringUtils.isBlank(resourceId)) {
-           throw new RuntimeException("Fragment has no resourceId");
+           throw new InvalidFragment("Fragment has no resourceId");
         }
 
         log.debug("Looking up object with type {} and resourceId {}", ePhorteType, resourceId);
