@@ -12,6 +12,8 @@ import javax.ws.rs.core.SecurityContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
+import java.util.List;
 
 @Path("fragment")
 public class FragmentResource {
@@ -21,12 +23,12 @@ public class FragmentResource {
     @Consumes("application/ntriples")
     @Produces(MediaType.TEXT_PLAIN)
     public Response handleFragment(@Context SecurityContext context,
-                                   @QueryParam("resource") final String resource,
+                                   @QueryParam("resource") final List<String> resourceIds,
                                    String source) throws Exception {
-        log.debug("Incoming fragment <{}> with body:\n{}", resource, source);
+        log.debug("Incoming batch-fragment <{}> with body:\n{}", StringUtils.join(resourceIds, ", "), source);
 
-        Fragment fragment = new Fragment(resource, source);
-        EphorteFacade.getInstance().save(fragment);
+        BatchFragment batch = new BatchFragment(resourceIds, source);
+        EphorteFacade.getInstance().save(batch);
 
         return Response.ok("Success").build();
     }

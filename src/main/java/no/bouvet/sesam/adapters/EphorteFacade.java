@@ -14,6 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Iterator;
+import java.util.Arrays;
+import org.apache.commons.lang.WordUtils;
 
 public class EphorteFacade {
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
@@ -22,6 +24,7 @@ public class EphorteFacade {
     private NCoreClient client;
     private String storageId;
     private String externalIdName;
+    private String externalIdSearchName;
     private String rdfKeywordsName;
 
     private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
@@ -55,6 +58,7 @@ public class EphorteFacade {
 
     protected void init(PropertiesConfiguration config, PropertiesConfiguration decorators) {
         externalIdName = (String) config.getProperty("ephorte.externalId.name");
+        externalIdSearchName = WordUtils.capitalize(externalIdName, new char[] { '-' }).replace("-", "");
         rdfKeywordsName = (String) config.getProperty("ephorte.rdfKeywords.name");
         storageId = (String) config.getProperty("ephorte.storageId");
 
@@ -74,16 +78,26 @@ public class EphorteFacade {
 
     public static EphorteFacade getInstance() { return singleton; };
 
+    public DataObjectT[] save(BatchFragment batch) throws Exception {
+        List<DataObjectT> result = new ArrayList<DataObjectT>();
+
+        for (Fragment f : batch.getFragments()) {
+            DataObjectT[] r = save(f);
+                result.addAll(Arrays.asList(r));
+        }
+        return result.toArray(new DataObjectT[0]);
+    }
+
     public DataObjectT[] save(Fragment fragment) throws Exception {
         String type = fragment.getType();
         if (StringUtils.isBlank(type)) {
-            throw new RuntimeException("Fragment has no type");
+            throw new InvalidFragment("Fragment has no type");
         }
         String ePhorteType = getObjectType(type);
 
         String resourceId = fragment.getResourceId();
         if (StringUtils.isBlank(resourceId)) {
-           throw new RuntimeException("Fragment has no resourceId");
+           throw new InvalidFragment("Fragment has no resourceId");
         }
 
         log.debug("Looking up object with type {} and resourceId {}", ePhorteType, resourceId);
@@ -200,8 +214,8 @@ public class EphorteFacade {
         return typeName.substring(lastPeriod + 1, typeName.length() - 1);
     }
 
-    public static String getExternalIdSearchString(String typeName, String externalId) {
-        return "CustomAttribute2=" + externalId;
+    public String getExternalIdSearchString(String typeName, String externalId) {
+        return externalIdSearchName + "=" + externalId;
     }
 
     public static String getEphorteIdSearchString(String typeName, String psi) {

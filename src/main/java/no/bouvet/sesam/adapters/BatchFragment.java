@@ -37,6 +37,14 @@ public class BatchFragment implements StatementHandler {
         } catch (IOException e) {
             throw new InvalidFragment("Couldn't parse fragment: " + e, e);
         }
+
+        validate();
+    }
+
+    public void validate() throws InvalidFragment {
+        for (Fragment f : fragments.values()) {
+            f.validate();
+        }
     }
 
     @Override
@@ -63,9 +71,10 @@ public class BatchFragment implements StatementHandler {
     }
 
     public List<Fragment> getFragments() {
-        Set<String> subjects = fragments.keySet();
+        // Make a copy so we don't change the fragments HashMap later
+        Set<String> subjects = new HashSet<String>(fragments.keySet());
 
-        ArrayList<Fragment> result = new ArrayList<Fragment>();
+        List<Fragment> result = new ArrayList<Fragment>();
         while (subjects.size() > 0) {
             String subject = selectNextSubject(subjects);
             result.add(fragments.get(subject));

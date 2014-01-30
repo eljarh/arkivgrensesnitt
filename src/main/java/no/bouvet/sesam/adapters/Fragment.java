@@ -37,7 +37,7 @@ public class Fragment implements StatementHandler {
         statements = new ArrayList<Statement>();
 
         parse();
-        verify();
+        validate();
     }
 
     public void statement(String subject, String property, String object,
@@ -89,7 +89,7 @@ public class Fragment implements StatementHandler {
         }
     }
 
-    private void verify() throws InvalidFragment {
+    public void validate() throws InvalidFragment {
         if (StringUtils.isBlank(this.resourceId)) {
             throw new InvalidFragment("Fragment has no identity");
         }

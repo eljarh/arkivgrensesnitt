@@ -25,6 +25,7 @@ import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import java.util.Set;
 
 public class EphorteFacadeTest {
     EphorteFacade facade;
@@ -43,7 +44,7 @@ public class EphorteFacadeTest {
     @Before
     public void setUp() {
         client =  mock(NCoreClient.class);
-        facade = spy(new EphorteFacade (client));
+        facade = spy(new EphorteFacade(client));
     }
 
     @Rule
@@ -57,8 +58,8 @@ public class EphorteFacadeTest {
 
     @Test
     public void testThatSearchStringIsCorrect() {
-        String s = EphorteFacade.getExternalIdSearchString(fqCaseT, "test");
-        assertEquals("CustomAttribute2=test", s);
+        String s = facade.getExternalIdSearchString(fqCaseT, "test");
+        assertEquals("CustomAttribute4=test", s);
     }
 
     @Test
@@ -85,7 +86,7 @@ public class EphorteFacadeTest {
         CaseT expected = new CaseT();
         result.add(expected);
 
-        when(client.get("Case", "CustomAttribute2=http://psi.sesam.io/ePhorte/12345")).thenReturn(empty);
+        when(client.get("Case", "CustomAttribute4=http://psi.sesam.io/ePhorte/12345")).thenReturn(empty);
         when(client.get("Case", "Id=12345")).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "http://psi.sesam.io/ePhorte/12345");
@@ -109,7 +110,7 @@ public class EphorteFacadeTest {
         third.setCreatedDate(dt.newXMLGregorianCalendar("1943-03-01T00:00:00Z"));
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get("Case", "CustomAttribute4=id")).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "id");
 
@@ -129,7 +130,7 @@ public class EphorteFacadeTest {
         CaseT third = new CaseT();
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get("Case", "CustomAttribute4=id")).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "id");
         assertSame(third, actual);
@@ -148,7 +149,7 @@ public class EphorteFacadeTest {
         DataObjectT third = new DataObjectT();
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get("Case", "CustomAttribute4=id")).thenReturn(result);
 
         DataObjectT actual = facade.get(fqCaseT, "id");
         assertSame(third, actual);
@@ -285,7 +286,29 @@ public class EphorteFacadeTest {
         DataObjectT[] result = facade.save(fragment);
 
         CaseT c = (CaseT) result[0];
-        assertEquals("actual", c.getCustomAttribute3());
+        assertEquals("actual", c.getCustomAttribute5());
+    }
+
+    @Test
+    public void testThatSaveHandlesBatchFragment() throws Exception {
+        String source = Utils.getResourceAsString("simplebatch.nt");
+        Set<String> fragmentIds = Utils.getAllSubjects(source);
+        BatchFragment batch = new BatchFragment(fragmentIds, source);
+
+        for (Fragment f : batch.getFragments()) {
+            String fragmentId = f.getResourceId();
+            String ePhorteType = EphorteFacade.getObjectType(f.getType());
+            DataObjectT obj = facade.create(ePhorteType, fragmentId);
+            doReturn(null).when(facade).get(anyString(), eq(fragmentId));
+            doReturn(obj).when(facade).get(anyString(), eq(fragmentId));
+        }
+
+        DataObjectT[] result = facade.save(batch);
+
+        // FIXME: This test is a bit broken.  We actually want 5
+        // inserts, however to get this, we need to return null on the
+        // first call to get() then the object on the second call to get
+        verify(client, times(5)).update(any(DataObjectT[].class));
     }
 
     @Test
