@@ -75,6 +75,8 @@ public class BatchFragmentTest {
         BatchFragment batch = new BatchFragment(resources, source);
 
         List<Fragment> fragments = batch.getFragments();
+        assertEquals(5, fragments.size());
+
         String[] expected = new String[] { "DocumentObjectT", "DocumentDescriptionT", "CaseT", "RegistryEntryT", "RegistryEntryDocumentT" };
 
         for (int i = 0; i < expected.length; i++) {
