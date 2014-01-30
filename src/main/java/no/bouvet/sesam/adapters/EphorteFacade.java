@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Iterator;
+import java.util.Arrays;
 
 public class EphorteFacade {
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
@@ -73,6 +74,16 @@ public class EphorteFacade {
     }
 
     public static EphorteFacade getInstance() { return singleton; };
+
+    public DataObjectT[] save(BatchFragment batch) throws Exception {
+        List<DataObjectT> result = new ArrayList<DataObjectT>();
+
+        for (Fragment f : batch.getFragments()) {
+            DataObjectT[] r = save(f);
+                result.addAll(Arrays.asList(r));
+        }
+        return result.toArray(new DataObjectT[0]);
+    }
 
     public DataObjectT[] save(Fragment fragment) throws Exception {
         String type = fragment.getType();

@@ -25,6 +25,7 @@ import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import java.util.Set;
 
 public class EphorteFacadeTest {
     EphorteFacade facade;
@@ -43,7 +44,7 @@ public class EphorteFacadeTest {
     @Before
     public void setUp() {
         client =  mock(NCoreClient.class);
-        facade = spy(new EphorteFacade (client));
+        facade = spy(new EphorteFacade(client));
     }
 
     @Rule
@@ -286,6 +287,28 @@ public class EphorteFacadeTest {
 
         CaseT c = (CaseT) result[0];
         assertEquals("actual", c.getCustomAttribute3());
+    }
+
+    @Test
+    public void testThatSaveHandlesBatchFragment() throws Exception {
+        String source = Utils.getResourceAsString("simplebatch.nt");
+        Set<String> fragmentIds = Utils.getAllSubjects(source);
+        BatchFragment batch = new BatchFragment(fragmentIds, source);
+
+        for (Fragment f : batch.getFragments()) {
+            String fragmentId = f.getResourceId();
+            String ePhorteType = EphorteFacade.getObjectType(f.getType());
+            DataObjectT obj = facade.create(ePhorteType, fragmentId);
+            doReturn(null).when(facade).get(anyString(), eq(fragmentId));
+            doReturn(obj).when(facade).get(anyString(), eq(fragmentId));
+        }
+
+        DataObjectT[] result = facade.save(batch);
+
+        // FIXME: This test is a bit broken.  We actually want 5
+        // inserts, however to get this, we need to return null on the
+        // first call to get() then the object on the second call to get
+        verify(client, times(5)).update(any(DataObjectT[].class));
     }
 
     @Test
