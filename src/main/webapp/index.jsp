@@ -18,7 +18,7 @@
         var resourceIds = form.resource.value.split(" ");
         var action = form.action + "?resource=" + encodeURIComponent(resourceIds[0]);
         for (var i = 1; i < resourceIds.length; i++) {
-            action = actian + "&resource=" + encodeURIComponent(resourceIds[i]);
+            action = action + "&resource=" + encodeURIComponent(resourceIds[i]);
         }
         return action;
       }
