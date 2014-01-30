@@ -18,7 +18,7 @@ public class NCoreClient {
         try {
             NCore.Objects.insert(objs);
         } catch (Exception e) {
-            String msg = "Couldn't insert fragment, ePhorte threw exception";
+            String msg = "Couldn't insert fragment, ePhorte threw exception: " + e;
             log.error(msg, e);
             throw new InvalidFragment(msg, e);
         }
@@ -30,7 +30,7 @@ public class NCoreClient {
         try {
             NCore.Objects.update(objs);
         } catch (Exception e) {
-            String msg = "Couldn't update fragment, ePhorte threw exception";
+            String msg = "Couldn't update fragment, ePhorte threw exception: " + e;
             log.error(msg, e);
             throw new InvalidFragment(msg, e);
         }
@@ -52,7 +52,7 @@ public class NCoreClient {
         try {
             return NCore.Documents.uploadFile(fileName, storageId, data);
         } catch (Exception e) {
-            String msg = "Couldn't upload file, ePhorte threw exception";
+            String msg = "Couldn't upload file, ePhorte threw exception: " + e;
             log.error(msg, e);
             throw new InvalidFragment(msg, e);
         }

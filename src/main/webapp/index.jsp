@@ -3,6 +3,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ePhorte adapter</title>
   </head>
   <body>
     <script>
@@ -30,7 +31,7 @@
         req.onreadystatechange = function() {
             if (req.readyState != 4) return;
             var result = '<span class="status">' + escapeXml(req.status) + ": " + req.statusText + '</span><br />' +
-                         '<pre class="text">' + escapeXml(req.responseText) + '</pre>';
+                         '<div class="text">' + escapeXml(req.responseText) + '</div>';
 
 
             resultDiv.innerHTML = result;
@@ -41,6 +42,7 @@
         return false;
       }
     </script>
+    <h1>ePhorte adapter</h1>
     <form method="post" action="webapi/fragment" accept-charset="UTF-8" onsubmit="return doSubmit(this);"> <br/> <br/>
       <label for="resource">Resource (PSI)</label> <br/>
       <input type="text" id="resource" name="resource" size="100" /> <br/>
