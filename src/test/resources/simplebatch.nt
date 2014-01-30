@@ -4,7 +4,6 @@
 <http://data.mattilsynet.org/registryentries/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.mattilsynet.no/sesam/ephorte/RegistryEntryT> .
 <http://data.mattilsynet.org/registryentrydocuments/1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.mattilsynet.no/sesam/ephorte/RegistryEntryDocumentT> .
 <http://data.mattilsynet.org/registryentries/1> <http://data.mattilsynet.no/sesam/ephorte/case> <http://data.mattilsynet.org/cases/1> .
-<http://data.mattilsynet.org/documentobjects/1> <http://data.mattilsynet.no/sesam/ephorte/document-description> <http://data.mattilsynet.org/documentdescriptions/1> .
 <http://data.mattilsynet.org/registryentrydocuments/1> <http://data.mattilsynet.no/sesam/ephorte/registry-entry> <http://data.mattilsynet.org/registryentries/1> .
 <http://data.mattilsynet.org/registryentrydocuments/1> <http://data.mattilsynet.no/sesam/ephorte/document-description> <http://data.mattilsynet.org/documentdescriptions/1> .
 <http://data.mattilsynet.org/documentdescriptions/1> <http://data.mattilsynet.no/sesam/ephorte/current-version> <http://data.mattilsynet.org/documentobjects/1> .

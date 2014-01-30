@@ -63,7 +63,7 @@ public class BatchFragment implements StatementHandler {
     }
 
     public List<Fragment> getFragments() {
-        List<String> subjects = getSubjectsOrderedByDependencies();
+        Set<String> subjects = fragments.keySet();
 
         ArrayList<Fragment> result = new ArrayList<Fragment>();
         while (subjects.size() > 0) {
@@ -75,46 +75,23 @@ public class BatchFragment implements StatementHandler {
         return result;
     }
 
-    private String selectNextSubject(List<String> candidates) {
-        String best = candidates.get(0);
+    private String selectNextSubject(Set<String> candidates) {
+        String best = null;
         int score = Integer.MAX_VALUE;
 
         for (String candidate : candidates) {
             int myScore = countDependencies(candidate, candidates);
 
-            if (myScore < score && !dependsOnOtherCandidate(candidate, candidates)) {
+            // We have a free candidate, let's pick it
+            if (myScore == 0) return candidate;
+
+            if (myScore < score) {
                 best = candidate;
                 score = myScore;
             }
         }
 
         return best;
-    }
-
-    private List<String> getSubjectsOrderedByDependencies() {
-        final List<String> result = new ArrayList<String>(fragments.keySet());
-        Collections.sort(result, new Comparator<String>() {
-
-                public int compare(String s1, String s2) {
-                    int i1 = countDependencies(s1, result);
-                    int i2 = countDependencies(s2, result);
-
-                    // The number of dependencies should never be able
-                    // to cause an integer overflow.
-                    return i1 - i2;
-                }
-            });
-        return result;
-    }
-
-    private boolean dependsOnOtherCandidate(String candidate, List<String> candidates) {
-        Set<String> deps = dependencies.get(candidate);
-        if (deps == null) return false;
-
-        Set<String> intersection = new HashSet<String>(candidates);
-
-        intersection.retainAll(deps);
-        return intersection.size() > 0;
     }
 
     private int countDependencies(String candidate, Collection<String> candidates) {

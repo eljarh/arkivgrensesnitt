@@ -62,7 +62,7 @@ public class BatchFragmentTest {
         BatchFragment batch = new BatchFragment(resources, source);
 
         List<Fragment> fragments = batch.getFragments();
-        String[] expected = new String[] { "CaseT", "RegistryEntryT", "DocumentObjectT", "DocumentDescriptionT", "RegistryEntryDocumentT" };
+        String[] expected = new String[] { "DocumentObjectT", "DocumentDescriptionT", "CaseT", "RegistryEntryT", "RegistryEntryDocumentT" };
 
         for (int i = 0; i < expected.length; i++) {
             String type = fragments.get(i).getType();
