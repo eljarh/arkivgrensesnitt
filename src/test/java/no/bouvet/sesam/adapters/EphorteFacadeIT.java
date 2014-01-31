@@ -17,6 +17,7 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ncore.client.core.ObjectModel;
 
 import org.apache.commons.io.IOUtils;
+import java.util.Set;
 
 public class EphorteFacadeIT {
     EphorteFacade facade = EphorteFacade.getInstance();
@@ -54,9 +55,9 @@ public class EphorteFacadeIT {
     @Test
     public void testSaveBatchWithDocumentDescription() throws Exception {
         String source = Utils.getResourceAsString("batch-with-document-description.nt");
-        String resourceId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(resourceId, source);
-        facade.save(fragment);
+        Set<String> resourceId = Utils.getAllSubjects(source);
+        BatchFragment batch = new BatchFragment(resourceId, source);
+        facade.save(batch);
     }
 
     @Test
