@@ -24,6 +24,10 @@ public class NCoreClient {
         }
     }
 
+    public void update(DataObjectT obj) throws Exception {
+        update(new DataObjectT[] { obj });
+    }
+
     public void update(DataObjectT[] objs) throws Exception {
         log.info("Updating objects {}", objs);
 
@@ -39,7 +43,13 @@ public class NCoreClient {
     public List<DataObjectT> get(String searchName, String query) throws Exception {
         log.debug("Getting objects using searchName {} and query {}", searchName, query);
         try {
-            return NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
+            List<DataObjectT> objs = NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
+            for (DataObjectT obj : objs) {
+                // Remove the serialisation id since that causes
+                // problems if we try to update later
+                obj.setSerId(null);
+            }
+            return objs;
         } catch (com.sun.xml.ws.fault.ServerSOAPFaultException e) {
             log.error("Couldn't get object, ePhorte threw exception", e);
             return new ArrayList<DataObjectT>();

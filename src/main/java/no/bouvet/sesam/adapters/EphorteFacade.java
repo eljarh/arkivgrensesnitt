@@ -124,9 +124,8 @@ public class EphorteFacade {
 
         DataObjectT[] objs = populate(obj, fragment.getStatements());
 
-
         if (objectExists) {
-            client.update(objs);
+            client.update(obj);
             log.info("Updated resource: {}", fragment.getResourceId());
         } else {
             client.insert(objs);

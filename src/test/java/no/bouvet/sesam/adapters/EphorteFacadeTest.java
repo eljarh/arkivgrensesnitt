@@ -308,7 +308,7 @@ public class EphorteFacadeTest {
         // FIXME: This test is a bit broken.  We actually want 5
         // inserts, however to get this, we need to return null on the
         // first call to get() then the object on the second call to get
-        verify(client, times(5)).update(any(DataObjectT[].class));
+        verify(client, times(5)).update(any(DataObjectT.class));
     }
 
     @Test
@@ -323,7 +323,7 @@ public class EphorteFacadeTest {
 
         facade.save(fragment);
 
-        verify(client).update(any(DataObjectT[].class));
+        verify(client).update(any(DataObjectT.class));
     }
 
     @Test
