@@ -137,7 +137,9 @@ public class EphorteFacade {
             client.insert(obj);
             Object oId = ObjectUtils.invokeGetter(obj, "getId");
             log.info("Created resource: {} (ePhorteId={})", fragment.getResourceId(), oId);
-            ePhorteIds.put(resourceId, oId);
+            if (oId != null) {
+                ePhorteIds.put(resourceId, oId);
+            }
         }
 
         return obj;

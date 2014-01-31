@@ -52,6 +52,14 @@ public class EphorteFacadeIT {
     }
 
     @Test
+    public void testSaveBatchWithDocumentDescription() throws Exception {
+        String source = Utils.getResourceAsString("batch-with-document-description.nt");
+        String resourceId = Utils.getFirstSubject(source);
+        Fragment fragment = new Fragment(resourceId, source);
+        facade.save(fragment);
+    }
+
+    @Test
     public void testSaveSimpleDocumentDescription() throws Exception {
         String source = Utils.getResourceAsString("simpledocumentdescription.nt");
         String resourceId = Utils.getFirstSubject(source);
