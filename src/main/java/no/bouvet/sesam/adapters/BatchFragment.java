@@ -70,7 +70,7 @@ public class BatchFragment implements StatementHandler {
         dependencies.put(subject, deps);
     }
 
-    public List<Fragment> getFragments() {
+    public List<Fragment> getFragments() throws InvalidFragment {
         // Make a copy so we don't change the fragments HashMap later
         Set<String> subjects = new HashSet<String>(fragments.keySet());
 
@@ -84,23 +84,13 @@ public class BatchFragment implements StatementHandler {
         return result;
     }
 
-    private String selectNextSubject(Set<String> candidates) {
-        String best = null;
-        int score = Integer.MAX_VALUE;
-
+    private String selectNextSubject(Set<String> candidates) throws InvalidFragment {
         for (String candidate : candidates) {
             int myScore = countDependencies(candidate, candidates);
-
-            // We have a free candidate, let's pick it
             if (myScore == 0) return candidate;
-
-            if (myScore < score) {
-                best = candidate;
-                score = myScore;
-            }
         }
 
-        return best;
+        throw new InvalidFragment("Fragment contains cycles");
     }
 
     private int countDependencies(String candidate, Collection<String> candidates) {

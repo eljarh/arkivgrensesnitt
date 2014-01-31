@@ -68,6 +68,17 @@ public class BatchFragmentTest {
     }
 
     @Test
+    public void testThatGetFragmentsThrowsInvalidFragmentOnCyclicGraph() throws Exception {
+        String source = Utils.getResourceAsString("batch-with-cycles.nt");
+        Set<String> resources = Utils.getAllSubjects(source);
+
+        BatchFragment batch = new BatchFragment(resources, source);
+
+        exception.expect(InvalidFragment.class);
+        exception.expectMessage("Fragment contains cycles");
+        List<Fragment> fragments = batch.getFragments();
+    }
+    @Test
     public void testThatGetFragmentsIsSortedByDependencyOrder() throws Exception {
         String source = Utils.getResourceAsString("simplebatch.nt");
         Set<String> resources = Utils.getAllSubjects(source);
