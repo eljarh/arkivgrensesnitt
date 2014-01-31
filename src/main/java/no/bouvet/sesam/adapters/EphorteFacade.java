@@ -94,13 +94,13 @@ public class EphorteFacade {
         List<DataObjectT> result = new ArrayList<DataObjectT>();
 
         for (Fragment f : batch.getFragments()) {
-            DataObjectT[] r = save(f);
-                result.addAll(Arrays.asList(r));
+            DataObjectT r = save(f);
+            result.add(r);
         }
         return result.toArray(new DataObjectT[0]);
     }
 
-    public DataObjectT[] save(Fragment fragment) throws Exception {
+    public DataObjectT save(Fragment fragment) throws Exception {
         String type = fragment.getType();
         if (StringUtils.isBlank(type)) {
             throw new InvalidFragment("Fragment has no type");
@@ -120,19 +120,19 @@ public class EphorteFacade {
             log.debug("Creating object with type {} and resourceId {}", ePhorteType, resourceId);
             obj = create(ePhorteType, resourceId);
         }
-        setRdfKeywords(obj, fragment.getSource());
 
-        DataObjectT[] objs = populate(obj, fragment.getStatements());
+        setRdfKeywords(obj, fragment.getSource());
+        populate(obj, fragment.getStatements());
 
         if (objectExists) {
             client.update(obj);
             log.info("Updated resource: {}", fragment.getResourceId());
         } else {
-            client.insert(objs);
+            client.insert(obj);
             log.info("Created resource: {} (ePhorteId={})", fragment.getResourceId(), ObjectUtils.invokeGetter(obj, "getId"));
         }
 
-        return objs;
+        return obj;
     }
 
     public DataObjectT create(String typeName, String externalId) throws Exception {
@@ -151,24 +151,19 @@ public class EphorteFacade {
         ObjectUtils.setFieldValue(obj, rdfKeywordsName, link);
     }
 
-    public DataObjectT[] populate(DataObjectT obj, List<Statement> statements) throws Exception {
-        List<DataObjectT> objs = new ArrayList<DataObjectT>();
+    public void populate(DataObjectT obj, List<Statement> statements) throws Exception {
         for (Statement s : statements) {
-            DataObjectT referencedObject = populate(obj, s);
-            if (referencedObject != null)
-                objs.add(referencedObject);
+            populate(obj, s);
         }
-        objs.add(obj);
-        return objs.toArray(new DataObjectT[objs.size()]);
     }
 
-    public DataObjectT populate(DataObjectT obj, Statement s) throws Exception {
+    public void populate(DataObjectT obj, Statement s) throws Exception {
         String name = getFieldName(s.property);
 
         String fieldType = ObjectUtils.getFieldType (obj, name);
         if (fieldType == null) {
             log.debug("Object has no setter for {}", name);
-            return null;
+            return;
         }
 
         String value = s.object;
@@ -177,23 +172,33 @@ public class EphorteFacade {
             value = d.process(value);
         }
 
-        if (!s.literal) {
-            if (isEphorteType(fieldType)) {
-                if (!acceptedReference(value))
-                    return null; // we're not going to set this reference
-                DataObjectT o = get(fieldType, value);
-                if (o == null) {
-                    String msg = String.format("Fragment tries to set property <%s> to non-existent object <%s>", s.property, s.object);
-                    throw new ReferenceNotFound(msg);
-                }
+        if (isEphorteType(fieldType)) {
+            if (!acceptedReference(value))
+                return; // we're not going to set this reference
 
-                ObjectUtils.setFieldValue(obj, name, o);
-                return o;
+            DataObjectT o = get(fieldType, value);
+            if (o == null) {
+                String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
+                throw new ReferenceNotFound(msg);
             }
-        }
 
-        ObjectUtils.setFieldValue(obj, name, value);
-        return null;
+            String idName = name + "-id";
+            if (!ObjectUtils.hasField(obj, idName)) {
+                String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however subject has no setter <%s>", s.subject, s.property, s.object, idName);
+                throw new InvalidReference(msg);
+            }
+
+            Object oId = ObjectUtils.invokeGetter(o, "getId");
+            if (oId == null) {
+                String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however we can't get the objects id", s.subject, s.property, s.object);
+                throw new InvalidReference(msg);
+            }
+
+            ObjectUtils.setFieldValue(obj, idName, oId);
+        } else {
+            ObjectUtils.setFieldValue(obj, name, value);
+        }
+        return;
     }
 
     public DataObjectT get(String typeName, String externalId) throws Exception {

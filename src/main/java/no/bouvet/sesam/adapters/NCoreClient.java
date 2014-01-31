@@ -12,6 +12,10 @@ import java.util.ArrayList;
 public class NCoreClient {
     private static Logger log = LoggerFactory.getLogger(NCoreClient.class.getName());
     
+    public void insert(DataObjectT obj) throws Exception {
+        insert(new DataObjectT[] { obj });
+    }
+
     public void insert(DataObjectT[] objs) throws Exception {
         log.info("Inserting objects {}", objs);
 

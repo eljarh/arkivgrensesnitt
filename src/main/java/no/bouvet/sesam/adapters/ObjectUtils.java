@@ -22,6 +22,11 @@ public class ObjectUtils {
     }
 
     public static void setFieldValue(Object obj, String name, Object value) {
+        if (value instanceof String) {
+            setFieldValue(obj, name, (String) value);
+            return;
+        }
+
         log.debug("Setting value of {} to {}", name, value);
         Map<String, Object> m = new HashMap<String, Object>();
         m.put(name, value);
@@ -40,6 +45,12 @@ public class ObjectUtils {
 
         Class type = m.getParameterTypes()[0];
         return type.getName();
+    }
+
+    public static boolean hasField(Object obj, String fieldName) {
+        String methodName = makePropertyName(fieldName);
+        Method m = getMethod(obj, methodName);
+        return m != null;
     }
 
     public static Object invokeGetter(Object obj, String getterName) throws Exception {

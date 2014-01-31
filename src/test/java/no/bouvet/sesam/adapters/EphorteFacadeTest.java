@@ -192,14 +192,15 @@ public class EphorteFacadeTest {
     public void testPopulateWithReferencedEphorteType() throws Exception {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "id", false);
         RegistryEntryT entry = new RegistryEntryT();
-        CaseT expected = new CaseT();
+        Integer expected = 12345;
+        CaseT c = new CaseT();
+        c.setId(expected);
 
-        doReturn(expected).when(facade).get(anyString(), eq("id"));
+        doReturn(c).when(facade).get(anyString(), eq("id"));
 
-        DataObjectT result = facade.populate(entry, s);
+        facade.populate(entry, s);
 
-        assertSame(expected, entry.getCase());
-        assertSame(expected, result);
+        assertEquals(expected, entry.getCaseId());
     }
 
     @Test
@@ -224,7 +225,7 @@ public class EphorteFacadeTest {
         doReturn(null).when(facade).get(anyString(), eq("id"));
 
         exception.expect(ReferenceNotFound.class);
-        exception.expectMessage("Fragment tries to set property <http://data.mattilsynet.no/sesam/ephorte/case> to non-existent object <id>");
+        exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/case> to non-existent object <id>");
         facade.populate (entry, s);
     }
 
@@ -244,22 +245,27 @@ public class EphorteFacadeTest {
     }
 
     @Test
-    public void testPopulateWithManyReferencesReturnsAllInvolvedDataObjects() throws Exception {
+    public void testPopulateWithManyReferencesSetsIdsCorrectly() throws Exception {
         Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "code", false);
         Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-group", "group", false);
         List<Statement> statements = new ArrayList<Statement>();
         statements.add(s1);
         statements.add(s2);
 
+        String codeId = "123";
+        Integer groupId = 345;
         AccessCodeT code = new AccessCodeT();
+        code.setId(codeId);
         AccessGroupT group = new AccessGroupT();
+        group.setId(groupId);
         CaseT obj = new CaseT();
         doReturn(code).when(facade).get(anyString(), eq("code"));
         doReturn(group).when(facade).get(anyString(), eq("group"));
 
-        DataObjectT[] objs = facade.populate(obj, statements);
+        facade.populate(obj, statements);
 
-        assertEquals(3, objs.length);
+        assertEquals(codeId, obj.getAccessCodeId());
+        assertEquals(groupId, obj.getAccessGroupId());
     }
 
     @Test
@@ -272,7 +278,7 @@ public class EphorteFacadeTest {
 
         facade.save(fragment);
 
-        verify(client).insert(any(DataObjectT[].class));
+        verify(client).insert(any(DataObjectT.class));
     }
 
     @Test
@@ -283,10 +289,8 @@ public class EphorteFacadeTest {
 
         doReturn("actual").when(client).upload(anyString(), anyString(), any(byte[].class));
 
-        DataObjectT[] result = facade.save(fragment);
-
-        CaseT c = (CaseT) result[0];
-        assertEquals("actual", c.getCustomAttribute4());
+        CaseT result = (CaseT) facade.save(fragment);
+        assertEquals("actual", result.getCustomAttribute4());
     }
 
     @Test
@@ -299,6 +303,9 @@ public class EphorteFacadeTest {
             String fragmentId = f.getResourceId();
             String ePhorteType = EphorteFacade.getObjectType(f.getType());
             DataObjectT obj = facade.create(ePhorteType, fragmentId);
+            try {
+                ObjectUtils.setFieldValue(obj, "id", 123);
+            } catch (Exception e) { /* ok */ }
             doReturn(null).when(facade).get(anyString(), eq(fragmentId));
             doReturn(obj).when(facade).get(anyString(), eq(fragmentId));
         }
@@ -361,14 +368,14 @@ public class EphorteFacadeTest {
         
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "http://ignored/id", false);
         RegistryEntryT entry = new RegistryEntryT();
+        Integer expected = 12345;
         CaseT thecase = new CaseT();
+        thecase.setId(expected);
 
         doReturn(thecase).when(facade).get(anyString(), eq("http://ignored/id"));
 
-        DataObjectT result = facade.populate(entry, s);
-
-        assertSame(null, entry.getCase());
-        assertSame(null, result);
+        facade.populate(entry, s);
+        assertSame(null, entry.getCaseId());
     }
   
     @Test
@@ -378,12 +385,13 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "http://unignored/id", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT thecase = new CaseT();
+        Integer expected = 12345;
+        thecase.setId(expected);
 
         doReturn(thecase).when(facade).get(anyString(), eq("http://unignored/id"));
 
-        DataObjectT result = facade.populate(entry, s);
+        facade.populate(entry, s);
 
-        assertSame(thecase, entry.getCase());
-        assertSame(thecase, result);
+        assertEquals(expected, entry.getCaseId());
     }
 }
