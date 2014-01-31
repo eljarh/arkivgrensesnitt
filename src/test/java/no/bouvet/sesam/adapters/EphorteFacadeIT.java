@@ -44,6 +44,14 @@ public class EphorteFacadeIT {
     }
 
     @Test
+    public void testSaveSimpleJournalPostWithManyCases() throws Exception {
+        String source = Utils.getResourceAsString("simplejournalpost-many-cases.nt");
+        String resourceId = Utils.getFirstSubject(source);
+        Fragment fragment = new Fragment(resourceId, source);
+        facade.save(fragment);
+    }
+
+    @Test
     public void testSaveSimpleDocumentDescription() throws Exception {
         String source = Utils.getResourceAsString("simpledocumentdescription.nt");
         String resourceId = Utils.getFirstSubject(source);
