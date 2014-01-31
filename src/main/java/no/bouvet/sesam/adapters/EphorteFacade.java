@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 
@@ -28,6 +30,7 @@ public class EphorteFacade {
     private String rdfKeywordsName;
 
     private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
+    private Set<String> ignoredPrefixes = new HashSet();
 
     public EphorteFacade() {
         client = new NCoreClient();
@@ -62,6 +65,11 @@ public class EphorteFacade {
         rdfKeywordsName = (String) config.getProperty("ephorte.rdfKeywords.name");
         storageId = (String) config.getProperty("ephorte.storageId");
 
+        String prefixes = (String) config.getProperty("ephorte.ignoredReferencePrefixes");
+        if (prefixes != null)
+            for (String prefix : prefixes.split(","))
+                addIgnoredReferencePrefix(prefix);
+
         Iterator<String> keys = decorators.getKeys();
         while(keys.hasNext()) {
             String klass = keys.next();
@@ -74,6 +82,10 @@ public class EphorteFacade {
     public void setDecorator(String key, Decorator obj) {
         decorators.remove(key);
         decorators.put(key, obj);
+    }
+
+    public void addIgnoredReferencePrefix(String prefix) {
+        ignoredPrefixes.add(prefix);
     }
 
     public static EphorteFacade getInstance() { return singleton; };
@@ -168,6 +180,8 @@ public class EphorteFacade {
 
         if (!s.literal) {
             if (isEphorteType(fieldType)) {
+                if (!acceptedReference(value))
+                    return null; // we're not going to set this reference
                 DataObjectT o = get(fieldType, value);
                 if (o == null) {
                     String msg = String.format("Fragment tries to set property <%s> to non-existent object <%s>", s.property, s.object);
@@ -248,6 +262,13 @@ public class EphorteFacade {
 
     public String uploadFile(String fileName, byte[] data) throws Exception {
         return client.upload(fileName, storageId, data);
+    }
+
+    private boolean acceptedReference(String uri) {
+        for (String prefix : ignoredPrefixes)
+            if (uri.startsWith(prefix))
+                return false; // we need to ignore this reference
+        return true; // doesn't match anything, so is accepted
     }
 
     private static boolean isInt(String s) {

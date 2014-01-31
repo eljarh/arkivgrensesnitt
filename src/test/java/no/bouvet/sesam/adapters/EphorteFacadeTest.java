@@ -354,4 +354,36 @@ public class EphorteFacadeTest {
     public void testThatGetFieldNameReturnsEmptyOnNull() {
         assertEquals("", EphorteFacade.getFieldName(null));
     }
+  
+    @Test
+    public void testIgnoredReference() throws Exception {
+        facade.addIgnoredReferencePrefix("http://ignored/");
+        
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "http://ignored/id", false);
+        RegistryEntryT entry = new RegistryEntryT();
+        CaseT thecase = new CaseT();
+
+        doReturn(thecase).when(facade).get(anyString(), eq("http://ignored/id"));
+
+        DataObjectT result = facade.populate(entry, s);
+
+        assertSame(null, entry.getCase());
+        assertSame(null, result);
+    }
+  
+    @Test
+    public void testUnignoredReference() throws Exception {
+        facade.addIgnoredReferencePrefix("http://ignored/");
+        
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "http://unignored/id", false);
+        RegistryEntryT entry = new RegistryEntryT();
+        CaseT thecase = new CaseT();
+
+        doReturn(thecase).when(facade).get(anyString(), eq("http://unignored/id"));
+
+        DataObjectT result = facade.populate(entry, s);
+
+        assertSame(thecase, entry.getCase());
+        assertSame(thecase, result);
+    }
 }
