@@ -46,7 +46,7 @@ public class FragmentTest {
         assertEquals(resourceId, fragment.getResourceId());
         assertEquals(type, fragment.getType());
         assertEquals(source, fragment.getSource());
-        assertEquals(6, fragment.getStatements().size());
+        assertEquals(7, fragment.getStatements().size());
     }
 
     @Test

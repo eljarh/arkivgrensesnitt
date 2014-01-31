@@ -1,6 +1,7 @@
-<http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb> <http://data.mattilsynet.no/sesam/ephorte/record-status-id> "J" .
-<http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb> <http://data.mattilsynet.no/sesam/ephorte/title> "Utlysning - WebCruiter annonse" .
-<http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb> <http://data.mattilsynet.no/sesam/ephorte/title-restricted> "0" .
-<http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb> <http://data.mattilsynet.no/sesam/ephorte/document-category-id> "U" .
-<http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.mattilsynet.no/sesam/ephorte/RegistryEntryT> .
-<http://data.mattilsynet.no/sesam/webcruiter/journalpost/974bfef7-1f72-4ee5-97ff-ffc07c8000fb> <http://data.mattilsynet.no/sesam/ephorte/case> <http://data.mattilsynet.org/cases/776663918> .
+<http://data.mattilsynet.no/sesam/webcruiter/journalpost/e3152d2c-2e51-4175-8620-d233f5ceb124> <http://data.mattilsynet.no/sesam/ephorte/registry-entry-type-id> "U" .
+<http://data.mattilsynet.no/sesam/webcruiter/journalpost/e3152d2c-2e51-4175-8620-d233f5ceb124> <http://data.mattilsynet.no/sesam/ephorte/title> "Utlysning - WebCruiter annonse" .
+<http://data.mattilsynet.no/sesam/webcruiter/journalpost/e3152d2c-2e51-4175-8620-d233f5ceb124> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.mattilsynet.no/sesam/ephorte/RegistryEntryT> .
+<http://data.mattilsynet.no/sesam/webcruiter/journalpost/e3152d2c-2e51-4175-8620-d233f5ceb124> <http://data.mattilsynet.no/sesam/ephorte/title-person-name-tagged> "Utlysning - WebCruiter annonse" .
+<http://data.mattilsynet.no/sesam/webcruiter/journalpost/e3152d2c-2e51-4175-8620-d233f5ceb124> <http://data.mattilsynet.no/sesam/ephorte/title-restricted> "0" .
+<http://data.mattilsynet.no/sesam/webcruiter/journalpost/e3152d2c-2e51-4175-8620-d233f5ceb124> <http://data.mattilsynet.no/sesam/ephorte/record-status-id> "S" .
+<http://data.mattilsynet.no/sesam/webcruiter/journalpost/e3152d2c-2e51-4175-8620-d233f5ceb124> <http://data.mattilsynet.no/sesam/ephorte/case> <http://data.mattilsynet.no/sesam/ephorte/sak/10000160> .

@@ -51,8 +51,8 @@ public class BatchFragmentTest {
 
         assertEquals(2, fragments.size());
 
-        Fragment fragment1 = fragments.get(0);
-        Fragment fragment2 = fragments.get(1);
+        Fragment fragment1 = fragments.get(1);
+        Fragment fragment2 = fragments.get(0);
 
         assertEquals(resourceId1, fragment1.getResourceId());
         assertEquals(source1, fragment1.getSource());
