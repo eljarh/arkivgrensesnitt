@@ -91,16 +91,22 @@ public class EphorteFacade {
     public static EphorteFacade getInstance() { return singleton; };
 
     public DataObjectT[] save(BatchFragment batch) throws Exception {
+        Map<String, Object> ePhorteIds = new HashMap<String, Object>();
+
         List<DataObjectT> result = new ArrayList<DataObjectT>();
 
         for (Fragment f : batch.getFragments()) {
-            DataObjectT r = save(f);
+            DataObjectT r = save(f, ePhorteIds);
             result.add(r);
         }
         return result.toArray(new DataObjectT[0]);
     }
 
     public DataObjectT save(Fragment fragment) throws Exception {
+        return save(fragment, new HashMap<String, Object>());
+    }
+
+    public DataObjectT save(Fragment fragment, Map<String, Object> ePhorteIds) throws Exception {
         String type = fragment.getType();
         if (StringUtils.isBlank(type)) {
             throw new InvalidFragment("Fragment has no type");
@@ -122,14 +128,16 @@ public class EphorteFacade {
         }
 
         setRdfKeywords(obj, fragment.getSource());
-        populate(obj, fragment.getStatements());
+        populate(obj, fragment.getStatements(), ePhorteIds);
 
         if (objectExists) {
             client.update(obj);
             log.info("Updated resource: {}", fragment.getResourceId());
         } else {
             client.insert(obj);
-            log.info("Created resource: {} (ePhorteId={})", fragment.getResourceId(), ObjectUtils.invokeGetter(obj, "getId"));
+            Object oId = ObjectUtils.invokeGetter(obj, "getId");
+            log.info("Created resource: {} (ePhorteId={})", fragment.getResourceId(), oId);
+            ePhorteIds.put(resourceId, oId);
         }
 
         return obj;
@@ -151,13 +159,22 @@ public class EphorteFacade {
         ObjectUtils.setFieldValue(obj, rdfKeywordsName, link);
     }
 
-    public void populate(DataObjectT obj, List<Statement> statements) throws Exception {
+    public void populate(DataObjectT obj, List<Statement> statements, Map<String, Object> ePhorteIds) throws Exception {
         for (Statement s : statements) {
-            populate(obj, s);
+            populate(obj, s, ePhorteIds);
         }
     }
 
-    public void populate(DataObjectT obj, Statement s) throws Exception {
+    public void populate(DataObjectT obj, List<Statement> statements) throws Exception {
+        populate(obj, statements, new HashMap<String, Object>());
+    }
+
+
+    public void populate(DataObjectT obj, Statement statement) throws Exception {
+        populate(obj, statement, new HashMap<String, Object>());
+    }
+
+    public void populate(DataObjectT obj, Statement s, Map<String, Object> ePhorteIds) throws Exception {
         String name = getFieldName(s.property);
 
         String fieldType = ObjectUtils.getFieldType (obj, name);
@@ -176,21 +193,26 @@ public class EphorteFacade {
             if (!acceptedReference(value))
                 return; // we're not going to set this reference
 
-            DataObjectT o = get(fieldType, value);
-            if (o == null) {
-                String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
-                throw new ReferenceNotFound(msg);
+            Object oId = ePhorteIds.get(s.object);
+
+            if (oId == null) {
+                DataObjectT o = get(fieldType, value);
+                if (o == null) {
+                    String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
+                    throw new ReferenceNotFound(msg);
+                }
+
+                oId = ObjectUtils.invokeGetter(o, "getId");
+            }
+
+            if (oId == null) {
+                String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however we can't get the objects id", s.subject, s.property, s.object);
+                throw new InvalidReference(msg);
             }
 
             String idName = name + "-id";
             if (!ObjectUtils.hasField(obj, idName)) {
                 String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however subject has no setter <%s>", s.subject, s.property, s.object, idName);
-                throw new InvalidReference(msg);
-            }
-
-            Object oId = ObjectUtils.invokeGetter(o, "getId");
-            if (oId == null) {
-                String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however we can't get the objects id", s.subject, s.property, s.object);
                 throw new InvalidReference(msg);
             }
 
