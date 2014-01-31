@@ -1,0 +1,3 @@
+<http://data.mattilsynet.no/sesam/webcruiter/dokument/63e93d9b-1f79-4ad2-97c5-56772c5dfe2e/desc> <http://data.mattilsynet.no/sesam/ephorte/document-title> "Innlysning - WebCruiter annonse" .
+<http://data.mattilsynet.no/sesam/webcruiter/dokument/63e93d9b-1f79-4ad2-97c5-56772c5dfe2e/desc> <http://www.sdshare.org/2012/extension/lastmodified> "2014-01-30T11:46:26.747Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://data.mattilsynet.no/sesam/webcruiter/dokument/63e93d9b-1f79-4ad2-97c5-56772c5dfe2e/desc> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.mattilsynet.no/sesam/ephorte/DocumentDescriptionT> .

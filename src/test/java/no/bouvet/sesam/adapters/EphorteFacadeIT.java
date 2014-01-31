@@ -44,8 +44,22 @@ public class EphorteFacadeIT {
     }
 
     @Test
+    public void testSaveSimpleDocumentDescription() throws Exception {
+        String source = Utils.getResourceAsString("simpledocumentdescription.nt");
+        String resourceId = Utils.getFirstSubject(source);
+        Fragment fragment = new Fragment(resourceId, source);
+        facade.save(fragment);
+    }
+
+    @Test
     public void testThatWeCanRetrieveCaseByExternalId() throws Exception {
         DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT", "http://data.mattilsynet.org/cases/776663918");
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testThatWeCanRetrieveDocumentDescriptionByExternalId() throws Exception {
+        DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentDescriptionT", "http://data.mattilsynet.no/sesam/webcruiter/dokument/63e93d9b-1f79-4ad2-97c5-56772c5dfe2e/desc");
         assertNotNull(result);
     }
 
