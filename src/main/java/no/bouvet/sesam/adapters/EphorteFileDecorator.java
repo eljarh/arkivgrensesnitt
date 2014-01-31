@@ -21,17 +21,8 @@ import org.apache.http.HttpResponse;
 
 public class EphorteFileDecorator implements Decorator {
     static Logger log = LoggerFactory.getLogger(Fragment.class.getName());
-    private EphorteFacade facade;
 
-    public EphorteFileDecorator() {
-        this.facade = EphorteFacade.getInstance();
-    }
-
-    public EphorteFileDecorator(EphorteFacade facade) {
-        this.facade = facade;
-    }
-
-    public String process(String url) throws Exception {
+    public String process(EphorteFacade facade, String url) throws Exception {
         log.info("Processing file: {}", url);
 
         String fileName;

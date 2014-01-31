@@ -213,7 +213,7 @@ public class EphorteFacadeTest {
         facade.setDecorator(property, d);
         facade.populate(new DocumentObjectT(), s);
 
-        verify(d).process(url);
+        verify(d).process(facade, url);
     }
 
     @Test
