@@ -1,0 +1,3 @@
+# Don't mess with the line endings in our .nt files
+# that breaks the tests on windows
+*.nt binary
