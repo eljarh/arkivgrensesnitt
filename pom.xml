@@ -312,6 +312,14 @@
                 <tools-jar>${java.home}/../Classes/classes.jar</tools-jar>
             </properties>
         </profile>
+        <profile>
+            <id>hudson</id>
+            <activation>
+                <property><name>JENKINS_BUILD_NUMBER</name></property>
+            </activation>
+            <build>
+                <finalName>${project.artifactId}-${JENKINS_BUILD_NUMBER}-r${buildNumber}</finalName>
+            </build>
+        </profile>
     </profiles>
-
 </project>
