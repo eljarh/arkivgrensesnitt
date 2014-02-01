@@ -74,6 +74,7 @@ public class EphorteFacadeIT {
         assertNotNull(result);
     }
 
+    @Ignore
     @Test
     public void testThatWeCanRetrieveDocumentDescriptionByExternalId() throws Exception {
         DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentDescriptionT", "http://data.mattilsynet.no/sesam/webcruiter/dokument/63e93d9b-1f79-4ad2-97c5-56772c5dfe2e/desc");
