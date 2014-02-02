@@ -20,7 +20,7 @@ public class FragmentResource {
     static Logger log = LoggerFactory.getLogger(FragmentResource.class.getName());
 
     @POST
-    @Consumes("application/ntriples")
+    @Consumes("application/ntriples,text/plain")
     @Produces(MediaType.TEXT_PLAIN)
     public Response handleFragment(@Context SecurityContext context,
                                    @QueryParam("resource") final List<String> resourceIds,
