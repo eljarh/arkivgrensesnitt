@@ -109,7 +109,7 @@ public class EphorteFacade {
     public DataObjectT save(Fragment fragment, Map<String, Object> ePhorteIds) throws Exception {
         String type = fragment.getType();
         if (StringUtils.isBlank(type)) {
-            throw new InvalidFragment("Fragment has no type");
+            throw new InvalidFragment("Fragment has no type: " + fragment.getResourceId());
         }
         String ePhorteType = getObjectType(type);
 

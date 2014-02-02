@@ -95,7 +95,7 @@ public class Fragment implements StatementHandler {
         }
 
         if (StringUtils.isBlank(this.type)) {
-            throw new InvalidFragment("Fragment has no type");
+            throw new InvalidFragment("Fragment has no type: " + resourceId);
         }
     }
 }
