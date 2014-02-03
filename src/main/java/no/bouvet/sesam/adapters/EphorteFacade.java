@@ -18,8 +18,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Iterator;
 import java.util.Arrays;
 import org.apache.commons.lang.WordUtils;
+import org.apache.commons.codec.binary.Base32;
 
 public class EphorteFacade {
+    private static Base32 codec = new Base32();
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
     private static EphorteFacade singleton = new EphorteFacade();
 
@@ -151,8 +153,13 @@ public class EphorteFacade {
         return o;
     }
 
+    public String encodeExternalId(String externalId) {
+        return "BASE32:" + codec.encodeAsString(externalId.getBytes());
+    }
+
     public void setExternalId(DataObjectT obj, String externalId) {
-        ObjectUtils.setFieldValue(obj, externalIdName, externalId);
+        String value = encodeExternalId(externalId);
+        ObjectUtils.setFieldValue(obj, externalIdName, value);
     }
 
 
@@ -257,7 +264,8 @@ public class EphorteFacade {
     }
 
     public String getExternalIdSearchString(String typeName, String externalId) {
-        return externalIdSearchName + "=" + externalId;
+        String value = encodeExternalId(externalId);
+        return externalIdSearchName + "=" + value;
     }
 
     public static String getEphorteIdSearchString(String typeName, String psi) {

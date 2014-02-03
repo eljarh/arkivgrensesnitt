@@ -59,7 +59,7 @@ public class EphorteFacadeTest {
     @Test
     public void testThatSearchStringIsCorrect() {
         String s = facade.getExternalIdSearchString(fqCaseT, "test");
-        assertEquals("CustomAttribute2=test", s);
+        assertEquals("CustomAttribute4=BASE32:ORSXG5A=", s);
     }
 
     @Test
@@ -81,12 +81,10 @@ public class EphorteFacadeTest {
 
     @Test
     public void testThatGetTriesEphorteIdAfterExternalId() throws Exception {
-        ArrayList<DataObjectT> empty = new ArrayList<DataObjectT>();
         ArrayList<DataObjectT> result = new ArrayList<DataObjectT>();
         CaseT expected = new CaseT();
         result.add(expected);
 
-        when(client.get("Case", "CustomAttribute2=http://psi.sesam.io/ePhorte/12345")).thenReturn(empty);
         when(client.get("Case", "Id=12345")).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "http://psi.sesam.io/ePhorte/12345");
@@ -110,7 +108,7 @@ public class EphorteFacadeTest {
         third.setCreatedDate(dt.newXMLGregorianCalendar("1943-03-01T00:00:00Z"));
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get(anyString(), anyString())).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "id");
 
@@ -130,7 +128,7 @@ public class EphorteFacadeTest {
         CaseT third = new CaseT();
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get(anyString(), anyString())).thenReturn(result);
 
         CaseT actual = (CaseT) facade.get(fqCaseT, "id");
         assertSame(third, actual);
@@ -149,7 +147,7 @@ public class EphorteFacadeTest {
         DataObjectT third = new DataObjectT();
         result.add(third);
 
-        when(client.get("Case", "CustomAttribute2=id")).thenReturn(result);
+        when(client.get(anyString(), anyString())).thenReturn(result);
 
         DataObjectT actual = facade.get(fqCaseT, "id");
         assertSame(third, actual);
@@ -290,7 +288,7 @@ public class EphorteFacadeTest {
         doReturn("actual").when(client).upload(anyString(), anyString(), any(byte[].class));
 
         CaseT result = (CaseT) facade.save(fragment);
-        assertEquals("actual", result.getCustomAttribute4());
+        assertEquals("actual", result.getCustomAttribute5());
     }
 
     @Test
