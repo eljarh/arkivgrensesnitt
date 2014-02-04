@@ -1,6 +1,38 @@
 # Arkivgrensesnitt
 
-Denne applikasjonen er en enkel proxy som tar i mot RDF-fragmenter og arkiverer disse i ePhorte.
+Denne applikasjonen er en enkel proxy som tar i mot RDF-fragmenter og
+arkiverer disse i ePhorte.
+
+## Konfigurasjon
+
+Må ha en fil `config.xml` på classpath. Denne filen inneholder
+konfigurasjon til Gecko sin NCore-klient, i formatet denne krever.
+
+Må også ha en fil `ephorte.properties` på classpath, som inneholder
+konfigurasjon av selve adapteret. Denne støtter følgende properties:
+
+  * ephorte.externalId.name: Hvilket felt som lagrer URI-en objektet
+    ble opprettet fra.
+  * ephorte.externalId.name.encoded: Hvilket felt som lagrer URI-en i
+    base32-kodet format. (Dette er en workaround for bugs i ePhorte.)
+  * ephorte.rdfKeywords.name: Hvilket felt som lagrer RDF-en objektet
+    ble opprettet fra.
+  * ephorte.storageId: `storageId`-parameteren som kreves av NCore.
+  * ephorte.ignoredReferencePrefixes: En komma-separert liste av 
+    URL-prefikser som blir ignorert når objekter skal søkes opp i
+    ePhorte.
+
+## Ressurser
+
+Dersom `ephorte-adapter.war` installeres i en Tomcat-instans på
+localhost vil endepunktet bli
+`http://localhost:8080/ephorte-adapter/webapi/fragment`. I tillegg vil et enkelt brukergrensesnitt vises på ``http://localhost:8080/ephorte-adapter/`
+
+Dette endepunktet eksponerer følgende ressurser:
+
+-   **GET /:** Returnerer et skjema for å sende inn et fragment, fungerer som dokumentasjon for tjenesten i tillegg til at det gir oss en enkel måte å teste tjenesten på
+
+-   **POST /fragment{?resource}:** Aksepterer [application/n-triples](http://www.w3.org/TR/n-triples/), resource spesifiserer hvilket subjekt i dokumentet som skal skrives og POST-body inneholder selve fragmentet
 
 ## Funksjonelle krav
 
@@ -50,12 +82,3 @@ RDF har mange forskjellige representasjoner, mellom annet RDF/XML, NTriples, Tur
 
 Integrasjon med ePhorte gjøres via SOAP-kall.  Vi bruker java 6 sin innebygde støtte for SOAP og
 generering av stubs til dette.
-
-## Ressurser
-
-Denne webtjenesten eksponerer følgende ressurser:
-
--   **GET /:** Returnerer et skjema for å sende inn et fragment, fungerer som dokumentasjon for tjenesten i tillegg til at det gir oss en enkel måte å teste tjenesten på
-
--   **POST /fragment{?subject}:** Aksepterer [application/n-triples](http://www.w3.org/TR/n-triples/), subject spesifiserer hvilket subjekt i dokumentet som skal skrives og POST-body inneholder selve fragmentet
-
