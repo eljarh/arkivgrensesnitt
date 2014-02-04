@@ -28,6 +28,7 @@ public class EphorteFacade {
     private NCoreClient client;
     private String storageId;
     private String externalIdName;
+    private String externalIdNameEncoded;
     private String externalIdSearchName;
     private String rdfKeywordsName;
 
@@ -63,7 +64,8 @@ public class EphorteFacade {
 
     protected void init(PropertiesConfiguration config, PropertiesConfiguration decorators) {
         externalIdName = (String) config.getProperty("ephorte.externalId.name");
-        externalIdSearchName = WordUtils.capitalize(externalIdName, new char[] { '-' }).replace("-", "");
+        externalIdNameEncoded = (String) config.getProperty("ephorte.externalId.name.encoded");
+        externalIdSearchName = WordUtils.capitalize(externalIdNameEncoded, new char[] { '-' }).replace("-", "");
         rdfKeywordsName = (String) config.getProperty("ephorte.rdfKeywords.name");
         storageId = (String) config.getProperty("ephorte.storageId");
 
@@ -159,7 +161,8 @@ public class EphorteFacade {
 
     public void setExternalId(DataObjectT obj, String externalId) {
         String value = encodeExternalId(externalId);
-        ObjectUtils.setFieldValue(obj, externalIdName, value);
+        ObjectUtils.setFieldValue(obj, externalIdName, externalId);
+        ObjectUtils.setFieldValue(obj, externalIdNameEncoded, value);
     }
 
 

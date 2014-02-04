@@ -59,7 +59,7 @@ public class EphorteFacadeTest {
     @Test
     public void testThatSearchStringIsCorrect() {
         String s = facade.getExternalIdSearchString(fqCaseT, "test");
-        assertEquals("CustomAttribute4=BASE32:ORSXG5A=", s);
+        assertEquals("CustomAttribute5=BASE32:ORSXG5A=", s);
     }
 
     @Test
@@ -288,7 +288,7 @@ public class EphorteFacadeTest {
         doReturn("actual").when(client).upload(anyString(), anyString(), any(byte[].class));
 
         CaseT result = (CaseT) facade.save(fragment);
-        assertEquals("actual", result.getCustomAttribute5());
+        assertEquals("actual", result.getCustomAttribute6());
     }
 
     @Test
