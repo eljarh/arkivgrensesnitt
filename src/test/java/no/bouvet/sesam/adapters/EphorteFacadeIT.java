@@ -74,16 +74,15 @@ public class EphorteFacadeIT {
         assertNotNull(result);
     }
 
-    @Ignore
     @Test
     public void testThatWeCanRetrieveDocumentDescriptionByExternalId() throws Exception {
-        DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentDescriptionT", "http://data.mattilsynet.no/sesam/webcruiter/dokument/63e93d9b-1f79-4ad2-97c5-56772c5dfe2e/desc");
+        DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentDescriptionT", "http://data.mattilsynet.no/sesam/webcruiter/dokument/dcffcd30-a4b7-4e28-bc37-f44db814bc67/desc");
         assertNotNull(result);
     }
 
     @Test
     public void testThatWeCanRetrieveCaseByEphorteId() throws Exception {
-        DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT", "http://data.mattilsynet.no/sesam/ephorte/sak/10000146");
+        DataObjectT result = facade.get("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT", "http://data.mattilsynet.no/sesam/ephorte/sak/10000260");
         assertNotNull(result);
     }
 
