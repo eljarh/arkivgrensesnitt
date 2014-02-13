@@ -172,8 +172,20 @@ public class EphorteFacade {
     }
 
     public void populate(DataObjectT obj, List<Statement> statements, Map<String, Object> ePhorteIds) throws Exception {
+        List<ReferenceNotFound> missingReferences = new ArrayList<ReferenceNotFound>();
         for (Statement s : statements) {
-            populate(obj, s, ePhorteIds);
+            try {
+                populate(obj, s, ePhorteIds);
+            } catch (ReferenceNotFound e) {
+                missingReferences.add(e);
+            }
+        }
+
+        /* Make sure that the reference is still missing after
+         * having processed the full fragment */
+        for (ReferenceNotFound e : missingReferences) {
+            if (valueIsMissing(obj, e.getStatement()))
+                throw e;
         }
     }
 
@@ -211,7 +223,7 @@ public class EphorteFacade {
                 DataObjectT o = get(fieldType, value);
                 if (o == null) {
                     String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
-                    throw new ReferenceNotFound(msg);
+                    throw new ReferenceNotFound(msg, s);
                 }
 
                 oId = ObjectUtils.invokeGetter(o, "getId");
@@ -222,7 +234,7 @@ public class EphorteFacade {
                 throw new InvalidReference(msg);
             }
 
-            String idName = name + "-id";
+            String idName = getReferenceFieldName(s.property);
             if (!ObjectUtils.hasField(obj, idName)) {
                 String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however subject has no setter <%s>", s.subject, s.property, s.object, idName);
                 throw new InvalidReference(msg);
@@ -297,6 +309,20 @@ public class EphorteFacade {
         if (property == null) return "";
 
         return Utils.getLastPart(property);
+    }
+
+    private boolean valueIsMissing(Object obj, Statement s) {
+        String name = getReferenceFieldName(s.property);
+        try {
+            return ObjectUtils.getFieldValue(obj, name) == null;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    private String getReferenceFieldName(String property) {
+        String fieldName = getFieldName(property);
+        return fieldName + "-id";
     }
 
     public String uploadFile(String fileName, byte[] data) throws Exception {

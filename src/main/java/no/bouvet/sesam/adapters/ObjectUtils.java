@@ -21,6 +21,11 @@ public class ObjectUtils {
         }
     }
 
+    public static Object getFieldValue(Object obj, String name) throws Exception {
+        String getterName = makeGetterName(name);
+        return invokeGetter(obj, getterName);
+    }
+
     public static void setFieldValue(Object obj, String name, Object value) {
         if (value instanceof String) {
             setFieldValue(obj, name, (String) value);
@@ -89,6 +94,11 @@ public class ObjectUtils {
         }
 
         return new String(buf, 0, pos);
+    }
+
+    private static String makeGetterName(String name) {
+        String setterName = makePropertyName(name);
+        return "g" + setterName.substring(1,setterName.length());
     }
 
     private static Method getMethod(Object obj, String methodName) {

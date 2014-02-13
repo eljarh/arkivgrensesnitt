@@ -216,14 +216,14 @@ public class EphorteFacadeTest {
 
     @Test
     public void testPopulateWithNonExistingReferencedEphorteTypeThrowsReferenceNotFound() throws Exception {
-        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "id", false);
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "missing", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
 
-        doReturn(null).when(facade).get(anyString(), eq("id"));
+        doReturn(null).when(facade).get(anyString(), eq("missing"));
 
         exception.expect(ReferenceNotFound.class);
-        exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/case> to non-existent object <id>");
+        exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/case> to non-existent object <missing>");
         facade.populate (entry, s);
     }
 
@@ -240,6 +240,43 @@ public class EphorteFacadeTest {
 
         assertEquals(123, (int) obj.getId());
         assertEquals("whatever", obj.getTitle());
+    }
+
+    @Test
+    public void testPopulateWithManyReferences_ExistingOverwritesNonExisting() throws Exception {
+        Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "exists", false);
+        Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
+        List<Statement> statements = new ArrayList<Statement>();
+        statements.add(s1);
+        statements.add(s2);
+
+        String codeId = "123";
+        AccessCodeT code = new AccessCodeT();
+        code.setId(codeId);
+        CaseT obj = new CaseT();
+
+        doReturn(code).when(facade).get(anyString(), eq("exists"));
+        doReturn(null).when(facade).get(anyString(), eq("missing"));
+
+        facade.populate (obj, statements);
+        assertEquals(codeId, obj.getAccessCodeId());
+    }
+
+    @Test
+    public void testPopulateWithManyReferences_MissingThrowsException() throws Exception {
+        Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
+        Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
+        List<Statement> statements = new ArrayList<Statement>();
+        statements.add(s1);
+        statements.add(s2);
+
+        CaseT obj = new CaseT();
+
+        doReturn(null).when(facade).get(anyString(), eq("missing"));
+
+        exception.expect(ReferenceNotFound.class);
+        exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/access-code> to non-existent object <missing>");
+        facade.populate (obj, statements);
     }
 
     @Test
