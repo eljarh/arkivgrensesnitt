@@ -34,6 +34,7 @@ public class EphorteFacade {
 
     private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
     private Set<String> ignoredPrefixes = new HashSet();
+    private Set<String> immutableProperties = new HashSet();
 
     public EphorteFacade() {
         client = new NCoreClient();
@@ -74,6 +75,11 @@ public class EphorteFacade {
             for (String prefix : prefixes.split(","))
                 addIgnoredReferencePrefix(prefix);
 
+        String properties = (String) config.getProperty("ephorte.immutableProperties");
+        if (properties != null)
+            for (String property : properties.split(","))
+                addImmutableProperty(property);
+
         Iterator<String> keys = decorators.getKeys();
         while(keys.hasNext()) {
             String klass = keys.next();
@@ -86,6 +92,10 @@ public class EphorteFacade {
     public void setDecorator(String key, Decorator obj) {
         decorators.remove(key);
         decorators.put(key, obj);
+    }
+
+    public void addImmutableProperty(String property) {
+        immutableProperties.add(property);
     }
 
     public void addIgnoredReferencePrefix(String prefix) {
@@ -184,7 +194,9 @@ public class EphorteFacade {
         /* Make sure that the reference is still missing after
          * having processed the full fragment */
         for (ReferenceNotFound e : missingReferences) {
-            if (valueIsMissing(obj, e.getStatement()))
+            Statement s = e.getStatement();
+            String name = getReferenceFieldName(s.property);
+            if (valueIsMissing(obj, name))
                 throw e;
         }
     }
@@ -200,6 +212,10 @@ public class EphorteFacade {
 
     public void populate(DataObjectT obj, Statement s, Map<String, Object> ePhorteIds) throws Exception {
         String name = getFieldName(s.property);
+
+        if (immutableProperties.contains(s.property) && hasValue(obj, name)) {
+            return; // we're not going to set this reference
+        }
 
         String fieldType = ObjectUtils.getFieldType (obj, name);
         if (fieldType == null) {
@@ -311,13 +327,16 @@ public class EphorteFacade {
         return Utils.getLastPart(property);
     }
 
-    private boolean valueIsMissing(Object obj, Statement s) {
-        String name = getReferenceFieldName(s.property);
+    private boolean hasValue(Object obj, String name) {
         try {
-            return ObjectUtils.getFieldValue(obj, name) == null;
+            return ObjectUtils.getFieldValue(obj, name) != null;
         } catch (Exception e) {
             return true;
         }
+    }
+
+    private boolean valueIsMissing(Object obj, String name) {
+        return !hasValue(obj, name);
     }
 
     private String getReferenceFieldName(String property) {

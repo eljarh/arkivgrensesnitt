@@ -11,6 +11,7 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessCodeT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessGroupT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.ClassificationT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -396,11 +397,11 @@ public class EphorteFacadeTest {
     public void testThatGetFieldNameReturnsEmptyOnNull() {
         assertEquals("", EphorteFacade.getFieldName(null));
     }
-  
+
     @Test
     public void testIgnoredReference() throws Exception {
         facade.addIgnoredReferencePrefix("http://ignored/");
-        
+
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "http://ignored/id", false);
         RegistryEntryT entry = new RegistryEntryT();
         Integer expected = 12345;
@@ -412,11 +413,25 @@ public class EphorteFacadeTest {
         facade.populate(entry, s);
         assertSame(null, entry.getCaseId());
     }
-  
+
+    @Test
+    public void testImmutableProperty() throws Exception {
+        String property = "http://data.mattilsynet.no/sesam/ephorte/primary-classification";
+        facade.addImmutableProperty(property);
+
+        Statement s = new Statement("_", property, "_", false);
+        CaseT thecase = new CaseT();
+        ClassificationT val = new ClassificationT();
+        thecase.setPrimaryClassification(val);
+
+        facade.populate(thecase, s);
+        assertSame(val, thecase.getPrimaryClassification());
+    }
+
     @Test
     public void testUnignoredReference() throws Exception {
         facade.addIgnoredReferencePrefix("http://ignored/");
-        
+
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "http://unignored/id", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT thecase = new CaseT();
