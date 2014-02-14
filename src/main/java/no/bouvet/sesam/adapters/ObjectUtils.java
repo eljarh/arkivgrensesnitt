@@ -16,6 +16,9 @@ public class ObjectUtils {
         // Workaround for bug in no.priv.garshol.duke.utils.ObjectUtils.setBeanProperty
         if (type.equals("java.lang.Integer")) {
             setFieldValue(obj, name, Integer.parseInt(value));
+        } else if (type.equals("java.lang.Boolean")) {
+            setFieldValue(obj, name, Boolean.parseBoolean(value) ||
+                                     value.equals("1"));
         } else {
             no.priv.garshol.duke.utils.ObjectUtils.setBeanProperty(obj, name, value, null);
         }
