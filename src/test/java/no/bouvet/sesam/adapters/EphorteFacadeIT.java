@@ -89,7 +89,7 @@ public class EphorteFacadeIT {
     @Test
     public void testThatWeCanUploadFile() throws Exception {
         EphorteFileDecorator decorator = new EphorteFileDecorator();
-        String result = decorator.process(facade, "http://www.jtricks.com/download-unknown");
+        String result = (String) decorator.process(facade, "http://www.jtricks.com/download-unknown");
         assertTrue(result.startsWith("UPLOAD_{ObjectModelService}_"));
         assertTrue(result.endsWith("\\content.txt"));
     }

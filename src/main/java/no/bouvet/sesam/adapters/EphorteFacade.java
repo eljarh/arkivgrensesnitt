@@ -207,20 +207,20 @@ public class EphorteFacade {
             return;
         }
 
-        String value = s.object;
+        Object value = s.object;
         if (decorators.containsKey(s.property)) {
             Decorator d = decorators.get(s.property);
-            value = d.process(this, value);
+            value = d.process(this, s.object);
         }
 
         if (isEphorteType(fieldType)) {
-            if (!acceptedReference(value))
+            if (!acceptedReference(s.object))
                 return; // we're not going to set this reference
 
             Object oId = ePhorteIds.get(s.object);
 
             if (oId == null) {
-                DataObjectT o = get(fieldType, value);
+                DataObjectT o = get(fieldType, s.object);
                 if (o == null) {
                     String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
                     throw new ReferenceNotFound(msg, s);

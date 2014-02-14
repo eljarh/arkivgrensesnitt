@@ -22,7 +22,7 @@ import org.apache.http.HttpResponse;
 public class EphorteFileDecorator implements Decorator {
     static Logger log = LoggerFactory.getLogger(Fragment.class.getName());
 
-    public String process(EphorteFacade facade, String url) throws Exception {
+    public Object process(EphorteFacade facade, String url) throws Exception {
         log.info("Processing file: {}", url);
 
         String fileName;
