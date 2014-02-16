@@ -207,12 +207,13 @@ public class EphorteFacadeTest {
         String property = "http://data.mattilsynet.no/sesam/ephorte/file-path";
         String url = "http://www.jtricks.com/download-unknown";
         Statement s = new Statement("_", property, url, true);
+        BatchFragment batch = mock(BatchFragment.class);
 
         Decorator d = mock(Decorator.class);
         facade.setDecorator(property, d);
-        facade.populate(new DocumentObjectT(), mock(BatchFragment.class), s);
+        facade.populate(new DocumentObjectT(), batch, s);
 
-        verify(d).process(facade, url);
+        verify(d).process(facade, batch, s);
     }
 
     @Test

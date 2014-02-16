@@ -1,5 +1,6 @@
 package no.bouvet.sesam.adapters;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
@@ -89,7 +90,9 @@ public class EphorteFacadeIT {
     @Test
     public void testThatWeCanUploadFile() throws Exception {
         EphorteFileDecorator decorator = new EphorteFileDecorator();
-        String result = (String) decorator.process(facade, "http://www.jtricks.com/download-unknown");
+        BatchFragment batch = mock(BatchFragment.class);
+        Statement s = new Statement("_", "_", "http://www.jtricks.com/download-unknown", true);
+        String result = (String) decorator.process(facade, batch, s);
         assertTrue(result.startsWith("UPLOAD_{ObjectModelService}_"));
         assertTrue(result.endsWith("\\content.txt"));
     }

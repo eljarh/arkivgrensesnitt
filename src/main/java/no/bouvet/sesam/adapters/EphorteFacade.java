@@ -224,7 +224,7 @@ public class EphorteFacade {
         Object value = s.object;
         if (decorators.containsKey(s.property)) {
             Decorator d = decorators.get(s.property);
-            value = d.process(this, s.object);
+            value = d.process(this, batch, s);
         }
 
         if (isEphorteType(fieldType)) {
