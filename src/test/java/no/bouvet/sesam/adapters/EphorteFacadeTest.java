@@ -217,6 +217,24 @@ public class EphorteFacadeTest {
     }
 
     @Test
+    public void testPopulateWithUnpackClassificationDecorator() throws Exception {
+        String property = "http://data.mattilsynet.no/sesam/ephorte/primary-classification";
+        String value = "classification-system-id=ARKN\u00D8KKEL::class-id=212::description=Tilsetting";
+
+        Statement s = new Statement("_", property, value, true);
+        BatchFragment batch = mock(BatchFragment.class);
+
+        Decorator d = mock(Decorator.class);
+
+        doReturn(new ClassificationT()).when(d).process(facade, batch, s);
+
+        facade.setDecorator(property, d);
+        facade.populate(new CaseT(), batch, s);
+
+        verify(d).process(facade, batch, s);
+    }
+
+    @Test
     public void testPopulateWithNonExistingReferencedEphorteTypeThrowsReferenceNotFound() throws Exception {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "missing", false);
         RegistryEntryT entry = new RegistryEntryT();

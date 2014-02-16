@@ -212,7 +212,8 @@ public class EphorteFacade {
         String name = getFieldName(s.property);
 
         if (immutableProperties.contains(s.property) && hasValue(obj, name)) {
-            return; // we're not going to set this reference
+            log.debug("Object already has value for immutable property: {}", s.property);
+            return;
         }
 
         String fieldType = ObjectUtils.getFieldType (obj, name);
@@ -221,44 +222,55 @@ public class EphorteFacade {
             return;
         }
 
-        Object value = s.object;
-        if (decorators.containsKey(s.property)) {
-            Decorator d = decorators.get(s.property);
-            value = d.process(this, batch, s);
+        if (isEphorteType(fieldType) && !acceptedReference(s.object)) {
+            log.debug("Value is not acceptable reference: {}", s.object);
+            return;
         }
 
-        if (isEphorteType(fieldType)) {
-            if (!acceptedReference(s.object))
-                return; // we're not going to set this reference
-
-            Object oId = ePhorteIds.get(s.object);
-
-            if (oId == null) {
-                DataObjectT o = get(fieldType, s.object);
-                if (o == null) {
-                    String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
-                    throw new ReferenceNotFound(msg, s);
-                }
-
-                oId = ObjectUtils.invokeGetter(o, "getId");
-            }
-
-            if (oId == null) {
-                String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however we can't get the objects id", s.subject, s.property, s.object);
-                throw new InvalidReference(msg);
-            }
-
+        if (isEphorteType(fieldType) && !decorators.containsKey(s.property)) {
             String idName = getReferenceFieldName(s.property);
-            if (!ObjectUtils.hasField(obj, idName)) {
-                String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however subject has no setter <%s>", s.subject, s.property, s.object, idName);
-                throw new InvalidReference(msg);
-            }
-
+            Object oId = getIdValue(obj, fieldType, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, idName, oId);
         } else {
+            Object value = getValue(batch, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, name, value);
         }
-        return;
+    }
+
+    public Object getValue(BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+        if (decorators.containsKey(s.property)) {
+            Decorator d = decorators.get(s.property);
+            return d.process(this, batch, s);
+        }
+
+        return s.object;
+    }
+
+    public Object getIdValue(DataObjectT obj, String fieldType, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+        Object oId = ePhorteIds.get(s.object);
+
+        if (oId == null) {
+            DataObjectT o = get(fieldType, s.object);
+            if (o == null) {
+                String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
+                throw new ReferenceNotFound(msg, s);
+            }
+
+            oId = ObjectUtils.invokeGetter(o, "getId");
+        }
+
+        if (oId == null) {
+            String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however we can't get the objects id", s.subject, s.property, s.object);
+            throw new InvalidReference(msg);
+        }
+
+        String idName = getReferenceFieldName(s.property);
+        if (!ObjectUtils.hasField(obj, idName)) {
+            String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however subject has no setter <%s>", s.subject, s.property, s.object, idName);
+            throw new InvalidReference(msg);
+        }
+
+        return oId;
     }
 
     public DataObjectT get(String typeName, String externalId) throws Exception {
