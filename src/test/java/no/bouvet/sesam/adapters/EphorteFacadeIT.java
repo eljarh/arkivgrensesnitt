@@ -32,24 +32,24 @@ public class EphorteFacadeIT {
     public void testSaveSimpleCase() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
         String fragmentId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(fragmentId, source);
-        facade.save(fragment);
+        BatchFragment batch = new BatchFragment(fragmentId, source);
+        facade.save(batch);
     }
 
     @Test
     public void testSaveSimpleJournalPost() throws Exception {
         String source = Utils.getResourceAsString("simplejournalpost.nt");
         String resourceId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(resourceId, source);
-        facade.save(fragment);
+        BatchFragment batch = new BatchFragment(resourceId, source);
+        facade.save(batch);
     }
 
     @Test
     public void testSaveSimpleJournalPostWithManyCases() throws Exception {
         String source = Utils.getResourceAsString("simplejournalpost-many-cases.nt");
         String resourceId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(resourceId, source);
-        facade.save(fragment);
+        BatchFragment batch = new BatchFragment(resourceId, source);
+        facade.save(batch);
     }
 
     @Test
@@ -64,8 +64,8 @@ public class EphorteFacadeIT {
     public void testSaveSimpleDocumentDescription() throws Exception {
         String source = Utils.getResourceAsString("simpledocumentdescription.nt");
         String resourceId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(resourceId, source);
-        facade.save(fragment);
+        BatchFragment batch = new BatchFragment(resourceId, source);
+        facade.save(batch);
     }
 
     @Test

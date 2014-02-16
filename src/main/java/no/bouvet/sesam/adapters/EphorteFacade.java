@@ -109,25 +109,24 @@ public class EphorteFacade {
 
         List<DataObjectT> result = new ArrayList<DataObjectT>();
 
-        for (Fragment f : batch.getFragments()) {
-            DataObjectT r = save(f, ePhorteIds);
+        for (String resourceId : batch.getResources()) {
+            DataObjectT r = save(batch, resourceId, ePhorteIds);
             result.add(r);
         }
         return result.toArray(new DataObjectT[0]);
     }
 
-    public DataObjectT save(Fragment fragment) throws Exception {
-        return save(fragment, new HashMap<String, Object>());
+    public DataObjectT save(BatchFragment batch, String resourceId) throws Exception {
+        return save(batch, resourceId, new HashMap<String, Object>());
     }
 
-    public DataObjectT save(Fragment fragment, Map<String, Object> ePhorteIds) throws Exception {
-        String type = fragment.getType();
+    public DataObjectT save(BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
+        String type = batch.getType(resourceId);
         if (StringUtils.isBlank(type)) {
-            throw new InvalidFragment("Fragment has no type: " + fragment.getResourceId());
+            throw new InvalidFragment("Fragment has no type: " + resourceId);
         }
         String ePhorteType = getObjectType(type);
 
-        String resourceId = fragment.getResourceId();
         if (StringUtils.isBlank(resourceId)) {
            throw new InvalidFragment("Fragment has no resourceId");
         }
@@ -141,16 +140,16 @@ public class EphorteFacade {
             obj = create(ePhorteType, resourceId);
         }
 
-        setRdfKeywords(obj, fragment.getSource());
-        populate(obj, fragment.getStatements(), ePhorteIds);
+        setRdfKeywords(obj, batch.getSource(resourceId));
+        populate(obj, batch, resourceId, ePhorteIds);
 
         if (objectExists) {
             client.update(obj);
-            log.info("Updated resource: {}", fragment.getResourceId());
+            log.info("Updated resource: {}", resourceId);
         } else {
             client.insert(obj);
             Object oId = ObjectUtils.invokeGetter(obj, "getId");
-            log.info("Created resource: {} (ePhorteId={})", fragment.getResourceId(), oId);
+            log.info("Created resource: {} (ePhorteId={})", resourceId, oId);
             if (oId != null) {
                 ePhorteIds.put(resourceId, oId);
             }
@@ -181,11 +180,11 @@ public class EphorteFacade {
         ObjectUtils.setFieldValue(obj, rdfKeywordsName, link);
     }
 
-    public void populate(DataObjectT obj, List<Statement> statements, Map<String, Object> ePhorteIds) throws Exception {
+    public void populate(DataObjectT obj, BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
         List<ReferenceNotFound> missingReferences = new ArrayList<ReferenceNotFound>();
-        for (Statement s : statements) {
+        for (Statement s : batch.getStatements(resourceId)) {
             try {
-                populate(obj, s, ePhorteIds);
+                populate(obj, batch, s, ePhorteIds);
             } catch (ReferenceNotFound e) {
                 missingReferences.add(e);
             }
@@ -201,16 +200,15 @@ public class EphorteFacade {
         }
     }
 
-    public void populate(DataObjectT obj, List<Statement> statements) throws Exception {
-        populate(obj, statements, new HashMap<String, Object>());
+    public void populate(DataObjectT obj, BatchFragment batch, String resourceId) throws Exception {
+        populate(obj, batch, resourceId, new HashMap<String, Object>());
     }
 
-
-    public void populate(DataObjectT obj, Statement statement) throws Exception {
-        populate(obj, statement, new HashMap<String, Object>());
+    public void populate(DataObjectT obj, BatchFragment batch, Statement statement) throws Exception {
+        populate(obj, batch, statement, new HashMap<String, Object>());
     }
 
-    public void populate(DataObjectT obj, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    public void populate(DataObjectT obj, BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
         String name = getFieldName(s.property);
 
         if (immutableProperties.contains(s.property) && hasValue(obj, name)) {
