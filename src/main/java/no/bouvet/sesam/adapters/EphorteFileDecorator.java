@@ -32,6 +32,12 @@ public class EphorteFileDecorator implements Decorator {
         try {
             HttpGet get = new HttpGet(url);
             HttpResponse response = client.execute(get);
+            if (response.getStatusLine().getStatusCode() > 299) {
+                throw new RuntimeException(
+                    "Error " + response.getStatusLine().getStatusCode() + " " +
+                    response.getStatusLine().getReasonPhrase() + " retrieving "+
+                    "file from " + url);
+            }
 
             fileName = getFileName(url, response);
             data = getContent(response);
