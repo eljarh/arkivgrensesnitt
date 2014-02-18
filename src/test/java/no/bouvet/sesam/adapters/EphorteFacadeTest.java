@@ -11,6 +11,7 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessCodeT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessGroupT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.ClassificationT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -159,7 +160,7 @@ public class EphorteFacadeTest {
         CaseT actual = new CaseT();
         CaseT expected = new CaseT();
 
-        facade.populate(actual, s);
+        facade.populate(actual, mock(BatchFragment.class), s);
 
         assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
     }
@@ -170,7 +171,7 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/custom-attribute-1", expectedValue, true);
         CaseT obj = new CaseT();
 
-        facade.populate(obj, s);
+        facade.populate(obj, mock(BatchFragment.class), s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
     }
@@ -181,7 +182,7 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/custom-attribute-1", expectedValue, false);
         CaseT obj = new CaseT();
 
-        facade.populate(obj, s);
+        facade.populate(obj, mock(BatchFragment.class), s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
     }
@@ -196,7 +197,7 @@ public class EphorteFacadeTest {
 
         doReturn(c).when(facade).get(anyString(), eq("id"));
 
-        facade.populate(entry, s);
+        facade.populate(entry, mock(BatchFragment.class), s);
 
         assertEquals(expected, entry.getCaseId());
     }
@@ -206,12 +207,31 @@ public class EphorteFacadeTest {
         String property = "http://data.mattilsynet.no/sesam/ephorte/file-path";
         String url = "http://www.jtricks.com/download-unknown";
         Statement s = new Statement("_", property, url, true);
+        BatchFragment batch = mock(BatchFragment.class);
 
         Decorator d = mock(Decorator.class);
         facade.setDecorator(property, d);
-        facade.populate(new DocumentObjectT(), s);
+        facade.populate(new DocumentObjectT(), batch, s);
 
-        verify(d).process(facade, url);
+        verify(d).process(facade, batch, s);
+    }
+
+    @Test
+    public void testPopulateWithUnpackClassificationDecorator() throws Exception {
+        String property = "http://data.mattilsynet.no/sesam/ephorte/primary-classification";
+        String value = "classification-system-id=ARKN\u00D8KKEL::class-id=212::description=Tilsetting";
+
+        Statement s = new Statement("_", property, value, true);
+        BatchFragment batch = mock(BatchFragment.class);
+
+        Decorator d = mock(Decorator.class);
+
+        doReturn(new ClassificationT()).when(d).process(facade, batch, s);
+
+        facade.setDecorator(property, d);
+        facade.populate(new CaseT(), batch, s);
+
+        verify(d).process(facade, batch, s);
     }
 
     @Test
@@ -224,7 +244,7 @@ public class EphorteFacadeTest {
 
         exception.expect(ReferenceNotFound.class);
         exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/case> to non-existent object <missing>");
-        facade.populate (entry, s);
+        facade.populate(entry, mock(BatchFragment.class), s);
     }
 
     @Test
@@ -235,8 +255,11 @@ public class EphorteFacadeTest {
         statements.add(s1);
         statements.add(s2);
 
+        BatchFragment batch = mock(BatchFragment.class);
+        doReturn(statements).when(batch).getStatements(anyString());
+
         CaseT obj = new CaseT();
-        facade.populate(obj, statements);
+        facade.populate(obj, batch, "_");
 
         assertEquals(123, (int) obj.getId());
         assertEquals("whatever", obj.getTitle());
@@ -258,7 +281,10 @@ public class EphorteFacadeTest {
         doReturn(code).when(facade).get(anyString(), eq("exists"));
         doReturn(null).when(facade).get(anyString(), eq("missing"));
 
-        facade.populate (obj, statements);
+        BatchFragment batch = mock(BatchFragment.class);
+        doReturn(statements).when(batch).getStatements(anyString());
+
+        facade.populate (obj, batch, "_");
         assertEquals(codeId, obj.getAccessCodeId());
     }
 
@@ -274,9 +300,12 @@ public class EphorteFacadeTest {
 
         doReturn(null).when(facade).get(anyString(), eq("missing"));
 
+        BatchFragment batch = mock(BatchFragment.class);
+        doReturn(statements).when(batch).getStatements(anyString());
+
         exception.expect(ReferenceNotFound.class);
         exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/access-code> to non-existent object <missing>");
-        facade.populate (obj, statements);
+        facade.populate (obj, batch, "_");
     }
 
     @Test
@@ -296,8 +325,10 @@ public class EphorteFacadeTest {
         CaseT obj = new CaseT();
         doReturn(code).when(facade).get(anyString(), eq("code"));
         doReturn(group).when(facade).get(anyString(), eq("group"));
+        BatchFragment batch = mock(BatchFragment.class);
+        doReturn(statements).when(batch).getStatements(anyString());
 
-        facade.populate(obj, statements);
+        facade.populate(obj, batch, "_");
 
         assertEquals(codeId, obj.getAccessCodeId());
         assertEquals(groupId, obj.getAccessGroupId());
@@ -307,11 +338,11 @@ public class EphorteFacadeTest {
     public void testThatSaveCreatesIfSubjectNotExists() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
         String fragmentId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(fragmentId, source);
+        BatchFragment batch = new BatchFragment(fragmentId, source);
 
         doReturn(null).when(facade).get(anyString(), eq(fragmentId));
 
-        facade.save(fragment);
+        facade.save(batch);
 
         verify(client).insert(any(DataObjectT.class));
     }
@@ -320,11 +351,11 @@ public class EphorteFacadeTest {
     public void testThatSaveUploadsRdfSource() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
         String fragmentId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(fragmentId, source);
+        BatchFragment batch = new BatchFragment(fragmentId, source);
 
         doReturn("actual").when(client).upload(anyString(), anyString(), any(byte[].class));
 
-        CaseT result = (CaseT) facade.save(fragment);
+        CaseT result = (CaseT) facade.save(batch)[0];
         assertEquals("actual", result.getCustomAttribute6());
     }
 
@@ -357,13 +388,13 @@ public class EphorteFacadeTest {
     public void testThatSaveUpdatesIfSubjectExists() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
         String fragmentId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(fragmentId, source);
+        BatchFragment batch = new BatchFragment(fragmentId, source);
 
         CaseT existing = new CaseT();
 
         doReturn(existing).when(facade).get(anyString(), eq(fragmentId));
 
-        facade.save(fragment);
+        facade.save(batch);
 
         verify(client).update(any(DataObjectT.class));
     }
@@ -396,11 +427,11 @@ public class EphorteFacadeTest {
     public void testThatGetFieldNameReturnsEmptyOnNull() {
         assertEquals("", EphorteFacade.getFieldName(null));
     }
-  
+
     @Test
     public void testIgnoredReference() throws Exception {
         facade.addIgnoredReferencePrefix("http://ignored/");
-        
+
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "http://ignored/id", false);
         RegistryEntryT entry = new RegistryEntryT();
         Integer expected = 12345;
@@ -409,14 +440,28 @@ public class EphorteFacadeTest {
 
         doReturn(thecase).when(facade).get(anyString(), eq("http://ignored/id"));
 
-        facade.populate(entry, s);
+        facade.populate(entry, mock(BatchFragment.class), s);
         assertSame(null, entry.getCaseId());
     }
-  
+
+    @Test
+    public void testImmutableProperty() throws Exception {
+        String property = "http://data.mattilsynet.no/sesam/ephorte/primary-classification";
+        facade.addImmutableProperty(property);
+
+        Statement s = new Statement("_", property, "_", false);
+        CaseT thecase = new CaseT();
+        ClassificationT val = new ClassificationT();
+        thecase.setPrimaryClassification(val);
+
+        facade.populate(thecase, mock(BatchFragment.class), s);
+        assertSame(val, thecase.getPrimaryClassification());
+    }
+
     @Test
     public void testUnignoredReference() throws Exception {
         facade.addIgnoredReferencePrefix("http://ignored/");
-        
+
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "http://unignored/id", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT thecase = new CaseT();
@@ -425,7 +470,7 @@ public class EphorteFacadeTest {
 
         doReturn(thecase).when(facade).get(anyString(), eq("http://unignored/id"));
 
-        facade.populate(entry, s);
+        facade.populate(entry, mock(BatchFragment.class), s);
 
         assertEquals(expected, entry.getCaseId());
     }

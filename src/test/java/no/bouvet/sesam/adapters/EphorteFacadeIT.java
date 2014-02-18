@@ -1,5 +1,6 @@
 package no.bouvet.sesam.adapters;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
@@ -32,24 +33,24 @@ public class EphorteFacadeIT {
     public void testSaveSimpleCase() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
         String fragmentId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(fragmentId, source);
-        facade.save(fragment);
+        BatchFragment batch = new BatchFragment(fragmentId, source);
+        facade.save(batch);
     }
 
     @Test
     public void testSaveSimpleJournalPost() throws Exception {
         String source = Utils.getResourceAsString("simplejournalpost.nt");
         String resourceId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(resourceId, source);
-        facade.save(fragment);
+        BatchFragment batch = new BatchFragment(resourceId, source);
+        facade.save(batch);
     }
 
     @Test
     public void testSaveSimpleJournalPostWithManyCases() throws Exception {
         String source = Utils.getResourceAsString("simplejournalpost-many-cases.nt");
         String resourceId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(resourceId, source);
-        facade.save(fragment);
+        BatchFragment batch = new BatchFragment(resourceId, source);
+        facade.save(batch);
     }
 
     @Test
@@ -64,8 +65,8 @@ public class EphorteFacadeIT {
     public void testSaveSimpleDocumentDescription() throws Exception {
         String source = Utils.getResourceAsString("simpledocumentdescription.nt");
         String resourceId = Utils.getFirstSubject(source);
-        Fragment fragment = new Fragment(resourceId, source);
-        facade.save(fragment);
+        BatchFragment batch = new BatchFragment(resourceId, source);
+        facade.save(batch);
     }
 
     @Test
@@ -89,7 +90,9 @@ public class EphorteFacadeIT {
     @Test
     public void testThatWeCanUploadFile() throws Exception {
         EphorteFileDecorator decorator = new EphorteFileDecorator();
-        String result = decorator.process(facade, "http://www.jtricks.com/download-unknown");
+        BatchFragment batch = mock(BatchFragment.class);
+        Statement s = new Statement("_", "_", "http://www.jtricks.com/download-unknown", true);
+        String result = (String) decorator.process(facade, batch, s);
         assertTrue(result.startsWith("UPLOAD_{ObjectModelService}_"));
         assertTrue(result.endsWith("\\content.txt"));
     }

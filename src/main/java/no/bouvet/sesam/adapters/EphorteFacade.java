@@ -34,6 +34,7 @@ public class EphorteFacade {
 
     private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
     private Set<String> ignoredPrefixes = new HashSet();
+    private Set<String> immutableProperties = new HashSet();
 
     public EphorteFacade() {
         client = new NCoreClient();
@@ -74,6 +75,11 @@ public class EphorteFacade {
             for (String prefix : prefixes.split(","))
                 addIgnoredReferencePrefix(prefix);
 
+        String properties = (String) config.getProperty("ephorte.immutableProperties");
+        if (properties != null)
+            for (String property : properties.split(","))
+                addImmutableProperty(property);
+
         Iterator<String> keys = decorators.getKeys();
         while(keys.hasNext()) {
             String klass = keys.next();
@@ -88,6 +94,10 @@ public class EphorteFacade {
         decorators.put(key, obj);
     }
 
+    public void addImmutableProperty(String property) {
+        immutableProperties.add(property);
+    }
+
     public void addIgnoredReferencePrefix(String prefix) {
         ignoredPrefixes.add(prefix);
     }
@@ -99,25 +109,24 @@ public class EphorteFacade {
 
         List<DataObjectT> result = new ArrayList<DataObjectT>();
 
-        for (Fragment f : batch.getFragments()) {
-            DataObjectT r = save(f, ePhorteIds);
+        for (String resourceId : batch.getResources()) {
+            DataObjectT r = save(batch, resourceId, ePhorteIds);
             result.add(r);
         }
         return result.toArray(new DataObjectT[0]);
     }
 
-    public DataObjectT save(Fragment fragment) throws Exception {
-        return save(fragment, new HashMap<String, Object>());
+    public DataObjectT save(BatchFragment batch, String resourceId) throws Exception {
+        return save(batch, resourceId, new HashMap<String, Object>());
     }
 
-    public DataObjectT save(Fragment fragment, Map<String, Object> ePhorteIds) throws Exception {
-        String type = fragment.getType();
+    public DataObjectT save(BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
+        String type = batch.getType(resourceId);
         if (StringUtils.isBlank(type)) {
-            throw new InvalidFragment("Fragment has no type: " + fragment.getResourceId());
+            throw new InvalidFragment("Fragment has no type: " + resourceId);
         }
         String ePhorteType = getObjectType(type);
 
-        String resourceId = fragment.getResourceId();
         if (StringUtils.isBlank(resourceId)) {
            throw new InvalidFragment("Fragment has no resourceId");
         }
@@ -131,16 +140,16 @@ public class EphorteFacade {
             obj = create(ePhorteType, resourceId);
         }
 
-        setRdfKeywords(obj, fragment.getSource());
-        populate(obj, fragment.getStatements(), ePhorteIds);
+        setRdfKeywords(obj, batch.getSource(resourceId));
+        populate(obj, batch, resourceId, ePhorteIds);
 
         if (objectExists) {
             client.update(obj);
-            log.info("Updated resource: {}", fragment.getResourceId());
+            log.info("Updated resource: {}", resourceId);
         } else {
             client.insert(obj);
             Object oId = ObjectUtils.invokeGetter(obj, "getId");
-            log.info("Created resource: {} (ePhorteId={})", fragment.getResourceId(), oId);
+            log.info("Created resource: {} (ePhorteId={})", resourceId, oId);
             if (oId != null) {
                 ePhorteIds.put(resourceId, oId);
             }
@@ -171,11 +180,11 @@ public class EphorteFacade {
         ObjectUtils.setFieldValue(obj, rdfKeywordsName, link);
     }
 
-    public void populate(DataObjectT obj, List<Statement> statements, Map<String, Object> ePhorteIds) throws Exception {
+    public void populate(DataObjectT obj, BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
         List<ReferenceNotFound> missingReferences = new ArrayList<ReferenceNotFound>();
-        for (Statement s : statements) {
+        for (Statement s : batch.getStatements(resourceId)) {
             try {
-                populate(obj, s, ePhorteIds);
+                populate(obj, batch, s, ePhorteIds);
             } catch (ReferenceNotFound e) {
                 missingReferences.add(e);
             }
@@ -184,22 +193,28 @@ public class EphorteFacade {
         /* Make sure that the reference is still missing after
          * having processed the full fragment */
         for (ReferenceNotFound e : missingReferences) {
-            if (valueIsMissing(obj, e.getStatement()))
+            Statement s = e.getStatement();
+            String name = getReferenceFieldName(s.property);
+            if (valueIsMissing(obj, name))
                 throw e;
         }
     }
 
-    public void populate(DataObjectT obj, List<Statement> statements) throws Exception {
-        populate(obj, statements, new HashMap<String, Object>());
+    public void populate(DataObjectT obj, BatchFragment batch, String resourceId) throws Exception {
+        populate(obj, batch, resourceId, new HashMap<String, Object>());
     }
 
-
-    public void populate(DataObjectT obj, Statement statement) throws Exception {
-        populate(obj, statement, new HashMap<String, Object>());
+    public void populate(DataObjectT obj, BatchFragment batch, Statement statement) throws Exception {
+        populate(obj, batch, statement, new HashMap<String, Object>());
     }
 
-    public void populate(DataObjectT obj, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    public void populate(DataObjectT obj, BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
         String name = getFieldName(s.property);
+
+        if (immutableProperties.contains(s.property) && hasValue(obj, name)) {
+            log.debug("Object already has value for immutable property: {}", s.property);
+            return;
+        }
 
         String fieldType = ObjectUtils.getFieldType (obj, name);
         if (fieldType == null) {
@@ -207,44 +222,55 @@ public class EphorteFacade {
             return;
         }
 
-        String value = s.object;
-        if (decorators.containsKey(s.property)) {
-            Decorator d = decorators.get(s.property);
-            value = d.process(this, value);
+        if (isEphorteType(fieldType) && !acceptedReference(s.object)) {
+            log.debug("Value is not acceptable reference: {}", s.object);
+            return;
         }
 
-        if (isEphorteType(fieldType)) {
-            if (!acceptedReference(value))
-                return; // we're not going to set this reference
-
-            Object oId = ePhorteIds.get(s.object);
-
-            if (oId == null) {
-                DataObjectT o = get(fieldType, value);
-                if (o == null) {
-                    String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
-                    throw new ReferenceNotFound(msg, s);
-                }
-
-                oId = ObjectUtils.invokeGetter(o, "getId");
-            }
-
-            if (oId == null) {
-                String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however we can't get the objects id", s.subject, s.property, s.object);
-                throw new InvalidReference(msg);
-            }
-
+        if (isEphorteType(fieldType) && !decorators.containsKey(s.property)) {
             String idName = getReferenceFieldName(s.property);
-            if (!ObjectUtils.hasField(obj, idName)) {
-                String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however subject has no setter <%s>", s.subject, s.property, s.object, idName);
-                throw new InvalidReference(msg);
-            }
-
+            Object oId = getIdValue(obj, fieldType, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, idName, oId);
         } else {
+            Object value = getValue(batch, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, name, value);
         }
-        return;
+    }
+
+    public Object getValue(BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+        if (decorators.containsKey(s.property)) {
+            Decorator d = decorators.get(s.property);
+            return d.process(this, batch, s);
+        }
+
+        return s.object;
+    }
+
+    public Object getIdValue(DataObjectT obj, String fieldType, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+        Object oId = ePhorteIds.get(s.object);
+
+        if (oId == null) {
+            DataObjectT o = get(fieldType, s.object);
+            if (o == null) {
+                String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
+                throw new ReferenceNotFound(msg, s);
+            }
+
+            oId = ObjectUtils.invokeGetter(o, "getId");
+        }
+
+        if (oId == null) {
+            String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however we can't get the objects id", s.subject, s.property, s.object);
+            throw new InvalidReference(msg);
+        }
+
+        String idName = getReferenceFieldName(s.property);
+        if (!ObjectUtils.hasField(obj, idName)) {
+            String msg = String.format("Fragment <%s> tries to set property <%s> to object <%s>, however subject has no setter <%s>", s.subject, s.property, s.object, idName);
+            throw new InvalidReference(msg);
+        }
+
+        return oId;
     }
 
     public DataObjectT get(String typeName, String externalId) throws Exception {
@@ -311,13 +337,16 @@ public class EphorteFacade {
         return Utils.getLastPart(property);
     }
 
-    private boolean valueIsMissing(Object obj, Statement s) {
-        String name = getReferenceFieldName(s.property);
+    private boolean hasValue(Object obj, String name) {
         try {
-            return ObjectUtils.getFieldValue(obj, name) == null;
+            return ObjectUtils.getFieldValue(obj, name) != null;
         } catch (Exception e) {
             return true;
         }
+    }
+
+    private boolean valueIsMissing(Object obj, String name) {
+        return !hasValue(obj, name);
     }
 
     private String getReferenceFieldName(String property) {

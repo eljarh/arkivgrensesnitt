@@ -54,7 +54,9 @@ public class EphorteFileDecoratorTest {
         EphorteFacade facade = mock(EphorteFacade.class);
         EphorteFileDecorator decorator = new EphorteFileDecorator();
 
-        decorator.process(facade, "http://www.jtricks.com/download-unknown");
+        BatchFragment batch = mock(BatchFragment.class);
+        Statement s = new Statement("_", "_", "http://www.jtricks.com/download-unknown", true);
+        decorator.process(facade, batch, s);
 
         verify(facade).uploadFile(eq("content.txt"), any(byte[].class));
     }

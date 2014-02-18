@@ -1,5 +1,5 @@
 package no.bouvet.sesam.adapters;
 
 public interface Decorator {
-    String process(EphorteFacade facade, String field) throws Exception;
+    Object process(EphorteFacade facade, BatchFragment fragment, Statement statement) throws Exception;
 }

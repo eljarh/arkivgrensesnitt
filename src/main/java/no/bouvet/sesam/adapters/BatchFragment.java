@@ -19,6 +19,13 @@ public class BatchFragment implements StatementHandler {
     private Map<String, Set<String>> dependencies;
     private Map<String, Fragment> fragments;
 
+    public BatchFragment(String resourceId, String source) throws InvalidFragment {
+        fragments = new HashMap<String, Fragment>();
+        dependencies = new HashMap<String, Set<String>>();
+        fragments.put(resourceId, new Fragment(resourceId));
+        parse(source);
+    }
+
     public BatchFragment(Collection<String> resources, String source) throws InvalidFragment {
         fragments = new HashMap<String, Fragment>();
         dependencies = new HashMap<String, Set<String>>();
@@ -70,18 +77,53 @@ public class BatchFragment implements StatementHandler {
         dependencies.put(subject, deps);
     }
 
-    public List<Fragment> getFragments() throws InvalidFragment {
+    /***
+        Returns the resources in the batch, sorted by dependencies.
+        Resources with no dependencies are returned first.  If there
+        are circular dependencies, this method throws an
+        InvalidFragment exception.
+    */
+    public List<String> getResources() throws InvalidFragment {
         // Make a copy so we don't change the fragments HashMap later
-        Set<String> subjects = new HashSet<String>(fragments.keySet());
-
-        List<Fragment> result = new ArrayList<Fragment>();
-        while (subjects.size() > 0) {
-            String subject = selectNextSubject(subjects);
-            result.add(fragments.get(subject));
-            subjects.remove(subject);
+        Set<String> candidates = new HashSet<String>(fragments.keySet());
+        List<String> result = new ArrayList<String>();
+        while (candidates.size() > 0) {
+            String subject = selectNextSubject(candidates);
+            result.add(subject);
+            candidates.remove(subject);
         }
 
         return result;
+    }
+
+    /***
+        Returns the fragments in the batch, sorted by dependencies.
+        Fragments with no dependencies are returned first.  If there
+        are circular dependencies, this method throws an
+        InvalidFragment exception.
+    */
+    public List<Fragment> getFragments() throws InvalidFragment {
+        List<Fragment> result = new ArrayList<Fragment>();
+        for (String resourceId : getResources()) {
+            result.add(fragments.get(resourceId));
+        }
+
+        return result;
+    }
+
+    public String getType(String resourceId) {
+        Fragment f = fragments.get(resourceId);
+        return f.getType();
+    }
+
+    public String getSource(String resourceId) {
+        Fragment f = fragments.get(resourceId);
+        return f.getSource();
+    }
+
+    public List<Statement> getStatements(String resourceId) {
+        Fragment f = fragments.get(resourceId);
+        return f.getStatements();
     }
 
     private String selectNextSubject(Set<String> candidates) throws InvalidFragment {
