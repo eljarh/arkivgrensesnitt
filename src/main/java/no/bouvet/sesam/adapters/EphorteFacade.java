@@ -166,7 +166,9 @@ public class EphorteFacade {
             obj = create(ePhorteType, resourceId);
         }
 
-        setRdfKeywords(obj, batch.getSource(resourceId));
+        // FIXME: disabling this for now, so that we can finally get the
+        // documents to be "hoveddokumenter"
+        //setRdfKeywords(obj, batch.getSource(resourceId));
         Collection<DataObjectT> newobjs =
             populate(obj, batch, resourceId, ePhorteIds);
 
