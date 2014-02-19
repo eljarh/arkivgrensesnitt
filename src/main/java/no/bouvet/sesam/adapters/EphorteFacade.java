@@ -142,24 +142,14 @@ public class EphorteFacade {
         }
 
         setRdfKeywords(obj, batch.getSource(resourceId));
-        Collection<DataObjectT> allobjs =
+        Collection<DataObjectT> newobjs =
             populate(obj, batch, resourceId, ePhorteIds);
 
-        // the collection already contains all the extra objects created as
-        // parameter values for this object by any decorators. to make it
-        // easier to construct the final array we just add the object iself.
-        // if the collection is empty we get an array of one.
-        log.debug("allobjs.pre: " + allobjs);
-        allobjs.add(obj);
-        log.debug("allobjs.post: " + allobjs);
-        DataObjectT[] objs = allobjs.toArray(new DataObjectT[0]);
-        log.debug("objs: {}", objs);
-        
         if (objectExists) {
-            client.update(objs);
+            client.update(obj);
             log.info("Updated resource: {}", resourceId);
         } else {
-            client.insert(objs);
+            client.insert(obj);
             Object oId = ObjectUtils.invokeGetter(obj, "getId");
             log.info("Created resource: {} (ePhorteId={})", resourceId, oId);
             if (oId != null) {
@@ -167,7 +157,34 @@ public class EphorteFacade {
             }
         }
 
+        if (!newobjs.isEmpty()) {
+            // we need to also create the new objects created by
+            // decorators, *and* wire into these objects references back
+            // to the parent object 'obj'. we make this work by assuming
+            // that if 'obj' is a CaseT, then the object created by the
+            // decorator will have a 'setCaseId' method we can use.
+            setParentReferences(obj, newobjs);
+            client.insert(newobjs);
+        }
+            
         return obj;
+    }
+
+    private void setParentReferences(DataObjectT parent,
+                                     Collection<DataObjectT> children)
+        throws Exception {
+        // parse out relevant part of name: "no...CaseT" => "Case"
+        String fqcn = parent.getClass().getName();
+        int pos = fqcn.lastIndexOf('.');
+        String klass = fqcn.substring(pos + 1, fqcn.length() - 1);
+
+        // precompute
+        String property = klass + "-id";
+        int id = (Integer) ObjectUtils.getFieldValue(parent, "id");
+
+        // do the needful
+        for (DataObjectT child : children)
+            ObjectUtils.setFieldValue(child, property, id);
     }
 
     public DataObjectT create(String typeName, String externalId) throws Exception {

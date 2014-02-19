@@ -1,5 +1,6 @@
 package no.bouvet.sesam.adapters;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,6 +17,10 @@ public class NCoreClient {
         insert(new DataObjectT[] { obj });
     }
 
+    public void insert(Collection<DataObjectT> objs) throws Exception {
+        insert(objs.toArray(new DataObjectT[0]));
+    }
+  
     public void insert(DataObjectT[] objs) throws Exception {
         log.info("Inserting objects {}", objs);
 

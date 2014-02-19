@@ -344,7 +344,7 @@ public class EphorteFacadeTest {
 
         facade.save(batch);
 
-        verify(client).insert(any(new DataObjectT[0].getClass()));
+        verify(client).insert(any(DataObjectT.class));
     }
 
     @Test
@@ -381,7 +381,7 @@ public class EphorteFacadeTest {
         // FIXME: This test is a bit broken.  We actually want 5
         // inserts, however to get this, we need to return null on the
         // first call to get() then the object on the second call to get
-        verify(client, times(5)).update(any(new DataObjectT[0].getClass()));
+        verify(client, times(5)).update(any(DataObjectT.class));
     }
 
     @Test
@@ -396,7 +396,7 @@ public class EphorteFacadeTest {
 
         facade.save(batch);
 
-        verify(client).update(any(new DataObjectT[0].getClass()));
+        verify(client).update(any(DataObjectT.class));
     }
 
     @Test
