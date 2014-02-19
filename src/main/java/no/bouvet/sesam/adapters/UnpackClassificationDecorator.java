@@ -9,19 +9,14 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.ClassificationT;
 
 // FIXME: should be rewritten so that it's not specific to ClassificationT
 
+// FIXME: unfortunately, this still doesn't work. see AFM-59.
+
 public class UnpackClassificationDecorator implements Decorator {
     private static Logger log = LoggerFactory.getLogger(UnpackClassificationDecorator.class.getName());
 
     @Override
     public Object process(DataObjectT obj, EphorteFacade facade, BatchFragment fragment, Statement s) {
-        // ePhorte complains if we try to add another ClassificationT to a
-        // case that already has one. we therefore pass if there is a value
-        ClassificationT ct = ((CaseT) obj).getPrimaryClassification();
-        log.debug("CaseT.primaryClassification {}", ct);
-        if (ct != null)
-            return null; // FIXME: we should really update it
-      
-        ct = new ClassificationT();
+        ClassificationT ct = new ClassificationT();
 
         String[] parts = s.object.split("::");
         for (String part : parts) {
