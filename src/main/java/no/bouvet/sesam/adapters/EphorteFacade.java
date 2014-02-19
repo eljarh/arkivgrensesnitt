@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -141,13 +142,21 @@ public class EphorteFacade {
         }
 
         setRdfKeywords(obj, batch.getSource(resourceId));
-        populate(obj, batch, resourceId, ePhorteIds);
+        Collection<DataObjectT> allobjs =
+            populate(obj, batch, resourceId, ePhorteIds);
 
+        // the collection already contains all the extra objects created as
+        // parameter values for this object by any decorators. to make it
+        // easier to construct the final array we just add the object iself.
+        // if the collection is empty we get an array of one.
+        allobjs.add(obj);
+        DataObjectT[] objs = allobjs.toArray(new DataObjectT[0]);
+        
         if (objectExists) {
-            client.update(obj);
+            client.update(objs);
             log.info("Updated resource: {}", resourceId);
         } else {
-            client.insert(obj);
+            client.insert(objs);
             Object oId = ObjectUtils.invokeGetter(obj, "getId");
             log.info("Created resource: {} (ePhorteId={})", resourceId, oId);
             if (oId != null) {
@@ -180,11 +189,14 @@ public class EphorteFacade {
         ObjectUtils.setFieldValue(obj, rdfKeywordsName, link);
     }
 
-    public void populate(DataObjectT obj, BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
+    public Collection<DataObjectT> populate(DataObjectT obj, BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
+        Collection<DataObjectT> newobjs = new ArrayList();
         List<ReferenceNotFound> missingReferences = new ArrayList<ReferenceNotFound>();
         for (Statement s : batch.getStatements(resourceId)) {
             try {
-                populate(obj, batch, s, ePhorteIds);
+                DataObjectT newO = populate(obj, batch, s, ePhorteIds);
+                if (newO != null)
+                    newobjs.add(newO);
             } catch (ReferenceNotFound e) {
                 missingReferences.add(e);
             }
@@ -198,6 +210,7 @@ public class EphorteFacade {
             if (valueIsMissing(obj, name))
                 throw e;
         }
+        return newobjs;
     }
 
     public void populate(DataObjectT obj, BatchFragment batch, String resourceId) throws Exception {
@@ -208,23 +221,24 @@ public class EphorteFacade {
         populate(obj, batch, statement, new HashMap<String, Object>());
     }
 
-    public void populate(DataObjectT obj, BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    // returns the new value object created by decorator, if any
+    public DataObjectT populate(DataObjectT obj, BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
         String name = getFieldName(s.property);
 
         if (immutableProperties.contains(s.property) && hasValue(obj, name)) {
             log.debug("Object already has value for immutable property: {}", s.property);
-            return;
+            return null;
         }
 
         String fieldType = ObjectUtils.getFieldType (obj, name);
         if (fieldType == null) {
             log.debug("Object has no setter for {}", name);
-            return;
+            return null;
         }
 
         if (isEphorteType(fieldType) && !acceptedReference(s.object)) {
             log.debug("Value is not acceptable reference: {}", s.object);
-            return;
+            return null;
         }
 
         if (isEphorteType(fieldType) && !decorators.containsKey(s.property)) {
@@ -234,7 +248,14 @@ public class EphorteFacade {
         } else {
             Object value = getValue(batch, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, name, value);
+            if (value instanceof DataObjectT) {
+                // this means a decorator made a DataObjectT instance
+                // for us.  that instance will have to be included in
+                // the list of objects we send to Gecko NCore
+                return (DataObjectT) value;
+            }
         }
+        return null; // we didn't create a new DataObjectT instance
     }
 
     public Object getValue(BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {

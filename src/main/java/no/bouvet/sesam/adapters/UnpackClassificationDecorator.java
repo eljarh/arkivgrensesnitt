@@ -1,8 +1,5 @@
 package no.bouvet.sesam.adapters;
 
-import java.util.Map;
-
-import java.util.HashMap;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.ClassificationT;
 
 public class UnpackClassificationDecorator implements Decorator {
