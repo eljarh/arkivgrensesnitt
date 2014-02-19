@@ -149,8 +149,11 @@ public class EphorteFacade {
         // parameter values for this object by any decorators. to make it
         // easier to construct the final array we just add the object iself.
         // if the collection is empty we get an array of one.
+        log.debug("allobjs.pre: " + allobjs);
         allobjs.add(obj);
+        log.debug("allobjs.post: " + allobjs);
         DataObjectT[] objs = allobjs.toArray(new DataObjectT[0]);
+        log.debug("objs: {}", objs);
         
         if (objectExists) {
             client.update(objs);
