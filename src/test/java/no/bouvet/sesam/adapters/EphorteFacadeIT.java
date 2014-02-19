@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.io.InputStreamReader;
 import no.priv.garshol.duke.utils.NTriplesParser;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
 import java.util.List;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ncore.client.core.ObjectModel;
@@ -89,10 +90,11 @@ public class EphorteFacadeIT {
 
     @Test
     public void testThatWeCanUploadFile() throws Exception {
+        DocumentObjectT doc = new DocumentObjectT();
         EphorteFileDecorator decorator = new EphorteFileDecorator();
         BatchFragment batch = mock(BatchFragment.class);
         Statement s = new Statement("_", "_", "http://www.jtricks.com/download-unknown", true);
-        String result = (String) decorator.process(facade, batch, s);
+        String result = (String) decorator.process(doc, facade, batch, s);
         assertTrue(result.startsWith("UPLOAD_{ObjectModelService}_"));
         assertTrue(result.endsWith("\\content.txt"));
     }
