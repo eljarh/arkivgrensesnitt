@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -71,15 +72,13 @@ public class EphorteFacade {
         rdfKeywordsName = (String) config.getProperty("ephorte.rdfKeywords.name");
         storageId = (String) config.getProperty("ephorte.storageId");
 
-        String prefixes = (String) config.getProperty("ephorte.ignoredReferencePrefixes");
-        if (prefixes != null)
-            for (String prefix : prefixes.split(","))
-                addIgnoredReferencePrefix(prefix);
+        Object v = config.getProperty("ephorte.ignoredReferencePrefixes");
+        for (String prefix : decodeListProperty(v))
+            addIgnoredReferencePrefix(prefix);
 
-        String properties = (String) config.getProperty("ephorte.immutableProperties");
-        if (properties != null)
-            for (String property : properties.split(","))
-                addImmutableProperty(property);
+        v = config.getProperty("ephorte.immutableProperties");
+        for (String property : decodeListProperty(v))
+            addImmutableProperty(property);
 
         Iterator<String> keys = decorators.getKeys();
         while(keys.hasNext()) {
@@ -90,9 +89,29 @@ public class EphorteFacade {
         }
     }
 
+    // the genius of the designers of PropertiesConfiguration is such that
+    // if the value contains a "," it becomes a Collection<String>, but if
+    // it does not it's just a String. so you get runtime casting errors
+    // the moment the user decides to have more than one value. it's enough
+    // to make you despair of humanity. I would throw the garbage out if I
+    // had time.
+    private static Collection<String> decodeListProperty(Object v) {
+        if (v == null) {
+            return Collections.EMPTY_LIST;
+        } else if (v instanceof String) {
+            return (Collection) Collections.singleton(v);
+        } else {
+            return (Collection<String>) v;
+        }
+    }
+
     public void setDecorator(String key, Decorator obj) {
         decorators.remove(key);
         decorators.put(key, obj);
+    }
+
+    public Set<String> getImmutableProperties() {
+        return immutableProperties;
     }
 
     public void addImmutableProperty(String property) {
