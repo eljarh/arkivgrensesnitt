@@ -245,9 +245,12 @@ public class EphorteFacade {
     public DataObjectT populate(DataObjectT obj, BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
         String name = getFieldName(s.property);
 
-        if (immutableProperties.contains(s.property) && hasValue(obj, name)) {
-            log.debug("Object already has value for immutable property: {}", s.property);
-            return null;
+        if (immutableProperties.contains(s.property)) {
+            if (hasValue(obj, name)) {
+                log.debug("Object already has value for immutable property: {}", s.property);
+                return null;
+            } else
+                log.debug("Property {} is immutable, but it has no value", s.property);
         }
 
         String fieldType = ObjectUtils.getFieldType (obj, name);
