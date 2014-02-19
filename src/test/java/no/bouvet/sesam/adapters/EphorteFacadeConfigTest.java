@@ -23,7 +23,7 @@ public class EphorteFacadeConfigTest {
         PropertiesConfiguration cfg = load("commaless-config.properties");
         PropertiesConfiguration decorators = new PropertiesConfiguration();
 
-        EphorteFacade eph = new EphorteFacade();
+        EphorteFacade eph = new EphorteFacade(false);
         eph.init(cfg, decorators);
 
         assertEquals(1, eph.getImmutableProperties().size());
@@ -35,7 +35,7 @@ public class EphorteFacadeConfigTest {
         PropertiesConfiguration cfg = load("comma-config.properties");
         PropertiesConfiguration decorators = new PropertiesConfiguration();
 
-        EphorteFacade eph = new EphorteFacade();
+        EphorteFacade eph = new EphorteFacade(false);
         eph.init(cfg, decorators);
 
         assertEquals(2, eph.getImmutableProperties().size());

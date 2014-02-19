@@ -39,8 +39,7 @@ public class EphorteFacade {
     private Set<String> immutableProperties = new HashSet();
 
     public EphorteFacade() {
-        client = new NCoreClient();
-        loadConfiguration();
+        this(true);
     }
 
     public EphorteFacade(NCoreClient client) {
@@ -48,6 +47,13 @@ public class EphorteFacade {
         loadConfiguration();
     }
 
+    // we need this for testing
+    public EphorteFacade(boolean loadcfg) {
+        client = new NCoreClient();
+        if (loadcfg)
+            loadConfiguration();
+    }
+    
     protected void loadConfiguration() {
         PropertiesConfiguration config = loadConfig("ephorte.properties");
         PropertiesConfiguration decorators = loadConfig("decorators.properties");
