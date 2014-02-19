@@ -10,6 +10,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import static org.mockito.Mockito.*;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
 
 public class EphorteFileDecoratorTest {
     private HttpResponse Response;
@@ -54,9 +55,10 @@ public class EphorteFileDecoratorTest {
         EphorteFacade facade = mock(EphorteFacade.class);
         EphorteFileDecorator decorator = new EphorteFileDecorator();
 
+        DocumentObjectT doc = new DocumentObjectT();
         BatchFragment batch = mock(BatchFragment.class);
         Statement s = new Statement("_", "_", "http://www.jtricks.com/download-unknown", true);
-        decorator.process(facade, batch, s);
+        decorator.process(doc, facade, batch, s);
 
         verify(facade).uploadFile(eq("content.txt"), any(byte[].class));
     }

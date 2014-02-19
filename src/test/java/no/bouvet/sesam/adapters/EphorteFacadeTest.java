@@ -211,9 +211,10 @@ public class EphorteFacadeTest {
 
         Decorator d = mock(Decorator.class);
         facade.setDecorator(property, d);
-        facade.populate(new DocumentObjectT(), batch, s);
+        DocumentObjectT obj = new DocumentObjectT();
+        facade.populate(obj, batch, s);
 
-        verify(d).process(facade, batch, s);
+        verify(d).process(obj, facade, batch, s);
     }
 
     @Test
@@ -226,12 +227,13 @@ public class EphorteFacadeTest {
 
         Decorator d = mock(Decorator.class);
 
-        doReturn(new ClassificationT()).when(d).process(facade, batch, s);
+        CaseT c = new CaseT();
+        doReturn(new ClassificationT()).when(d).process(c, facade, batch, s);
 
         facade.setDecorator(property, d);
-        facade.populate(new CaseT(), batch, s);
+        facade.populate(c, batch, s);
 
-        verify(d).process(facade, batch, s);
+        verify(d).process(c, facade, batch, s);
     }
 
     @Test

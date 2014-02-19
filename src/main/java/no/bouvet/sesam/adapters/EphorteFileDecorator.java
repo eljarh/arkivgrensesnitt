@@ -18,11 +18,12 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import java.io.FileOutputStream;
 import org.apache.http.HttpResponse;
+import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 
 public class EphorteFileDecorator implements Decorator {
     static Logger log = LoggerFactory.getLogger(Fragment.class.getName());
 
-    public Object process(EphorteFacade facade, BatchFragment batch, Statement s) throws Exception {
+    public Object process(DataObjectT obj, EphorteFacade facade, BatchFragment batch, Statement s) throws Exception {
         String url = s.object;
         log.info("Processing file: {}", url);
 

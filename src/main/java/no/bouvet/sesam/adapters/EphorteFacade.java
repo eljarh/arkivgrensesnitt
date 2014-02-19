@@ -266,7 +266,7 @@ public class EphorteFacade {
             Object oId = getIdValue(obj, fieldType, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, idName, oId);
         } else {
-            Object value = getValue(batch, s, ePhorteIds);
+            Object value = getValue(obj, batch, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, name, value);
             if (value instanceof DataObjectT) {
                 // this means a decorator made a DataObjectT instance
@@ -278,10 +278,10 @@ public class EphorteFacade {
         return null; // we didn't create a new DataObjectT instance
     }
 
-    public Object getValue(BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    public Object getValue(DataObjectT obj, BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
         if (decorators.containsKey(s.property)) {
             Decorator d = decorators.get(s.property);
-            return d.process(this, batch, s);
+            return d.process(obj, this, batch, s);
         }
 
         return s.object;
