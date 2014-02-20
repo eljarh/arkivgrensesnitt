@@ -147,15 +147,14 @@ public class EphorteFacade {
     }
 
     public DataObjectT save(BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
+        if (StringUtils.isBlank(resourceId)) {
+           throw new InvalidFragment("Fragment has no resourceId");
+        }
         String type = batch.getType(resourceId);
         if (StringUtils.isBlank(type)) {
             throw new InvalidFragment("Fragment has no type: " + resourceId);
         }
         String ePhorteType = getObjectType(type);
-
-        if (StringUtils.isBlank(resourceId)) {
-           throw new InvalidFragment("Fragment has no resourceId");
-        }
 
         log.debug("Looking up object with type {} and resourceId {}", ePhorteType, resourceId);
         DataObjectT obj = get(ePhorteType, resourceId);

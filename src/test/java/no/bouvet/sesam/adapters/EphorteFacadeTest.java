@@ -10,13 +10,14 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessCodeT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessGroupT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
-import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.ClassificationT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryT;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -349,7 +350,7 @@ public class EphorteFacadeTest {
         verify(client).insert(any(DataObjectT.class));
     }
 
-    @Test
+    @Test @Ignore // this fails because LMG disabled this feature
     public void testThatSaveUploadsRdfSource() throws Exception {
         String source = Utils.getResourceAsString("simplecase.nt");
         String fragmentId = Utils.getFirstSubject(source);
