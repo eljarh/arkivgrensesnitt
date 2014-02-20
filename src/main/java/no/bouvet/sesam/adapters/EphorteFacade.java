@@ -54,7 +54,7 @@ public class EphorteFacade {
         if (loadcfg)
             loadConfiguration();
     }
-    
+
     protected void loadConfiguration() {
         PropertiesConfiguration config = loadConfig("ephorte.properties");
         PropertiesConfiguration decorators = loadConfig("decorators.properties");
@@ -90,7 +90,7 @@ public class EphorteFacade {
         hooks.add(new RegistryEntryTypeUHook());
         for (Hook hook : hooks)
             hook.setFacade(this);
-        
+
         Iterator<String> keys = decorators.getKeys();
         while(keys.hasNext()) {
             String klass = keys.next();
@@ -125,7 +125,7 @@ public class EphorteFacade {
     public NCoreClient getClient() {
         return client;
     }
-    
+
     public Set<String> getImmutableProperties() {
         return immutableProperties;
     }
@@ -151,7 +151,7 @@ public class EphorteFacade {
         }
         return result.toArray(new DataObjectT[0]);
     }
-    
+
     // FIXME: method name is wrong. this is not an overloaded version of the
     //          save() method above
     public DataObjectT save(Fragment fragment, Map<String, Object> ePhorteIds) throws Exception {
@@ -161,7 +161,7 @@ public class EphorteFacade {
         String ePhorteType = getObjectType(fragment.getType());
 
         log.debug("Looking up object with type {} and resourceId {}", ePhorteType, resourceId);
-        DataObjectT obj = get(ePhorteType, resourceId);
+        DataObjectT obj = getById(ePhorteType, resourceId);
 
         boolean objectExists = obj != null;
         if (!objectExists) {
@@ -184,7 +184,7 @@ public class EphorteFacade {
                 objectExists = true; // now we know we should update
             }
         }
-        
+
         // FIXME: disabling this for now, so that we can finally get the
         // documents to be "hoveddokumenter"
         //setRdfKeywords(obj, fragment.getSource());
@@ -343,7 +343,7 @@ public class EphorteFacade {
         Object oId = ePhorteIds.get(s.object);
 
         if (oId == null) {
-            DataObjectT o = get(fieldType, s.object);
+            DataObjectT o = getById(fieldType, s.object);
             if (o == null) {
                 String msg = String.format("Fragment <%s> tries to set property <%s> to non-existent object <%s>", s.subject, s.property, s.object);
                 throw new ReferenceNotFound(msg, s);
@@ -366,22 +366,35 @@ public class EphorteFacade {
         return oId;
     }
 
-    public DataObjectT get(String typeName, String externalId) {
-        String searchName = getSearchName(typeName);
-        String query = getExternalIdSearchString(typeName, externalId);
-        List<DataObjectT> results = client.get(searchName, query);
-
-        if (results.size() == 0) {
-            query = getEphorteIdSearchString(typeName, externalId);
-            if (query != null) // externalId may be rejected
-                results = client.get(searchName, query);
+    public DataObjectT get(String searchName, String query) {
+        Collection<DataObjectT> results = search(searchName, query);
+        if (results.size() > 1) {
+            log.warn("We have multiple hits when we expected one.  Picking newest object.  searchName={}, query={}", searchName, query);
         }
 
+        return getNewest(results);
+    }
+
+    public List<DataObjectT> search(String searchName, String query) {
+        return client.get(searchName, query);
+    }
+
+    public DataObjectT getNewest(Collection<DataObjectT> objects) {
         DataObjectT newest = null;
         XMLGregorianCalendar newestCreated = null;
-        for (DataObjectT candidate : results) {
-            XMLGregorianCalendar candidateCreated =
-                (XMLGregorianCalendar) ObjectUtils.invokeGetter(candidate, "getCreatedDate");
+        for (DataObjectT candidate : objects) {
+            XMLGregorianCalendar candidateCreated;
+            try {
+                candidateCreated =
+                    (XMLGregorianCalendar) ObjectUtils.invokeGetter(candidate, "getCreatedDate");
+            } catch (Exception e) {
+                // Couldn't get createdDate which means we should fall
+                // back to the first candidate in the collection.
+                if (newest != null) {
+                    newest = candidate;
+                }
+                continue;
+            }
 
             if (newestCreated == null || candidateCreated.compare(newestCreated) > 0) {
                 newest = candidate;
@@ -390,6 +403,20 @@ public class EphorteFacade {
         }
 
         return newest;
+    }
+
+    public DataObjectT getById(String typeName, String externalId) {
+        String searchName = getSearchName(typeName);
+        String query = getExternalIdSearchString(typeName, externalId);
+        Collection<DataObjectT> results = search(searchName, query);
+
+        if (results.size() == 0) {
+            query = getEphorteIdSearchString(typeName, externalId);
+            if (query != null) // externalId may be rejected
+                results = search(searchName, query);
+        }
+
+        return getNewest(results);
     }
 
     public static String getSearchName(String typeName) {

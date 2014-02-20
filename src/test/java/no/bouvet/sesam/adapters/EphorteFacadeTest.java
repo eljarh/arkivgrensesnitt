@@ -76,7 +76,7 @@ public class EphorteFacadeTest {
 
         when(client.get(anyString(), anyString())).thenReturn(result);
 
-        CaseT actual = (CaseT) facade.get(fqCaseT, "id");
+        CaseT actual = (CaseT) facade.getById(fqCaseT, "id");
 
         assertNull(actual);
     }
@@ -89,7 +89,7 @@ public class EphorteFacadeTest {
 
         when(client.get("Case", "Id=12345")).thenReturn(result);
 
-        CaseT actual = (CaseT) facade.get(fqCaseT, "http://psi.sesam.io/ePhorte/12345");
+        CaseT actual = (CaseT) facade.getById(fqCaseT, "http://psi.sesam.io/ePhorte/12345");
 
         assertSame(expected, actual);
     }
@@ -112,7 +112,7 @@ public class EphorteFacadeTest {
 
         when(client.get(anyString(), anyString())).thenReturn(result);
 
-        CaseT actual = (CaseT) facade.get(fqCaseT, "id");
+        CaseT actual = (CaseT) facade.getById(fqCaseT, "id");
 
         assertSame(second, actual);
     }
@@ -132,7 +132,7 @@ public class EphorteFacadeTest {
 
         when(client.get(anyString(), anyString())).thenReturn(result);
 
-        CaseT actual = (CaseT) facade.get(fqCaseT, "id");
+        CaseT actual = (CaseT) facade.getById(fqCaseT, "id");
         assertSame(third, actual);
     }
 
@@ -151,7 +151,7 @@ public class EphorteFacadeTest {
 
         when(client.get(anyString(), anyString())).thenReturn(result);
 
-        DataObjectT actual = facade.get(fqCaseT, "id");
+        DataObjectT actual = facade.getById(fqCaseT, "id");
         assertSame(third, actual);
     }
 
@@ -205,7 +205,7 @@ public class EphorteFacadeTest {
         CaseT c = new CaseT();
         c.setId(expected);
 
-        doReturn(c).when(facade).get(anyString(), eq("id"));
+        doReturn(c).when(facade).getById(anyString(), eq("id"));
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(entry);
@@ -260,7 +260,7 @@ public class EphorteFacadeTest {
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
         
-        doReturn(null).when(facade).get(anyString(), eq("missing"));
+        doReturn(null).when(facade).getById(anyString(), eq("missing"));
 
         exception.expect(ReferenceNotFound.class);
         exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/case> to non-existent object <missing>");
@@ -296,8 +296,8 @@ public class EphorteFacadeTest {
         AccessCodeT code = new AccessCodeT();
         code.setId(codeId);
 
-        doReturn(code).when(facade).get(anyString(), eq("exists"));
-        doReturn(null).when(facade).get(anyString(), eq("missing"));
+        doReturn(code).when(facade).getById(anyString(), eq("exists"));
+        doReturn(null).when(facade).getById(anyString(), eq("missing"));
 
         facade.populate(fragment);
         assertEquals(codeId, obj.getAccessCodeId());
@@ -311,7 +311,7 @@ public class EphorteFacadeTest {
         fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
         fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
 
-        doReturn(null).when(facade).get(anyString(), eq("missing"));
+        doReturn(null).when(facade).getById(anyString(), eq("missing"));
 
         exception.expect(ReferenceNotFound.class);
         exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/access-code> to non-existent object <missing>");
@@ -332,8 +332,8 @@ public class EphorteFacadeTest {
         code.setId(codeId);
         AccessGroupT group = new AccessGroupT();
         group.setId(groupId);
-        doReturn(code).when(facade).get(anyString(), eq("code"));
-        doReturn(group).when(facade).get(anyString(), eq("group"));
+        doReturn(code).when(facade).getById(anyString(), eq("code"));
+        doReturn(group).when(facade).getById(anyString(), eq("group"));
 
         facade.populate(fragment);
 
@@ -347,7 +347,7 @@ public class EphorteFacadeTest {
         String fragmentId = Utils.getFirstSubject(source);
         BatchFragment batch = new BatchFragment(fragmentId, source);
 
-        doReturn(null).when(facade).get(anyString(), eq(fragmentId));
+        doReturn(null).when(facade).getById(anyString(), eq(fragmentId));
 
         facade.save(batch);
 
@@ -379,8 +379,8 @@ public class EphorteFacadeTest {
             try {
                 ObjectUtils.setFieldValue(obj, "id", 123);
             } catch (Exception e) { /* ok */ }
-            doReturn(null).when(facade).get(anyString(), eq(fragmentId));
-            doReturn(obj).when(facade).get(anyString(), eq(fragmentId));
+            doReturn(null).when(facade).getById(anyString(), eq(fragmentId));
+            doReturn(obj).when(facade).getById(anyString(), eq(fragmentId));
         }
 
         DataObjectT[] result = facade.save(batch);
@@ -399,7 +399,7 @@ public class EphorteFacadeTest {
 
         CaseT existing = new CaseT();
 
-        doReturn(existing).when(facade).get(anyString(), eq(fragmentId));
+        doReturn(existing).when(facade).getById(anyString(), eq(fragmentId));
 
         facade.save(batch);
 
@@ -445,7 +445,7 @@ public class EphorteFacadeTest {
         CaseT thecase = new CaseT();
         thecase.setId(expected);
 
-        doReturn(thecase).when(facade).get(anyString(), eq("http://ignored/id"));
+        doReturn(thecase).when(facade).getById(anyString(), eq("http://ignored/id"));
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(entry);
@@ -481,7 +481,7 @@ public class EphorteFacadeTest {
         Integer expected = 12345;
         thecase.setId(expected);
 
-        doReturn(thecase).when(facade).get(anyString(), eq("http://unignored/id"));
+        doReturn(thecase).when(facade).getById(anyString(), eq("http://unignored/id"));
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(entry);
