@@ -22,21 +22,25 @@ public class UnpackClassificationDecorator implements Decorator {
     
     @Override
     public Object process(Fragment fragment, Statement s) {
-        ClassificationT ct = getExistingClassification(fragment);
-        if (ct == null) {
-            return createClassification(s);
-        }
+        CaseT c = (CaseT) fragment.getDataObject();
+        ClassificationT ct = getExistingClassification(c);
 
         // If there exists a classification, we return null instead of
         // the existing classification.  This is because we don't want
         // to set it again.
-        return null;
+        if (ct != null) {
+            return null;
+        }
+
+        // Otherwise we link the classification to the case so the
+        // case is saved first, then the classification is saved.
+        ct = createClassification(s);
+        ct.setCase(c);
+
+        return ct;
     }
 
-    public ClassificationT getExistingClassification(Fragment fragment) {
-        String resourceId = fragment.getResourceId();
-
-        CaseT c = (CaseT) fragment.getDataObject();
+    public ClassificationT getExistingClassification(CaseT c) {
         Integer caseId = c.getId();
         if (caseId == null) return null;
 
