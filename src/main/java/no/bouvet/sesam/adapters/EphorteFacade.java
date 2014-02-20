@@ -173,6 +173,17 @@ public class EphorteFacade {
         // run hooks
         for (Hook hook : hooks)
             hook.run(fragment, ePhorteIds);
+
+        // it's possible that the hooks have now created the object
+        if (!objectExists) {
+            Object oId = ObjectUtils.invokeGetter(obj, "getId");
+            if (oId != null) {
+                log.info("Some hook created resource: {} (ePhorteId={})",
+                         resourceId, oId);
+                ePhorteIds.put(resourceId, oId);
+                objectExists = true; // now we know we should update
+            }
+        }
         
         // FIXME: disabling this for now, so that we can finally get the
         // documents to be "hoveddokumenter"
