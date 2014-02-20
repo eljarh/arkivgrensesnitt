@@ -1,0 +1,11 @@
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/ephorte/public-title>	"TEST Vikariat for erfaren veterin\u00E6r - Store dyr TEST 30 m\u00E5neders vikariat for veterin\u00E6r - st. ref. 2069212754" .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>	<http://data.mattilsynet.no/sesam/ephorte/CaseT> .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://www.sdshare.org/2012/extension/lastmodified>	"2014-02-17T07:06:39.773Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/mapping/temp>	<http://data.mattilsynet.no/sesam/ephorte/person/933> .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/mapping/temp>	<http://data.mattilsynet.no/sesam/ephorte/personnavn/1864> .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/mapping/temp>	<http://data.mattilsynet.no/sesam/ephorte/rolle/1143> .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/ephorte/officer-name>	<http://data.mattilsynet.no/sesam/ephorte/personnavn/1864> .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/mapping/temp>	<http://data.mattilsynet.no/sesam/webcruiter/ansatt/2059220621> .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/ephorte/administrative-unit>	<http://data.mattilsynet.no/sesam/ephorte/orgenhet/14> .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/ephorte/title>	"TEST Veterin\u00E6r - store dyr" .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>    <http://data.mattilsynet.no/sesam/ephorte/primary-classification>            "classification-system-id=ARKN\u00D8KKEL::class-id=212::description=Tilsetting".
