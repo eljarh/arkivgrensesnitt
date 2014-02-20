@@ -70,7 +70,11 @@ public class RegistryEntryTypeUHook implements Hook {
         log.debug("Making sender", sender);
         client.insert(sender);
 
-        // STEP 3: set Status=J (done by normal processing)
+        // STEP 3: update entry
+        entry.setSenderRecipient("Fake WebCruiter recipient");
+        client.update(entry);
+
+        // STEP 4: set Status=J (done by normal processing)
         log.debug("Done");
     }
 }
