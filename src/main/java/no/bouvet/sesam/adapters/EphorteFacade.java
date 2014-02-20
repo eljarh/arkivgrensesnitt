@@ -89,7 +89,7 @@ public class EphorteFacade {
 
         hooks.add(new RegistryEntryTypeUHook());
         for (Hook hook : hooks)
-            hook.setClient(client);
+            hook.setFacade(this);
         
         Iterator<String> keys = decorators.getKeys();
         while(keys.hasNext()) {
@@ -122,6 +122,10 @@ public class EphorteFacade {
         obj.setFacade(this);
     }
 
+    public NCoreClient getClient() {
+        return client;
+    }
+    
     public Set<String> getImmutableProperties() {
         return immutableProperties;
     }
@@ -168,7 +172,7 @@ public class EphorteFacade {
 
         // run hooks
         for (Hook hook : hooks)
-            hook.run(fragment);
+            hook.run(fragment, ePhorteIds);
         
         // FIXME: disabling this for now, so that we can finally get the
         // documents to be "hoveddokumenter"
@@ -242,7 +246,7 @@ public class EphorteFacade {
         ObjectUtils.setFieldValue(obj, rdfKeywordsName, link);
     }
 
-    public Collection<DataObjectT> populate(Fragment fragment, Map<String, Object> ePhorteIds) throws Exception {
+    public Collection<DataObjectT> populate(Fragment fragment, Map<String, Object> ePhorteIds) {
         Collection<DataObjectT> newobjs = new ArrayList();
         List<ReferenceNotFound> missingReferences = new ArrayList<ReferenceNotFound>();
         for (Statement s : fragment.getStatements()) {
@@ -266,16 +270,16 @@ public class EphorteFacade {
         return newobjs;
     }
 
-    public void populate(Fragment fragment) throws Exception {
+    public void populate(Fragment fragment) {
         populate(fragment, new HashMap<String, Object>());
     }
 
-    public void populate(Fragment fragment, Statement statement) throws Exception {
+    public void populate(Fragment fragment, Statement statement) {
         populate(fragment, statement, new HashMap<String, Object>());
     }
 
     // returns the new value object created by decorator, if any
-    public DataObjectT populate(Fragment fragment, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    public DataObjectT populate(Fragment fragment, Statement s, Map<String, Object> ePhorteIds) {
         DataObjectT obj = fragment.getDataObject();
         String name = getFieldName(s.property);
 
@@ -315,7 +319,7 @@ public class EphorteFacade {
         return null; // we didn't create a new DataObjectT instance
     }
 
-    public Object getValue(Fragment fragment, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    public Object getValue(Fragment fragment, Statement s, Map<String, Object> ePhorteIds) {
         if (decorators.containsKey(s.property)) {
             Decorator d = decorators.get(s.property);
             return d.process(fragment, s);
@@ -324,7 +328,7 @@ public class EphorteFacade {
         return s.object;
     }
 
-    public Object getIdValue(DataObjectT obj, String fieldType, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    public Object getIdValue(DataObjectT obj, String fieldType, Statement s, Map<String, Object> ePhorteIds) {
         Object oId = ePhorteIds.get(s.object);
 
         if (oId == null) {
@@ -351,7 +355,7 @@ public class EphorteFacade {
         return oId;
     }
 
-    public DataObjectT get(String typeName, String externalId) throws Exception {
+    public DataObjectT get(String typeName, String externalId) {
         String searchName = getSearchName(typeName);
         String query = getExternalIdSearchString(typeName, externalId);
         List<DataObjectT> results = client.get(searchName, query);

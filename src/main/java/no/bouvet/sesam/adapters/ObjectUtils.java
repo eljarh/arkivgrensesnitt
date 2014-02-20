@@ -61,11 +61,15 @@ public class ObjectUtils {
         return m != null;
     }
 
-    public static Object invokeGetter(Object obj, String getterName) throws Exception {
+    public static Object invokeGetter(Object obj, String getterName) {
         Method m = getMethod(obj, getterName);
         if (m == null) return null;
-        
-        return m.invoke(obj);
+
+        try {
+          return m.invoke(obj);
+        } catch (Exception e) {
+          throw new RuntimeException("Getter failed", e);
+        }
     }
 
     /*

@@ -1,6 +1,7 @@
 
 package no.bouvet.sesam.adapters;
 
+import java.util.Map;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 
 /**
@@ -12,14 +13,14 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 public interface Hook {
 
     /**
-     * Gives the hook the client. Called by the facade before anything
+     * Gives the hook the facade. Called by the facade before anything
      * runs.
      */
-    public void setClient(NCoreClient client);
+    public void setFacade(EphorteFacade facade);
 
     /**
      * Actually runs the hook, to do whatever it wants to do.
      */
-    public void run(Fragment fragment);
+    public void run(Fragment fragment, Map<String, Object> ids);
     
 }

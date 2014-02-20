@@ -1,6 +1,6 @@
 package no.bouvet.sesam.adapters;
 
-public class ReferenceNotFound extends Exception {
+public class ReferenceNotFound extends RuntimeException {
     private Statement statement;
 
     public ReferenceNotFound(String message) {

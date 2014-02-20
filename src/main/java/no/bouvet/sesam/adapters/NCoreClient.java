@@ -33,11 +33,11 @@ public class NCoreClient {
         }
     }
 
-    public void update(DataObjectT obj) throws Exception {
+    public void update(DataObjectT obj) {
         update(new DataObjectT[] { obj });
     }
 
-    public void update(DataObjectT[] objs) throws Exception {
+    public void update(DataObjectT[] objs) {
         log.info("Updating objects {}", objs);
 
         try {
@@ -49,7 +49,7 @@ public class NCoreClient {
         }
     }
 
-    public List<DataObjectT> get(String searchName, String query) throws Exception {
+    public List<DataObjectT> get(String searchName, String query) {
         log.debug("Getting objects using searchName {} and query {}", searchName, query);
         try {
             List<DataObjectT> objs = NCore.Objects.filteredQuery(searchName, query, new String[] {}, null, null);
@@ -62,6 +62,8 @@ public class NCoreClient {
         } catch (com.sun.xml.ws.fault.ServerSOAPFaultException e) {
             log.error("Couldn't get object, ePhorte threw exception", e);
             return new ArrayList<DataObjectT>();
+        } catch (Exception e) {
+            throw new RuntimeException("Couldn't do ePhorte query", e);
         }
     }
 

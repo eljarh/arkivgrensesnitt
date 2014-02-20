@@ -1,6 +1,8 @@
 
 package no.bouvet.sesam.adapters;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +28,13 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SenderRecipientT;
  */
 public class RegistryEntryTypeUHook implements Hook {
     private static Logger log = LoggerFactory.getLogger(RegistryEntryTypeUHook.class.getName());
-    private NCoreClient client;
+    private EphorteFacade facade;
 
-    public void setClient(NCoreClient client) {
-        this.client = client;
+    public void setFacade(EphorteFacade facade) {
+        this.facade = facade;
     }
 
-    public void run(Fragment fragment) {
+    public void run(Fragment fragment, Map<String, Object> ids) {
         // --- SHOULD WE DANCE?
         // we only deal with registry entries
         DataObjectT obj = fragment.getDataObject();
@@ -54,13 +56,11 @@ public class RegistryEntryTypeUHook implements Hook {
         // --- DANCE, SISTER, DANCE
         // STEP 1: first attempt at entry
         // set initial state
-        entry.setRegistryEntryTypeId("U");
-        entry.setRecordStatusId("R");
-        s = fragment.getStatementWithSuffix("/title");
-        log.debug("Set title to {}", s.object);
-        entry.setTitle(s.object);
+        facade.populate(fragment, ids); // set state as originally defined
+        entry.setRecordStatusId("R");   // override status
         
         // send initial SOAP request
+        NCoreClient client = facade.getClient();
         client.insert(entry);
 
         // STEP 2: make sender
@@ -70,8 +70,7 @@ public class RegistryEntryTypeUHook implements Hook {
         log.debug("Making sender", sender);
         client.insert(sender);
 
-        // STEP 3: fill in rest of entry
-        // this is done by normal processing, which will also set Status=J
+        // STEP 3: set Status=J (done by normal processing)
         log.debug("Done");
     }
 }
