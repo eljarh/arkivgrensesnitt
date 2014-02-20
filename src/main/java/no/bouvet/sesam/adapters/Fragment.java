@@ -24,6 +24,7 @@ public class Fragment implements StatementHandler {
     private String resourceId;
     private String source = null;
     private List<Statement> statements = null;
+    private DataObjectT object;
 
     public Fragment(String resourceId) {
         this.resourceId = resourceId;
@@ -45,7 +46,6 @@ public class Fragment implements StatementHandler {
         if (rdfType.equals(property)) {
             type = object;
         }
-
         statements.add(new Statement(subject, property, object, literal));
     }
 
@@ -80,6 +80,21 @@ public class Fragment implements StatementHandler {
         return statements;
     }
 
+    public Statement getStatementWithSuffix(String suffix) {
+        for (Statement s : statements)
+            if (s.property.endsWith(suffix))
+                return s;
+        return null;
+    }
+
+    public void setDataObject(DataObjectT object) {
+        this.object = object;
+    }
+
+    public DataObjectT getDataObject() {
+        return object;
+    }
+    
     private void parse() throws InvalidFragment {
         Reader reader = new StringReader(source);
         try {
@@ -89,7 +104,7 @@ public class Fragment implements StatementHandler {
         }
     }
 
-    public void validate() throws InvalidFragment {
+    public void validate() {
         if (StringUtils.isBlank(this.resourceId)) {
             throw new InvalidFragment("Fragment has no identity");
         }

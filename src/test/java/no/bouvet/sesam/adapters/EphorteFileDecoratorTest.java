@@ -54,11 +54,13 @@ public class EphorteFileDecoratorTest {
     public void testThatProcessFetchesUrlAndUploadsWithFacade() throws Exception {
         EphorteFacade facade = mock(EphorteFacade.class);
         EphorteFileDecorator decorator = new EphorteFileDecorator();
+        decorator.setFacade(facade);
 
-        DocumentObjectT doc = new DocumentObjectT();
         BatchFragment batch = mock(BatchFragment.class);
         Statement s = new Statement("_", "_", "http://www.jtricks.com/download-unknown", true);
-        decorator.process(doc, facade, batch, s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(new DocumentObjectT());
+        decorator.process(fragment, s);
 
         verify(facade).uploadFile(eq("content.txt"), any(byte[].class));
     }

@@ -161,7 +161,10 @@ public class EphorteFacadeTest {
         CaseT actual = new CaseT();
         CaseT expected = new CaseT();
 
-        facade.populate(actual, mock(BatchFragment.class), s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(actual);
+        
+        facade.populate(fragment, s);
 
         assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
     }
@@ -172,7 +175,10 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/custom-attribute-1", expectedValue, true);
         CaseT obj = new CaseT();
 
-        facade.populate(obj, mock(BatchFragment.class), s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(obj);
+        
+        facade.populate(fragment, s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
     }
@@ -183,7 +189,10 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/custom-attribute-1", expectedValue, false);
         CaseT obj = new CaseT();
 
-        facade.populate(obj, mock(BatchFragment.class), s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(obj);
+        
+        facade.populate(fragment, s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
     }
@@ -198,7 +207,10 @@ public class EphorteFacadeTest {
 
         doReturn(c).when(facade).get(anyString(), eq("id"));
 
-        facade.populate(entry, mock(BatchFragment.class), s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(entry);
+        
+        facade.populate(fragment, s);
 
         assertEquals(expected, entry.getCaseId());
     }
@@ -208,14 +220,17 @@ public class EphorteFacadeTest {
         String property = "http://data.mattilsynet.no/sesam/ephorte/file-path";
         String url = "http://www.jtricks.com/download-unknown";
         Statement s = new Statement("_", property, url, true);
-        BatchFragment batch = mock(BatchFragment.class);
 
         Decorator d = mock(Decorator.class);
         facade.setDecorator(property, d);
         DocumentObjectT obj = new DocumentObjectT();
-        facade.populate(obj, batch, s);
 
-        verify(d).process(obj, facade, batch, s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(obj);
+        
+        facade.populate(fragment, s);
+
+        verify(d).process(fragment, s);
     }
 
     @Test
@@ -224,17 +239,19 @@ public class EphorteFacadeTest {
         String value = "classification-system-id=ARKN\u00D8KKEL::class-id=212::description=Tilsetting";
 
         Statement s = new Statement("_", property, value, true);
-        BatchFragment batch = mock(BatchFragment.class);
 
         Decorator d = mock(Decorator.class);
 
         CaseT c = new CaseT();
-        doReturn(new ClassificationT()).when(d).process(c, facade, batch, s);
-
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(c);
+        
+        doReturn(new ClassificationT()).when(d).process(fragment, s);
+        
         facade.setDecorator(property, d);
-        facade.populate(c, batch, s);
+        facade.populate(fragment, s);
 
-        verify(d).process(c, facade, batch, s);
+        verify(d).process(fragment, s);
     }
 
     @Test
@@ -242,27 +259,26 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "missing", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
-
+        
         doReturn(null).when(facade).get(anyString(), eq("missing"));
 
         exception.expect(ReferenceNotFound.class);
         exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/case> to non-existent object <missing>");
-        facade.populate(entry, mock(BatchFragment.class), s);
+
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(entry);
+        facade.populate(fragment, s);
     }
 
     @Test
     public void testPopulateWithManyLiterals() throws Exception {
-        Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/id", "123", false);
-        Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/title", "whatever", false);
-        List<Statement> statements = new ArrayList<Statement>();
-        statements.add(s1);
-        statements.add(s2);
-
-        BatchFragment batch = mock(BatchFragment.class);
-        doReturn(statements).when(batch).getStatements(anyString());
-
         CaseT obj = new CaseT();
-        facade.populate(obj, batch, "_");
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(obj);
+        fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/id", "123", false);
+        fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/title", "whatever", false);
+        
+        facade.populate(fragment);
 
         assertEquals(123, (int) obj.getId());
         assertEquals("whatever", obj.getTitle());
@@ -270,54 +286,45 @@ public class EphorteFacadeTest {
 
     @Test
     public void testPopulateWithManyReferences_ExistingOverwritesNonExisting() throws Exception {
-        Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "exists", false);
-        Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
-        List<Statement> statements = new ArrayList<Statement>();
-        statements.add(s1);
-        statements.add(s2);
+        CaseT obj = new CaseT();
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(obj);
+        fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "exists", false);
+        fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
 
         String codeId = "123";
         AccessCodeT code = new AccessCodeT();
         code.setId(codeId);
-        CaseT obj = new CaseT();
 
         doReturn(code).when(facade).get(anyString(), eq("exists"));
         doReturn(null).when(facade).get(anyString(), eq("missing"));
 
-        BatchFragment batch = mock(BatchFragment.class);
-        doReturn(statements).when(batch).getStatements(anyString());
-
-        facade.populate (obj, batch, "_");
+        facade.populate(fragment);
         assertEquals(codeId, obj.getAccessCodeId());
     }
 
     @Test
     public void testPopulateWithManyReferences_MissingThrowsException() throws Exception {
-        Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
-        Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
-        List<Statement> statements = new ArrayList<Statement>();
-        statements.add(s1);
-        statements.add(s2);
-
         CaseT obj = new CaseT();
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(obj);
+        fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
+        fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "missing", false);
 
         doReturn(null).when(facade).get(anyString(), eq("missing"));
 
-        BatchFragment batch = mock(BatchFragment.class);
-        doReturn(statements).when(batch).getStatements(anyString());
-
         exception.expect(ReferenceNotFound.class);
         exception.expectMessage("Fragment <_> tries to set property <http://data.mattilsynet.no/sesam/ephorte/access-code> to non-existent object <missing>");
-        facade.populate (obj, batch, "_");
+        facade.populate(fragment);
     }
 
     @Test
     public void testPopulateWithManyReferencesSetsIdsCorrectly() throws Exception {
-        Statement s1 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "code", false);
-        Statement s2 = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-group", "group", false);
-        List<Statement> statements = new ArrayList<Statement>();
-        statements.add(s1);
-        statements.add(s2);
+        CaseT obj = new CaseT();
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(obj);
+        fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-code", "code", false);
+        fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/access-group", "group", false);
 
         String codeId = "123";
         Integer groupId = 345;
@@ -325,13 +332,10 @@ public class EphorteFacadeTest {
         code.setId(codeId);
         AccessGroupT group = new AccessGroupT();
         group.setId(groupId);
-        CaseT obj = new CaseT();
         doReturn(code).when(facade).get(anyString(), eq("code"));
         doReturn(group).when(facade).get(anyString(), eq("group"));
-        BatchFragment batch = mock(BatchFragment.class);
-        doReturn(statements).when(batch).getStatements(anyString());
 
-        facade.populate(obj, batch, "_");
+        facade.populate(fragment);
 
         assertEquals(codeId, obj.getAccessCodeId());
         assertEquals(groupId, obj.getAccessGroupId());
@@ -443,7 +447,10 @@ public class EphorteFacadeTest {
 
         doReturn(thecase).when(facade).get(anyString(), eq("http://ignored/id"));
 
-        facade.populate(entry, mock(BatchFragment.class), s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(entry);
+        
+        facade.populate(fragment, s);
         assertSame(null, entry.getCaseId());
     }
 
@@ -457,7 +464,10 @@ public class EphorteFacadeTest {
         ClassificationT val = new ClassificationT();
         thecase.setPrimaryClassification(val);
 
-        facade.populate(thecase, mock(BatchFragment.class), s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(thecase);
+        
+        facade.populate(fragment, s);
         assertSame(val, thecase.getPrimaryClassification());
     }
 
@@ -473,7 +483,10 @@ public class EphorteFacadeTest {
 
         doReturn(thecase).when(facade).get(anyString(), eq("http://unignored/id"));
 
-        facade.populate(entry, mock(BatchFragment.class), s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(entry);
+        
+        facade.populate(fragment, s);
 
         assertEquals(expected, entry.getCaseId());
     }

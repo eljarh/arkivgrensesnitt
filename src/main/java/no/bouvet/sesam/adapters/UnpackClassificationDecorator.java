@@ -14,8 +14,12 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.ClassificationT;
 public class UnpackClassificationDecorator implements Decorator {
     private static Logger log = LoggerFactory.getLogger(UnpackClassificationDecorator.class.getName());
 
+    public void setFacade(EphorteFacade facade) {
+        // don't need it
+    }
+    
     @Override
-    public Object process(DataObjectT obj, EphorteFacade facade, BatchFragment fragment, Statement s) {
+    public Object process(Fragment fragment, Statement s) {
         ClassificationT ct = new ClassificationT();
 
         String[] parts = s.object.split("::");

@@ -1,5 +1,6 @@
 package no.bouvet.sesam.adapters;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -8,20 +9,19 @@ import org.slf4j.LoggerFactory;
 
 import no.gecko.ncore.client.core.NCore;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
-import java.util.ArrayList;
 
 public class NCoreClient {
     private static Logger log = LoggerFactory.getLogger(NCoreClient.class.getName());
     
-    public void insert(DataObjectT obj) throws Exception {
+    public void insert(DataObjectT obj) {
         insert(new DataObjectT[] { obj });
     }
 
-    public void insert(Collection<DataObjectT> objs) throws Exception {
+    public void insert(Collection<DataObjectT> objs) {
         insert(objs.toArray(new DataObjectT[0]));
     }
   
-    public void insert(DataObjectT[] objs) throws Exception {
+    public void insert(DataObjectT[] objs) {
         log.info("Inserting objects {}", objs);
 
         try {
@@ -65,7 +65,7 @@ public class NCoreClient {
         }
     }
 
-    public String upload(String fileName, String storageId, byte[] data) throws Exception {
+    public String upload(String fileName, String storageId, byte[] data) {
         log.info("Uploading file {} with storageId {}", fileName, storageId);
 
         try {

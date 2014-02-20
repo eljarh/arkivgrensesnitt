@@ -37,6 +37,7 @@ public class EphorteFacade {
     private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
     private Set<String> ignoredPrefixes = new HashSet();
     private Set<String> immutableProperties = new HashSet();
+    private Collection<Hook> hooks = new ArrayList();
 
     public EphorteFacade() {
         this(true);
@@ -86,6 +87,10 @@ public class EphorteFacade {
         for (String property : decodeListProperty(v))
             addImmutableProperty(property);
 
+        hooks.add(new RegistryEntryTypeUHook());
+        for (Hook hook : hooks)
+            hook.setClient(client);
+        
         Iterator<String> keys = decorators.getKeys();
         while(keys.hasNext()) {
             String klass = keys.next();
@@ -114,6 +119,7 @@ public class EphorteFacade {
     public void setDecorator(String key, Decorator obj) {
         decorators.remove(key);
         decorators.put(key, obj);
+        obj.setFacade(this);
     }
 
     public Set<String> getImmutableProperties() {
@@ -135,26 +141,20 @@ public class EphorteFacade {
 
         List<DataObjectT> result = new ArrayList<DataObjectT>();
 
-        for (String resourceId : batch.getResources()) {
-            DataObjectT r = save(batch, resourceId, ePhorteIds);
+        for (Fragment fragment : batch.getFragments()) {
+            DataObjectT r = save(fragment, ePhorteIds);
             result.add(r);
         }
         return result.toArray(new DataObjectT[0]);
     }
+    
+    // FIXME: method name is wrong. this is not an overloaded version of the
+    //          save() method above
+    public DataObjectT save(Fragment fragment, Map<String, Object> ePhorteIds) throws Exception {
+        fragment.validate();
 
-    public DataObjectT save(BatchFragment batch, String resourceId) throws Exception {
-        return save(batch, resourceId, new HashMap<String, Object>());
-    }
-
-    public DataObjectT save(BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
-        if (StringUtils.isBlank(resourceId)) {
-           throw new InvalidFragment("Fragment has no resourceId");
-        }
-        String type = batch.getType(resourceId);
-        if (StringUtils.isBlank(type)) {
-            throw new InvalidFragment("Fragment has no type: " + resourceId);
-        }
-        String ePhorteType = getObjectType(type);
+        String resourceId = fragment.getResourceId();
+        String ePhorteType = getObjectType(fragment.getType());
 
         log.debug("Looking up object with type {} and resourceId {}", ePhorteType, resourceId);
         DataObjectT obj = get(ePhorteType, resourceId);
@@ -164,13 +164,20 @@ public class EphorteFacade {
             log.debug("Creating object with type {} and resourceId {}", ePhorteType, resourceId);
             obj = create(ePhorteType, resourceId);
         }
+        fragment.setDataObject(obj);
 
+        // run hooks
+        for (Hook hook : hooks)
+            hook.run(fragment);
+        
         // FIXME: disabling this for now, so that we can finally get the
         // documents to be "hoveddokumenter"
-        //setRdfKeywords(obj, batch.getSource(resourceId));
-        Collection<DataObjectT> newobjs =
-            populate(obj, batch, resourceId, ePhorteIds);
+        //setRdfKeywords(obj, fragment.getSource());
 
+        // go through statements and populate the object
+        Collection<DataObjectT> newobjs = populate(fragment, ePhorteIds);
+
+        // now send SOAP request
         if (objectExists) {
             client.update(obj);
             log.info("Updated resource: {}", resourceId);
@@ -183,6 +190,7 @@ public class EphorteFacade {
             }
         }
 
+        // did decorators create any new objects?
         if (!newobjs.isEmpty()) {
             // we need to also create the new objects created by
             // decorators, *and* wire into these objects references back
@@ -192,7 +200,7 @@ public class EphorteFacade {
             setParentReferences(obj, newobjs);
             client.insert(newobjs);
         }
-            
+
         return obj;
     }
 
@@ -213,7 +221,7 @@ public class EphorteFacade {
             ObjectUtils.setFieldValue(child, property, id);
     }
 
-    public DataObjectT create(String typeName, String externalId) throws Exception {
+    public DataObjectT create(String typeName, String externalId) {
         DataObjectT o = (DataObjectT) ObjectUtils.instantiate(typeName);
         setExternalId(o, externalId);
         return o;
@@ -229,18 +237,17 @@ public class EphorteFacade {
         ObjectUtils.setFieldValue(obj, externalIdNameEncoded, value);
     }
 
-
     public void setRdfKeywords(DataObjectT obj, String source) throws Exception {
         String link = uploadFile("rdfKeywords", source.getBytes("UTF-8"));
         ObjectUtils.setFieldValue(obj, rdfKeywordsName, link);
     }
 
-    public Collection<DataObjectT> populate(DataObjectT obj, BatchFragment batch, String resourceId, Map<String, Object> ePhorteIds) throws Exception {
+    public Collection<DataObjectT> populate(Fragment fragment, Map<String, Object> ePhorteIds) throws Exception {
         Collection<DataObjectT> newobjs = new ArrayList();
         List<ReferenceNotFound> missingReferences = new ArrayList<ReferenceNotFound>();
-        for (Statement s : batch.getStatements(resourceId)) {
+        for (Statement s : fragment.getStatements()) {
             try {
-                DataObjectT newO = populate(obj, batch, s, ePhorteIds);
+                DataObjectT newO = populate(fragment, s, ePhorteIds);
                 if (newO != null)
                     newobjs.add(newO);
             } catch (ReferenceNotFound e) {
@@ -253,22 +260,23 @@ public class EphorteFacade {
         for (ReferenceNotFound e : missingReferences) {
             Statement s = e.getStatement();
             String name = getReferenceFieldName(s.property);
-            if (valueIsMissing(obj, name))
+            if (valueIsMissing(fragment.getDataObject(), name))
                 throw e;
         }
         return newobjs;
     }
 
-    public void populate(DataObjectT obj, BatchFragment batch, String resourceId) throws Exception {
-        populate(obj, batch, resourceId, new HashMap<String, Object>());
+    public void populate(Fragment fragment) throws Exception {
+        populate(fragment, new HashMap<String, Object>());
     }
 
-    public void populate(DataObjectT obj, BatchFragment batch, Statement statement) throws Exception {
-        populate(obj, batch, statement, new HashMap<String, Object>());
+    public void populate(Fragment fragment, Statement statement) throws Exception {
+        populate(fragment, statement, new HashMap<String, Object>());
     }
 
     // returns the new value object created by decorator, if any
-    public DataObjectT populate(DataObjectT obj, BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    public DataObjectT populate(Fragment fragment, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+        DataObjectT obj = fragment.getDataObject();
         String name = getFieldName(s.property);
 
         if (immutableProperties.contains(s.property)) {
@@ -295,7 +303,7 @@ public class EphorteFacade {
             Object oId = getIdValue(obj, fieldType, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, idName, oId);
         } else {
-            Object value = getValue(obj, batch, s, ePhorteIds);
+            Object value = getValue(fragment, s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, name, value);
             if (value instanceof DataObjectT) {
                 // this means a decorator made a DataObjectT instance
@@ -307,10 +315,10 @@ public class EphorteFacade {
         return null; // we didn't create a new DataObjectT instance
     }
 
-    public Object getValue(DataObjectT obj, BatchFragment batch, Statement s, Map<String, Object> ePhorteIds) throws Exception {
+    public Object getValue(Fragment fragment, Statement s, Map<String, Object> ePhorteIds) throws Exception {
         if (decorators.containsKey(s.property)) {
             Decorator d = decorators.get(s.property);
-            return d.process(obj, this, batch, s);
+            return d.process(fragment, s);
         }
 
         return s.object;
@@ -424,7 +432,7 @@ public class EphorteFacade {
         return fieldName + "-id";
     }
 
-    public String uploadFile(String fileName, byte[] data) throws Exception {
+    public String uploadFile(String fileName, byte[] data) {
         return client.upload(fileName, storageId, data);
     }
 

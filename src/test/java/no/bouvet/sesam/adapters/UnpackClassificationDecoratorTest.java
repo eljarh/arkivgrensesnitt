@@ -16,7 +16,9 @@ public class UnpackClassificationDecoratorTest {
         UnpackClassificationDecorator decorator = new UnpackClassificationDecorator();
 
         CaseT c = new CaseT();
-        ClassificationT obj = (ClassificationT) decorator.process(c, facade, batch, statement);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(c);
+        ClassificationT obj = (ClassificationT) decorator.process(fragment, statement);
         assertEquals(obj.getClassificationSystemId(), "ARKN\u00D8KKEL");
         assertEquals(obj.getClassId(), "212");
         assertEquals(obj.getDescription(), "Tilsetting");

@@ -90,11 +90,14 @@ public class EphorteFacadeIT {
 
     @Test
     public void testThatWeCanUploadFile() throws Exception {
-        DocumentObjectT doc = new DocumentObjectT();
         EphorteFileDecorator decorator = new EphorteFileDecorator();
-        BatchFragment batch = mock(BatchFragment.class);
+        decorator.setFacade(facade);
+        
         Statement s = new Statement("_", "_", "http://www.jtricks.com/download-unknown", true);
-        String result = (String) decorator.process(doc, facade, batch, s);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(new DocumentObjectT());
+        
+        String result = (String) decorator.process(fragment, s);
         assertTrue(result.startsWith("UPLOAD_{ObjectModelService}_"));
         assertTrue(result.endsWith("\\content.txt"));
     }
