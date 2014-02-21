@@ -26,9 +26,25 @@ public class PersonNameMaskingDecorator implements Decorator {
      * modified version.
      */
     public Object process(Fragment fragment, Statement statement) {
-        int pos = statement.object.indexOf('@');
-        if (pos != -1)
-            return statement.object.substring(0, pos);
+        boolean modified = false;
+        String str = statement.object;
+        char[] tmp = new char[str.length()];
+
+        int writeat = 0;
+        int ix = 0;
+        for (; ix < str.length(); ix++) {
+            char ch = str.charAt(ix);
+            if (ch == '@') {
+                modified = true;
+                break; // that's it, we're done
+            } else if (ch == '\'')
+                modified = true;
+            else
+                tmp[writeat++] = ch;
+        }
+
+        if (modified)
+            return new String(tmp, 0, writeat);
         else
             return statement.object;
     }

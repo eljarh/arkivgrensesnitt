@@ -24,6 +24,11 @@ public class PersonNameMaskingDecoratorTest {
         check("S\u00F8knad og CV - Test stilling #2 - st. ref. (2080564196) - @K\u00E5re Med H\u00E5ret", "S\u00F8knad og CV - Test stilling #2 - st. ref. (2080564196) - ");
     }
 
+    @Test
+    public void testBanishApostrophesToTheOuterDarknessBecauseEphorteIsABrokenPileOfShit() {
+        check("Eljar promises never to write ' again", "Eljar promises never to write  again");
+    }
+
     // ----- UTILITIES
 
     private void check(String input, String output) {
