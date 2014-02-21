@@ -80,6 +80,17 @@ public class Fragment implements StatementHandler {
         return statements;
     }
 
+    public void addStatement(Statement s) {
+        statements.add(s);
+    }
+
+    public Statement getStatement(String property) {
+        for (Statement s : statements)
+            if (s.property.equals(property))
+                return s;
+        return null;
+    }
+
     public Statement getStatementWithSuffix(String suffix) {
         for (Statement s : statements)
             if (s.property.endsWith(suffix))

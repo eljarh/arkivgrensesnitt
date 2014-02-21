@@ -163,7 +163,7 @@ public class EphorteFacadeTest {
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(actual);
-        
+
         facade.populate(fragment, s);
 
         assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
@@ -177,7 +177,7 @@ public class EphorteFacadeTest {
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(obj);
-        
+
         facade.populate(fragment, s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
@@ -191,7 +191,7 @@ public class EphorteFacadeTest {
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(obj);
-        
+
         facade.populate(fragment, s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
@@ -209,7 +209,7 @@ public class EphorteFacadeTest {
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(entry);
-        
+
         facade.populate(fragment, s);
 
         assertEquals(expected, entry.getCaseId());
@@ -227,28 +227,7 @@ public class EphorteFacadeTest {
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(obj);
-        
-        facade.populate(fragment, s);
 
-        verify(d).process(fragment, s);
-    }
-
-    @Test
-    public void testPopulateWithUnpackClassificationDecorator() throws Exception {
-        String property = "http://data.mattilsynet.no/sesam/ephorte/primary-classification";
-        String value = "classification-system-id=ARKN\u00D8KKEL::class-id=212::description=Tilsetting";
-
-        Statement s = new Statement("_", property, value, true);
-
-        Decorator d = mock(Decorator.class);
-
-        CaseT c = new CaseT();
-        Fragment fragment = new Fragment("_");
-        fragment.setDataObject(c);
-        
-        doReturn(new ClassificationT()).when(d).process(fragment, s);
-        
-        facade.setDecorator(property, d);
         facade.populate(fragment, s);
 
         verify(d).process(fragment, s);
@@ -259,7 +238,7 @@ public class EphorteFacadeTest {
         Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/case", "missing", false);
         RegistryEntryT entry = new RegistryEntryT();
         CaseT expected = new CaseT();
-        
+
         doReturn(null).when(facade).getById(anyString(), eq("missing"));
 
         exception.expect(ReferenceNotFound.class);
@@ -277,7 +256,7 @@ public class EphorteFacadeTest {
         fragment.setDataObject(obj);
         fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/id", "123", false);
         fragment.statement("_", "http://data.mattilsynet.no/sesam/ephorte/title", "whatever", false);
-        
+
         facade.populate(fragment);
 
         assertEquals(123, (int) obj.getId());
@@ -449,7 +428,7 @@ public class EphorteFacadeTest {
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(entry);
-        
+
         facade.populate(fragment, s);
         assertSame(null, entry.getCaseId());
     }
@@ -466,7 +445,7 @@ public class EphorteFacadeTest {
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(thecase);
-        
+
         facade.populate(fragment, s);
         assertSame(val, thecase.getPrimaryClassification());
     }
@@ -485,7 +464,7 @@ public class EphorteFacadeTest {
 
         Fragment fragment = new Fragment("_");
         fragment.setDataObject(entry);
-        
+
         facade.populate(fragment, s);
 
         assertEquals(expected, entry.getCaseId());

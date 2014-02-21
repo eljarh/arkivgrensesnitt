@@ -37,7 +37,9 @@ public class EphorteFacade {
     private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
     private Set<String> ignoredPrefixes = new HashSet();
     private Set<String> immutableProperties = new HashSet();
-    private Collection<Hook> hooks = new ArrayList();
+    private Set<String> ignoredProperties = new HashSet();
+    private Collection<Hook> prehooks = new ArrayList();
+    private Collection<Hook> posthooks = new ArrayList();
 
     public EphorteFacade() {
         this(true);
@@ -87,8 +89,16 @@ public class EphorteFacade {
         for (String property : decodeListProperty(v))
             addImmutableProperty(property);
 
-        hooks.add(new RegistryEntryTypeUHook());
-        for (Hook hook : hooks)
+        v = config.getProperty("ephorte.ignoredProperties");
+        for (String property : decodeListProperty(v))
+            addIgnoredProperty(property);
+
+        prehooks.add(new RegistryEntryTypeUHook());
+        for (Hook hook : prehooks)
+            hook.setFacade(this);
+
+        posthooks.add(new PrimaryClassificationHook());
+        for (Hook hook : posthooks)
             hook.setFacade(this);
 
         Iterator<String> keys = decorators.getKeys();
@@ -134,6 +144,10 @@ public class EphorteFacade {
         immutableProperties.add(property);
     }
 
+    public void addIgnoredProperty(String property) {
+        ignoredProperties.add(property);
+    }
+
     public void addIgnoredReferencePrefix(String prefix) {
         ignoredPrefixes.add(prefix);
     }
@@ -170,8 +184,7 @@ public class EphorteFacade {
         }
         fragment.setDataObject(obj);
 
-        // run hooks
-        for (Hook hook : hooks)
+        for (Hook hook : prehooks)
             hook.run(fragment, ePhorteIds);
 
         // it's possible that the hooks have now created the object
@@ -205,16 +218,8 @@ public class EphorteFacade {
             }
         }
 
-        // did decorators create any new objects?
-        if (!newobjs.isEmpty()) {
-            // we need to also create the new objects created by
-            // decorators, *and* wire into these objects references back
-            // to the parent object 'obj'. we make this work by assuming
-            // that if 'obj' is a CaseT, then the object created by the
-            // decorator will have a 'setCaseId' method we can use.
-            setParentReferences(obj, newobjs);
-            client.insert(newobjs);
-        }
+        for (Hook hook : posthooks)
+            hook.run(fragment, ePhorteIds);
 
         return obj;
     }
@@ -293,6 +298,9 @@ public class EphorteFacade {
     public DataObjectT populate(Fragment fragment, Statement s, Map<String, Object> ePhorteIds) {
         DataObjectT obj = fragment.getDataObject();
         String name = getFieldName(s.property);
+
+        if (ignoredProperties.contains(s.property))
+            return null;
 
         if (immutableProperties.contains(s.property)) {
             if (hasValue(obj, name)) {
