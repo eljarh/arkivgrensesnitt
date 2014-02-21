@@ -65,6 +65,10 @@ public class EphorteFacade {
     protected void loadConfiguration() {
         PropertiesConfiguration config = loadConfig("ephorte.properties");
         PropertiesConfiguration decorators = new PropertiesConfiguration();
+
+        // FIXME: panic hack written while users were waiting for
+        // their documents to show up. needs to be cleaned up at
+        // some point
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("decorators.properties")));
             String line = reader.readLine();

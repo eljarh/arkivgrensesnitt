@@ -5,11 +5,15 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 /**
  * The names of job applicants need to be removed so that they are not
  * visible to the wrong users in ePhorte. WebCruiter indicates these
- * with @, so we remove all the non-space characters after that.
+ * with @, so we remove the rest of the string.
  *
  * <p>Note that this needs to be done in all versions of the title, or
  * ePhorte will complain that they don't have the same number of
  * words.
+ *
+ * <p>In addition, ePhorte has a bug in the handling of titles on
+ * journal posts, in that it doesn't properly escape "'" characters in
+ * the SQL queries it generates. We solve that here by removing them.
  *
  * <p>This decorator is in the wrong place. This should really be
  * taken care of in the mapping, but that's not really possible at
@@ -22,8 +26,8 @@ public class PersonNameMaskingDecorator implements Decorator {
     }
 
     /**
-     * We find the '@' character, rewrite the string, then return the
-     * modified version.
+     * We find the '@' character, strip any apostrophes, then return
+     * the modified version.
      */
     public Object process(Fragment fragment, Statement statement) {
         boolean modified = false;
