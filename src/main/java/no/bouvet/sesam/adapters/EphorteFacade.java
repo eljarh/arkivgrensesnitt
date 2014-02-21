@@ -25,7 +25,9 @@ import org.apache.commons.codec.binary.Base32;
 public class EphorteFacade {
     private static Base32 codec = new Base32();
     private static Logger log = LoggerFactory.getLogger(EphorteFacade.class.getName());
-    private static EphorteFacade singleton = new EphorteFacade();
+    // we do not initialize the singleton here, as that causes any
+    // exceptions from the constructor to disappear
+    private static EphorteFacade singleton;
 
     private NCoreClient client;
     private String storageId;
@@ -152,7 +154,11 @@ public class EphorteFacade {
         ignoredPrefixes.add(prefix);
     }
 
-    public static EphorteFacade getInstance() { return singleton; };
+    public synchronized static EphorteFacade getInstance() {
+        if (singleton == null)
+            singleton = new EphorteFacade();
+        return singleton;
+    }
 
     public DataObjectT[] save(BatchFragment batch) throws Exception {
         Map<String, Object> ePhorteIds = new HashMap<String, Object>();
