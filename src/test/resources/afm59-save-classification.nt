@@ -8,5 +8,5 @@
 <http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/mapping/temp>	<http://data.mattilsynet.no/sesam/webcruiter/ansatt/2059220621> .
 <http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/ephorte/administrative-unit>	<http://data.mattilsynet.no/sesam/ephorte/orgenhet/14> .
 <http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/ephorte/title>	"TEST Veterin\u00E6r - store dyr" .
-<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/ephorte/public-title-names>	"TEST Veterin\u00E6r - store dyr" .
+<http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>	<http://data.mattilsynet.no/sesam/ephorte/public-title>	"TEST Veterin\u00E6r - store dyr" .
 <http://data.mattilsynet.no/sesam/webcruiter/sak/2069212754>    <http://data.mattilsynet.no/sesam/ephorte/primary-classification>            "classification-system-id=ARKN\u00D8KKEL::class-id=212::description=Tilsetting".
