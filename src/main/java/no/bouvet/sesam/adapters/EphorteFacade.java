@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 
@@ -61,7 +64,18 @@ public class EphorteFacade {
 
     protected void loadConfiguration() {
         PropertiesConfiguration config = loadConfig("ephorte.properties");
-        PropertiesConfiguration decorators = loadConfig("decorators.properties");
+        PropertiesConfiguration decorators = new PropertiesConfiguration();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("decorators.properties")));
+            String line = reader.readLine();
+            while (line != null) {
+                String[] parts = line.split("=");
+                decorators.addProperty(parts[0].trim(), parts[1].trim());
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't read decorators.properties", e);
+        }
 
         init(config, decorators);
     }
@@ -105,8 +119,10 @@ public class EphorteFacade {
 
         Iterator<String> keys = decorators.getKeys();
         while(keys.hasNext()) {
-            String klass = keys.next();
-            String property = (String) decorators.getProperty(klass);
+            // the structure is property = class, so we can decorate different
+            // properties with the same decorator
+            String property = keys.next();
+            String klass = (String) decorators.getProperty(property);
             Decorator d = (Decorator) ObjectUtils.instantiate(klass);
             setDecorator(property, d);
         }
