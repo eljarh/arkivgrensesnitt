@@ -21,7 +21,7 @@ public class PersonNameMaskingDecoratorTest {
 
     @Test
     public void testTitleWithName() {
-        check("S\u00F8knad og CV - Test stilling #2 - st. ref. (2080564196) - @K\u00E5re Med H\u00E5ret", "S\u00F8knad og CV - Test stilling #2 - st. ref. (2080564196) - @#### ### #####");
+        check("S\u00F8knad og CV - Test stilling #2 - st. ref. (2080564196) - @K\u00E5re Med H\u00E5ret", "S\u00F8knad og CV - Test stilling #2 - st. ref. (2080564196) - ");
     }
 
     // ----- UTILITIES
