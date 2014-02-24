@@ -11,13 +11,14 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
  * ePhorte will complain that they don't have the same number of
  * words.
  *
- * <p>In addition, ePhorte has a bug in the handling of titles on
- * journal posts, in that it doesn't properly escape "'" characters in
- * the SQL queries it generates. We solve that here by removing them.
- *
  * <p>This decorator is in the wrong place. This should really be
  * taken care of in the mapping, but that's not really possible at
  * present. Will fix when it's possible.
+ *
+ * <p>In addition, ePhorte has a bug in the handling of titles on
+ * journal posts, in that it doesn't properly escape "'" characters in
+ * the SQL queries it generates. We solve that here by removing them.
+ * (This part of the decorator *is* in the right place.)
  */
 public class PersonNameMaskingDecorator implements Decorator {
     

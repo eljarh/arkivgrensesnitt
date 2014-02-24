@@ -38,6 +38,7 @@ public class EphorteFacade {
     private String externalIdNameEncoded;
     private String externalIdSearchName;
     private String rdfKeywordsName;
+    private PropertiesConfiguration properties; // keeping this around
 
     private Map<String, Decorator> decorators = new HashMap<String, Decorator>();
     private Set<String> ignoredPrefixes = new HashSet();
@@ -100,6 +101,7 @@ public class EphorteFacade {
         externalIdSearchName = WordUtils.capitalize(externalIdNameEncoded, new char[] { '-' }).replace("-", "");
         rdfKeywordsName = (String) config.getProperty("ephorte.rdfKeywords.name");
         storageId = (String) config.getProperty("ephorte.storageId");
+        properties = config;
 
         Object v = config.getProperty("ephorte.ignoredReferencePrefixes");
         for (String prefix : decodeListProperty(v))
@@ -156,6 +158,14 @@ public class EphorteFacade {
 
     public NCoreClient getClient() {
         return client;
+    }
+
+    /**
+     * Returns the value of a property from the ephorte.properties
+     * file. Used by hooks and decorators.
+     */
+    public String getConfigProperty(String name) {
+        return (String) properties.getProperty(name);
     }
 
     public Set<String> getImmutableProperties() {

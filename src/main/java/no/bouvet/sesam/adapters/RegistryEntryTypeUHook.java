@@ -29,9 +29,13 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SenderRecipientT;
 public class RegistryEntryTypeUHook implements Hook {
     private static Logger log = LoggerFactory.getLogger(RegistryEntryTypeUHook.class.getName());
     private EphorteFacade facade;
+    private String fake_recipient_name;
 
     public void setFacade(EphorteFacade facade) {
         this.facade = facade;
+        this.fake_recipient_name = facade.getConfigProperty("fake.recipient.name");
+        if (fake_recipient_name == null)
+            fake_recipient_name = "Fake recipient";
     }
 
     public void run(Fragment fragment, Map<String, Object> ids) {
@@ -71,7 +75,7 @@ public class RegistryEntryTypeUHook implements Hook {
         client.insert(sender);
 
         // STEP 3: update entry
-        entry.setSenderRecipient("Fake WebCruiter recipient");
+        entry.setSenderRecipient(fake_recipient_name);
         client.update(entry);
 
         // STEP 4: set Status=J (done by normal processing)
