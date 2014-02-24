@@ -18,9 +18,9 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SenderRecipientT;
  *
  * <p>The dance looks like this:
  * <ol>
- *   <li>Create registry entry with Status=R, EntryType=U.
+ *   <li>Create registry the normal way, override Status=R.
  *   <li>Create SenderRecipientT with fake data, attach to entry by ID.
- *   <li>Update registry entry with Status=J and other data.
+ *   <li>Update registry entry the normal way, setting Status=J.
  * </ol>
  *
  * <p>The hook takes care of the first two steps, while normal
@@ -69,7 +69,7 @@ public class RegistryEntryTypeUHook implements Hook {
 
         // STEP 2: make sender
         SenderRecipientT sender = new SenderRecipientT();
-        sender.setName("Fake WebCruiter recipient");
+        sender.setName(fake_recipient_name);
         sender.setRegistryEntryId(entry.getId());
         log.debug("Making sender", sender);
         client.insert(sender);
