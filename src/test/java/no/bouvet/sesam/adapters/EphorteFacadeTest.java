@@ -400,8 +400,15 @@ public class EphorteFacadeTest {
     }
 
     @Test
-    public void testIsEphorteType() {
-        assertTrue(EphorteFacade.isEphorteType("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SeriesT"));
+    public void testIsEphorteType() throws Exception {
+        Class c = Class.forName("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SeriesT");
+        assertTrue(EphorteFacade.isEphorteReference(c));
+    }
+
+    @Test
+    public void testIsEphorteType2() throws Exception {
+        Class c = Class.forName("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.BacklogTypeT");
+        assertFalse(EphorteFacade.isEphorteReference(c));
     }
 
     @Test

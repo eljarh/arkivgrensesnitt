@@ -15,7 +15,7 @@ public class ObjectUtilsTest {
     @Test
     public void testGetFieldType() {
         CaseT c = new CaseT();
-        String t = ObjectUtils.getFieldType(c, "series");
+        String t = ObjectUtils.getFieldType(c, "series").getName();
         assertEquals("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SeriesT", t);
     }
   

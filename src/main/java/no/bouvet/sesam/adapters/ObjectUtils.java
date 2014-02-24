@@ -11,7 +11,7 @@ public class ObjectUtils {
 
     public static void setFieldValue(Object obj, String name, String value) {
         log.debug("Setting value of {} to {}", name, value);
-        String type = getFieldType(obj, name);
+        String type = getFieldType(obj, name).getName();
 
         // Workaround for bug in no.priv.garshol.duke.utils.ObjectUtils.setBeanProperty
         if (type.equals("java.lang.Integer")) {
@@ -46,13 +46,13 @@ public class ObjectUtils {
         return no.priv.garshol.duke.utils.ObjectUtils.instantiate(typeName);
     }
 
-    public static String getFieldType(Object obj, String fieldName) {
+    public static Class getFieldType(Object obj, String fieldName) {
         String methodName = makePropertyName(fieldName);
         Method m = getMethod(obj, methodName);
         if (m == null) return null;
 
         Class type = m.getParameterTypes()[0];
-        return type.getName();
+        return type;
     }
 
     public static boolean hasField(Object obj, String fieldName) {

@@ -346,20 +346,20 @@ public class EphorteFacade {
                 log.debug("Property {} is immutable, but it has no value", s.property);
         }
 
-        String fieldType = ObjectUtils.getFieldType (obj, name);
+        Class fieldType = ObjectUtils.getFieldType (obj, name);
         if (fieldType == null) {
             log.debug("Object has no setter for {}", name);
             return null;
         }
 
-        if (isEphorteType(fieldType) && !acceptedReference(s.object)) {
+        if (isEphorteReference(fieldType) && !acceptedReference(s.object)) {
             log.debug("Value is not acceptable reference: {}", s.object);
             return null;
         }
 
-        if (isEphorteType(fieldType) && !decorators.containsKey(s.property)) {
+        if (isEphorteReference(fieldType) && !decorators.containsKey(s.property)) {
             String idName = getReferenceFieldName(s.property);
-            Object oId = getIdValue(obj, fieldType, s, ePhorteIds);
+            Object oId = getIdValue(obj, fieldType.getName(), s, ePhorteIds);
             ObjectUtils.setFieldValue(obj, idName, oId);
         } else {
             Object value = getValue(fragment, s, ePhorteIds);
@@ -484,7 +484,15 @@ public class EphorteFacade {
         return "Id=" + id;
     }
 
-    public static boolean isEphorteType(String typeName) {
+    /**
+     * Returns true if this is the name of an ePhorte class to which
+     * we need to resolve object references. It therefore returns
+     * false if the class is an enum.
+     */
+    public static boolean isEphorteReference(Class valueType) {
+        if (valueType.isEnum())
+            return false; // don't need to resolve object references
+        String typeName = valueType.getName();
         return typeName.startsWith("no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.");
     }
 
