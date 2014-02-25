@@ -9,6 +9,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessCodeT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.AccessGroupT;
+import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.BacklogTypeT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.CaseT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.ClassificationT;
 import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
@@ -181,6 +182,19 @@ public class EphorteFacadeTest {
         facade.populate(fragment, s);
 
         assertEquals(expectedValue, obj.getCustomAttribute1());
+    }
+
+    @Test
+    public void testPopulateWithEnum() throws Exception {
+        Statement s = new Statement("_", "http://data.mattilsynet.no/sesam/ephorte/must-follow-up", "LOGGED_ON_USER", true);
+        RegistryEntryT obj = new RegistryEntryT();
+
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(obj);
+
+        facade.populate(fragment, s);
+
+        assertEquals(BacklogTypeT.LOGGED_ON_USER, obj.getMustFollowUp());
     }
 
     @Test
