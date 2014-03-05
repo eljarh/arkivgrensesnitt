@@ -1,6 +1,7 @@
 
 package no.bouvet.sesam.adapters;
 
+import java.util.Map;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,13 +18,16 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryDocu
  * document (RED) we don't make RDF for the RED. Instead, we send a
  * reference directly from the DD to the RE.
  *
- * <p>This decorator takes care of creating the RED and wiring it up
+ * <p>This post-hook takes care of creating the RED and wiring it up
  * correctly. That way we avoid the catch-22 where the DD is created
  * in a different batch from the RED, and so the RED can never be
  * created because it will never find its DD because the DD doesn't
  * have an RED. (This is AFM-91.)
+ *
+ * <p>Made this as a hook since we can't create the RED before the DD
+ * is created.
  */
-public class RegistryEntryDocumentDecorator implements Decorator {
+public class RegistryEntryDocumentDecorator implements Hook {
     private static Logger log = LoggerFactory.getLogger(RegistryEntryDocumentDecorator.class.getName());
     private EphorteFacade facade;
     private NCoreClient client;
@@ -34,9 +38,13 @@ public class RegistryEntryDocumentDecorator implements Decorator {
     }
     
     @Override
-    public Object process(Fragment fragment, Statement s) {
-        // first, check if the registry entry document already exists
+    public void run(Fragment fragment, Map<String, Object> ids) {
+        // first, verify that we're working with a document description
         DataObjectT obj = fragment.getDataObject();
+        if (!(obj instanceof DocumentDescriptionT))
+            return;
+
+        // then, check if the registry entry document already exists
         DocumentDescriptionT dd = (DocumentDescriptionT) obj;
         Object ddid = ObjectUtils.invokeGetter(dd, "getId");
         if (ddid != null) {
@@ -45,24 +53,31 @@ public class RegistryEntryDocumentDecorator implements Decorator {
             List objs = client.get("RegistryEntryDocument", "DocumentDescriptionId=" + ddid);
             log.trace("Searching for RegistryEntryDocuments found {}", objs.size());
             if (!objs.isEmpty())
-                return null; // the RED is already there
-        } else
-            log.trace("DocumentDescription does not exist already");
+                return; // the RED is already there
+        } else {
+            // this shouldn't ever happen, since we just created/updated it
+            log.error("DocumentDescription does not exist already");
+            return;
+        }
 
         // okay, there is no registry entry document. find the registry entry
+        Statement s = fragment.getStatementWithSuffix("/registry-entry-reference");
+        if (s == null) {
+            log.trace("Couldn't find statement");
+            return;
+        }
         String re_uri = s.object;
         RegistryEntryT re = (RegistryEntryT) facade.getById("RegistryEntryT", re_uri);
         if (re == null) {
             log.error("Couldn't find RegistryEntry {}", re_uri);
-            return null;
+            return;
         }
 
         // finally, we're ready
         RegistryEntryDocumentT red = new RegistryEntryDocumentT();
-        red.setRegistryEntry(re);
-        red.setDocumentDescription(dd);
+        red.setRegistryEntryId(re.getId());
+        red.setDocumentDescriptionId(dd.getId());
         log.trace("Making RegistryEntryDocument pointing to {}", re.getId());
         client.insert(red);
-        return null;
     }
 }
