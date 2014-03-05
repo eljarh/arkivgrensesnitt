@@ -39,18 +39,19 @@ public class RegistryEntryDocumentDecorator implements Decorator {
         DataObjectT obj = fragment.getDataObject();
         DocumentDescriptionT dd = (DocumentDescriptionT) obj;
         Object ddid = ObjectUtils.invokeGetter(dd, "getId");
-        log.trace("DocumentDescription already exists, id {}", ddid);
         if (ddid != null) {
             // the DD already exists, so the RED might, too
-            List objs = client.get("RegistryEntryDocumentT", "DocumentDescriptionId=" + ddid);
+            log.trace("DocumentDescription already exists, id {}", ddid);
+            List objs = client.get("RegistryEntryDocument", "DocumentDescriptionId=" + ddid);
             log.trace("Searching for RegistryEntryDocuments found {}", objs.size());
             if (!objs.isEmpty())
                 return null; // the RED is already there
-        }
+        } else
+            log.trace("DocumentDescription does not exist already");
 
         // okay, there is no registry entry document. find the registry entry
         String re_uri = s.object;
-        RegistryEntryT re = (RegistryEntryT) facade.getById("RegistryEntry", re_uri);
+        RegistryEntryT re = (RegistryEntryT) facade.getById("RegistryEntryT", re_uri);
         if (re == null) {
             log.error("Couldn't find RegistryEntry {}", re_uri);
             return null;
