@@ -24,7 +24,7 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryDocu
  * have an RED. (This is AFM-91.)
  */
 public class RegistryEntryDocumentDecorator implements Decorator {
-    private static Logger log = LoggerFactory.getLogger(UnpackClassificationDecorator.class.getName());
+    private static Logger log = LoggerFactory.getLogger(RegistryEntryDocumentDecorator.class.getName());
     private EphorteFacade facade;
     private NCoreClient client;
 
