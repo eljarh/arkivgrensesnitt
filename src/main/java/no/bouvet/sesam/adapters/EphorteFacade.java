@@ -349,6 +349,11 @@ public class EphorteFacade {
         Class fieldType = ObjectUtils.getFieldType (obj, name);
         if (fieldType == null) {
             log.debug("Object has no setter for {}", name);
+            if (decorators.containsKey(s.property)) {
+                log.debug("Running decorator for {} anyway", name);
+                Decorator d = decorators.get(s.property);
+                d.process(fragment, s);
+            }
             return null;
         }
 

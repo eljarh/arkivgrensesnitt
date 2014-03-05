@@ -18,6 +18,7 @@
 
     <logger name="com.sun.xml.ws.wspolicy.EffectiveAlternativeSelector" level="off" />
     <logger name="javax.enterprise.resource.xml.webservices.security.policy" level="off" />
+    <logger name="no.bouvet.sesam.adapters.RegistryEntryDocumentDecorator" level="TRACE" />
 
     <root level="DEBUG"><!-- WARN -->
         <appender-ref ref="FILE" />
