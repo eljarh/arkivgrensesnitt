@@ -36,7 +36,11 @@ public class RegistryEntryDocumentDecorator implements Decorator {
     @Override
     public Object process(Fragment fragment, Statement s) {
         // first, check if the registry entry document already exists
-        DocumentDescriptionT dd = (DocumentDescriptionT) fragment.getDataObject();
+        DataObjectT obj = fragment.getDataObject();
+        if (!(obj instanceof DocumentDescriptionT))
+            return;
+        
+        DocumentDescriptionT dd = (DocumentDescriptionT) obj;
         Object ddid = ObjectUtils.invokeGetter(dd, "getId");
         log.trace("DocumentDescription already exists, id {}", ddid);
         if (ddid != null) {
