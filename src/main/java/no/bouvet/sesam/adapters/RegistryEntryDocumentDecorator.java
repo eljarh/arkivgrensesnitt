@@ -38,7 +38,7 @@ public class RegistryEntryDocumentDecorator implements Decorator {
         // first, check if the registry entry document already exists
         DataObjectT obj = fragment.getDataObject();
         if (!(obj instanceof DocumentDescriptionT))
-            return;
+            return null;
         
         DocumentDescriptionT dd = (DocumentDescriptionT) obj;
         Object ddid = ObjectUtils.invokeGetter(dd, "getId");
