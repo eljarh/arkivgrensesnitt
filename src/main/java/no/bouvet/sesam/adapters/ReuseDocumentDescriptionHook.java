@@ -45,6 +45,8 @@ public class ReuseDocumentDescriptionHook implements Hook {
         }
 
         // so, let's see if there is a free document description we can use
+        log.trace("Looking for a reusable DD for {}",
+                  fragment.getResourceId());
         Statement s = fragment.getStatementWithSuffix("/registry-entry-reference");
         if (s == null) {
             log.trace("Giving up, can't find registry entry reference");
@@ -52,7 +54,8 @@ public class ReuseDocumentDescriptionHook implements Hook {
         }
         String re_uri = s.object;
         RegistryEntryT re = (RegistryEntryT)
-            facade.get("RegistryEntryT", "CustomAttribute4=" + re_uri);
+            facade.get("RegistryEntry",
+                       "CustomAttribute5=" + facade.encodeExternalId(re_uri));
         if (re == null) {
             log.trace("Giving up, no registry entry for {}", re_uri);
             return; // no go
@@ -67,7 +70,7 @@ public class ReuseDocumentDescriptionHook implements Hook {
 
         RegistryEntryDocumentT red = (RegistryEntryDocumentT) objs.get(0);
         DocumentDescriptionT dd = (DocumentDescriptionT)
-            facade.get("DocumentDescriptionT",
+            facade.get("DocumentDescription",
                        "Id=" + red.getDocumentDescriptionId());
         if (dd == null) {
             log.trace("Giving up, no document description with id {}",
