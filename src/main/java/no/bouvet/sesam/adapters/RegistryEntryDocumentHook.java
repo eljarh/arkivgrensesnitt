@@ -27,8 +27,8 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.RegistryEntryDocu
  * <p>Made this as a hook since we can't create the RED before the DD
  * is created.
  */
-public class RegistryEntryDocumentDecorator implements Hook {
-    private static Logger log = LoggerFactory.getLogger(RegistryEntryDocumentDecorator.class.getName());
+public class RegistryEntryDocumentHook implements Hook {
+    private static Logger log = LoggerFactory.getLogger(RegistryEntryDocumentHook.class.getName());
     private EphorteFacade facade;
     private NCoreClient client;
 

@@ -25,17 +25,25 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SenderRecipientT;
  *
  * <p>The hook takes care of the first two steps, while normal
  * processing does the third step.
+ *
+ * <p>The phinal phinesse is that we need to not make a fake recipient
+ * when there is a real one (AFM-94). To solve this we require the RDF
+ * property eph:has-sender-recipient to be set if the registry entry
+ * has a real sender/recipient. So we check for that before making the
+ * fake.
  */
 public class RegistryEntryTypeUHook implements Hook {
     private static Logger log = LoggerFactory.getLogger(RegistryEntryTypeUHook.class.getName());
     private EphorteFacade facade;
     private String fake_recipient_name;
+    private NCoreClient client;
 
     public void setFacade(EphorteFacade facade) {
         this.facade = facade;
         this.fake_recipient_name = facade.getConfigProperty("fake.recipient.name");
         if (fake_recipient_name == null)
             fake_recipient_name = "Fake recipient";
+        this.client = facade.getClient();
     }
 
     public void run(Fragment fragment, Map<String, Object> ids) {
@@ -57,6 +65,20 @@ public class RegistryEntryTypeUHook implements Hook {
 
         log.debug("Running hook on {}", fragment.getResourceId());
 
+        // --- INTERLUDE TO AVOID CREATING UNNECESSARY FAKES
+        Statement s2 = fragment.getStatementWithSuffix("/has-sender-recipient");
+        if (s2 != null) {
+            // there is a real sender/recipient. we don't need a fake one
+            log.debug("There is a real sender/recipient. Not making a fake.");
+
+            // we now change the RDF so that status is set to "R". a hook
+            // on the SenderRecipientT will set it back to "J" (or whatever
+            // it should be), once the SenderRecipientT is created.
+            s = fragment.getStatementWithSuffix("/record-status-id");
+            s.object = "R";
+            return;
+        }
+
         // --- DANCE, SISTER, DANCE
         // STEP 1: first attempt at entry
         // set initial state
@@ -64,7 +86,6 @@ public class RegistryEntryTypeUHook implements Hook {
         entry.setRecordStatusId("R");   // override status
         
         // send initial SOAP request
-        NCoreClient client = facade.getClient();
         client.insert(entry);
 
         // STEP 2: make sender

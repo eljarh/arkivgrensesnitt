@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 public class Statement {
     public final String subject;
     public final String property;
-    public final String object;
+    public String object; // need to be able to mess around with these
     public final boolean literal;
 
     public Statement(String s, String p, String o, boolean l) {

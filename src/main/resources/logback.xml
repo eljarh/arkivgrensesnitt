@@ -20,6 +20,7 @@
     <logger name="javax.enterprise.resource.xml.webservices.security.policy" level="off" />
     <logger name="no.bouvet.sesam.adapters.RegistryEntryDocumentDecorator" level="TRACE" />
     <logger name="no.bouvet.sesam.adapters.ReuseDocumentDescriptionHook" level="TRACE" />
+    <logger name="no.bouvet.sesam.adapters.SenderRecipientHook" level="TRACE" />
 
     <root level="DEBUG"><!-- WARN -->
         <appender-ref ref="FILE" />

@@ -121,7 +121,8 @@ public class EphorteFacade {
             hook.setFacade(this);
 
         posthooks.add(new PrimaryClassificationHook());
-        posthooks.add(new RegistryEntryDocumentDecorator());
+        posthooks.add(new RegistryEntryDocumentHook());
+        posthooks.add(new SenderRecipientHook());
         for (Hook hook : posthooks)
             hook.setFacade(this);
 
