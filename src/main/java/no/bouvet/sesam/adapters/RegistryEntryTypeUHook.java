@@ -53,9 +53,12 @@ public class RegistryEntryTypeUHook implements Hook {
         if (!(obj instanceof RegistryEntryT))
             return;
 
-        // if the type is already set we have nothing to do
+        // if the type is already set to "J" we have nothing to do
         RegistryEntryT entry = (RegistryEntryT) obj;
-        if (entry.getRegistryEntryTypeId() != null)
+        if (entry.getRegistryEntryTypeId() != null &&
+            entry.getRegistryEntryTypeId().equals("R"))
+            // if it's set to "J" we need to keep overriding it to "R"
+            // until the recipient can be added
             return;
 
         // we only handle entries where type is "U"
