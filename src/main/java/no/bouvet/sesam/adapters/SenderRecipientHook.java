@@ -41,7 +41,7 @@ public class SenderRecipientHook implements Hook {
 
         SenderRecipientT sr = (SenderRecipientT) obj;
         Integer re_id = sr.getRegistryEntryId();
-        log.trace("Running on SenderRecipientT.id={}, on RegistryEntryT.id=",
+        log.trace("Running on SenderRecipientT.id={}, on RegistryEntryT.id={}",
                   sr.getId(), re_id);
 
         Statement s = fragment.getStatementWithSuffix("/registry-entry-status");
