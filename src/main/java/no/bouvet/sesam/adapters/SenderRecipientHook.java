@@ -22,7 +22,7 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SenderRecipientT;
  * case, the hook sets the status to "R". Later the SenderRecipientT
  * arrives and is created, and afterwards this hook runs, and sets the
  * status of the registry entry to the correct value, which we can
- * find in the eph:registry-entry-status property.
+ * find in the eph:registry-entry-status property. This solves AFM-94.
  */
 public class SenderRecipientHook implements Hook {
     private static Logger log = LoggerFactory.getLogger(SenderRecipientHook.class.getName());
@@ -51,7 +51,7 @@ public class SenderRecipientHook implements Hook {
         }
 
         RegistryEntryT re = (RegistryEntryT) 
-            client.get("RegistryEntry", "Id=" + re_id);
+            facade.get("RegistryEntry", "Id=" + re_id);
         re.setRecordStatusId(s.object);
         log.trace("Set record status id to {}", s.object);
         client.update(re);
