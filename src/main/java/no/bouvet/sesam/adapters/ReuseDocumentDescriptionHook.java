@@ -102,6 +102,9 @@ public class ReuseDocumentDescriptionHook implements Hook {
         log.trace("Reusing document description {} for regent {}",
                   dd.getId(), re.getId());
         fragment.setDataObject(dd);
+
+        // need to set the custom attributes on this one
+        facade.setExternalId(dd, fragment.getResourceId());
     }
     
 }
