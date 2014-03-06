@@ -116,6 +116,7 @@ public class EphorteFacade {
             addIgnoredProperty(property);
 
         prehooks.add(new RegistryEntryTypeUHook());
+        prehooks.add(new ReuseDocumentDescriptionHook());
         for (Hook hook : prehooks)
             hook.setFacade(this);
 
@@ -225,6 +226,8 @@ public class EphorteFacade {
             hook.run(fragment, ePhorteIds);
 
         // it's possible that the hooks have now created the object
+        // (or replaced it)
+        obj = fragment.getDataObject();
         if (!objectExists) {
             Object oId = ObjectUtils.invokeGetter(obj, "getId");
             if (oId != null) {
