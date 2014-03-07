@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
