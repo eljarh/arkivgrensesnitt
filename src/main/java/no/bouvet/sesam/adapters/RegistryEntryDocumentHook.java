@@ -70,7 +70,7 @@ public class RegistryEntryDocumentHook implements Hook {
         RegistryEntryT re = (RegistryEntryT) facade.getById("RegistryEntryT", re_uri);
         if (re == null) {
             log.error("Couldn't find RegistryEntry {}", re_uri);
-            return;
+            throw new RuntimeException("Couldn't find RegistryEntry " + re_uri);
         }
 
         // finally, we're ready
