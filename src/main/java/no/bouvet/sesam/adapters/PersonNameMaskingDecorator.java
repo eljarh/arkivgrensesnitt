@@ -19,6 +19,10 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
  * journal posts, in that it doesn't properly escape "'" characters in
  * the SQL queries it generates. We solve that here by removing them.
  * (This part of the decorator *is* in the right place.)
+ *
+ * <p>As iph that were not enouph, ePhorte rejects titles longer than
+ * 255 characters, so we need to truncate them where they are longer.
+ * (AFM-103)
  */
 public class PersonNameMaskingDecorator implements Decorator {
     
@@ -48,9 +52,18 @@ public class PersonNameMaskingDecorator implements Decorator {
                 tmp[writeat++] = ch;
         }
 
+        // put together the desired title
+        String newtitle;
         if (modified)
-            return new String(tmp, 0, writeat);
+            newtitle = new String(tmp, 0, writeat);
         else
-            return statement.object;
+            newtitle = statement.object;
+
+        // truncate if necessary
+        if (newtitle.length() > 255)
+          newtitle = newtitle.substring(0, 255);
+
+        // done
+        return newtitle;
     }
 }
