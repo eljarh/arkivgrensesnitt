@@ -38,4 +38,20 @@ public class Utils {
         String[] parts = property.split("/");
         return parts[parts.length - 1];
     }
+
+    // used by the ZipCodeDecorator and PhoneNumberDecorator
+    public static String chopDigitOnlyValue(String value, int max) {
+        if (value.length() <= max)
+            return value; // no need to do anything
+
+        char[] tmp = new char[max];
+        int pos = 0;
+        for (int ix = 0; ix < value.length() && pos < max; ix++) {
+            char ch = value.charAt(ix);
+            if (ch >= '0' && ch <= '9')
+                tmp[pos++] = ch;
+        }
+
+        return new String(tmp, 0, pos);
+    }
 }

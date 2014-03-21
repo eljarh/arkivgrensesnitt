@@ -18,18 +18,6 @@ public class ZipCodeDecorator implements Decorator {
     }
 
     public Object process(Fragment fragment, Statement s) {
-        String zipcode = s.object;
-        if (zipcode.length() <= 5)
-            return zipcode; // no need to do anything
-
-        char[] tmp = new char[5];
-        int pos = 0;
-        for (int ix = 0; ix < zipcode.length() && pos < 5; ix++) {
-            char ch = zipcode.charAt(ix);
-            if (ch >= '0' && ch <= '9')
-                tmp[pos++] = ch;
-        }
-
-        return new String(tmp, 0, pos);
+        return Utils.chopDigitOnlyValue(s.object, 5);
     }
 }
