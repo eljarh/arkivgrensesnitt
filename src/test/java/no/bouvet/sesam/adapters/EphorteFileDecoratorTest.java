@@ -2,7 +2,10 @@ package no.bouvet.sesam.adapters;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import java.io.File;
+import java.io.FileWriter;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.HttpResponse;
@@ -14,6 +17,9 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.DocumentObjectT;
 public class EphorteFileDecoratorTest {
     private HttpResponse Response;
     CloseableHttpClient client = HttpClients.createDefault();
+
+    @Rule
+    public TemporaryFolder tmpdir = new TemporaryFolder();
 
     private HttpResponse get(String url) throws Exception {
         HttpGet get = new HttpGet(url);
@@ -62,5 +68,27 @@ public class EphorteFileDecoratorTest {
         decorator.process(fragment, s);
 
         verify(facade).uploadFile(eq("content.txt"), any(byte[].class));
+    }
+
+    @Test
+    public void testThatProcessFetchesFileAndUploadsWithFacade() throws Exception {
+        File testfile = tmpdir.newFile();
+        FileWriter outf = new FileWriter(testfile);
+        outf.write("hello, world!");
+        outf.close();
+        
+        EphorteFacade facade = mock(EphorteFacade.class);
+        EphorteFileDecorator decorator = new EphorteFileDecorator();
+        decorator.setFacade(facade);
+
+        System.out.println("File is: '" + testfile.toURI().toString() + "'");
+        
+        BatchFragment batch = mock(BatchFragment.class);
+        Statement s = new Statement("_", "_", testfile.toURI().toString(), true);
+        Fragment fragment = new Fragment("_");
+        fragment.setDataObject(new DocumentObjectT());
+        decorator.process(fragment, s);
+
+        verify(facade).uploadFile(eq(testfile.getName()), any(byte[].class));
     }
 }

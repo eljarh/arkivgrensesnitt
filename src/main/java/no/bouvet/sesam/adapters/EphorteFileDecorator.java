@@ -3,8 +3,10 @@ package no.bouvet.sesam.adapters;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import org.apache.http.HttpResponse;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpResponse;
 import org.apache.http.HeaderElement;
 import org.apache.http.HeaderElementIterator;
 import org.apache.http.impl.client.HttpClients;
@@ -24,6 +27,11 @@ import org.apache.commons.io.IOUtils;
 
 import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
 
+/**
+ * This decorator is attached to the document version property that
+ * points to the location of the actual document. This can be an HTTP
+ * URL or a file URL.
+ */
 public class EphorteFileDecorator implements Decorator {
     static Logger log = LoggerFactory.getLogger(Fragment.class.getName());
     private EphorteFacade facade;
@@ -36,6 +44,17 @@ public class EphorteFileDecorator implements Decorator {
         String url = s.object;
         log.info("Processing file: {}", url);
 
+        if (url.startsWith("http://"))
+            return processHttp(url);
+        else if (url.startsWith("file:/"))
+            return processFile(url);
+        else
+            throw new RuntimeException("Unknown protocol in " + url);
+    }
+
+    // ----- HTTP
+    
+    private Object processHttp(String url) {
         String fileName;
         byte[] data;
 
@@ -87,5 +106,35 @@ public class EphorteFileDecorator implements Decorator {
         } finally {
             stream.close();
         }
+    }
+
+    // ----- FILE
+
+    private Object processFile(String url) {
+        // expected syntax is 'file:/D:/path/to/file.pdf'
+        // however, it could also be 'file:/tmp/something.txt'
+        // the File and URI classes handle all this for us
+        File file;
+
+        // now get the actual contents
+        byte[] data;
+        InputStream stream = null;
+        try {
+            try {
+                file = new File(new URI(url));
+                stream = new FileInputStream(file);
+                data = IOUtils.toByteArray(stream);
+            } finally {
+                if (stream != null)
+                    stream.close();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Upload problem: " + e, e);
+        } catch (URISyntaxException e) { // why isn't this an IOException ???
+            throw new RuntimeException("Upload problem: " + e, e);
+        }
+
+        // done
+        return facade.uploadFile(file.getName(), data);
     }
 }
