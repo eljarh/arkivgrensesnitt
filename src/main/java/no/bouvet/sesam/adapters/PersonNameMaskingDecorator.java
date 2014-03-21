@@ -21,7 +21,9 @@ import no.gecko.ephorte.services.objectmodel.v3.en.DataObjectT;
  * (This part of the decorator *is* in the right place.)
  *
  * <p>As iph that were not enouph, ePhorte rejects titles longer than
- * 255 characters, so we need to truncate them where they are longer.
+ * 253 characters, so we need to truncate them where they are
+ * longer. Note that ePhorte claims the limit is 255, but that's not
+ * true, as titles with lengths 255 and 254 cause it to crash.
  * (AFM-103)
  */
 public class PersonNameMaskingDecorator implements Decorator {
@@ -60,8 +62,8 @@ public class PersonNameMaskingDecorator implements Decorator {
             newtitle = statement.object;
 
         // truncate if necessary
-        if (newtitle.length() > 255)
-          newtitle = newtitle.substring(0, 255);
+        if (newtitle.length() > 253)
+          newtitle = newtitle.substring(0, 253);
 
         // done
         return newtitle;
