@@ -26,7 +26,7 @@ import no.gecko.ephorte.services.objectmodel.v3.en.dataobjects.SenderRecipientT;
  * <p>The hook takes care of the first two steps, while normal
  * processing does the third step.
  *
- * <p>The phinal phinesse is that we need to not make a fake recipient
+ * <p>The phinal phinesse is that we need to not make a phake recipient
  * when there is a real one (AFM-94). To solve this we require the RDF
  * property eph:has-sender-recipient to be set if the registry entry
  * has a real sender/recipient. So we check for that before making the
@@ -87,16 +87,24 @@ public class RegistryEntryTypeUHook implements Hook {
         // set initial state
         facade.populate(fragment, ids); // set state as originally defined
         entry.setRecordStatusId("R");   // override status
-        
+
         // send initial SOAP request
-        client.insert(entry);
+        Object eId = ObjectUtils.invokeGetter(entry, "getId");
+        if (eId == null)
+            client.insert(entry);
+        else
+            client.update(entry);
 
         // STEP 2: make sender
-        SenderRecipientT sender = new SenderRecipientT();
-        sender.setName(fake_recipient_name);
-        sender.setRegistryEntryId(entry.getId());
-        log.debug("Making sender", sender);
-        client.insert(sender);
+        if (eId == null || entry.getSenderRecipient() == null) {
+            // only making the sender if the entry is new, or it doesn't
+            // have a sender
+            SenderRecipientT sender = new SenderRecipientT();
+            sender.setName(fake_recipient_name);
+            sender.setRegistryEntryId(entry.getId());
+            log.debug("Making sender", sender);
+            client.insert(sender);
+        }
 
         // STEP 3: update entry
         entry.setSenderRecipient(fake_recipient_name);
